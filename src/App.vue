@@ -1,53 +1,124 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { invoke } from "@tauri-apps/api/core";
+import { onMounted, ref, onBeforeMount } from "vue";
+import { RouterView } from 'vue-router'
 
-const greetMsg = ref("");
-const name = ref("");
+import { mdiCogs, mdiHome,mdiCheckboxMarkedCircleOutline,mdiAccountCircle } from '@mdi/js';
+import { useSettingsStore } from "./store";
+import { Migrator } from "kysely";
+import taskDb from "./database/TaskDatabase";
+import { CustomMigrationProvider } from "./database/CustomMigrationProvider";
 
-async function greet() {
-  // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-  greetMsg.value = await invoke("greet", { name: name.value });
-}
+const settingsStore = useSettingsStore();
+
+const items = ref([
+        {
+          title: 'Home',
+          value: 1,
+          props: {
+            prependIcon: mdiHome,
+            to: 'home'
+          },
+        },
+        {
+          type: 'subheader',
+          title: 'Zeiterfassung',
+          props: {
+            prependIcon: mdiHome
+          },
+        },
+        
+        {
+          title: 'Aufgaben',
+          value: 2,
+          props: {
+            prependIcon: mdiCheckboxMarkedCircleOutline,
+            to: 'taskList'
+          },
+        },
+        {
+          title: 'Einstellungen',
+          value: 3,
+          props: {
+            prependIcon: mdiCogs,
+            to: 'settings'
+          },
+        }
+      ])
+
+  onMounted(()=>{
+    let topBar = document.getElementById("titlebar");
+    topBar?.children[0].setAttribute("data-tauri-drag-region", "");
+  })
+
+  onBeforeMount(async ()=>{
+    const migrator = new Migrator({
+      db: taskDb,
+      provider: new CustomMigrationProvider(),
+    });
+
+    const { error, results } = await migrator.migrateToLatest();
+
+    if (error) {
+      console.error('Migration failed:', error);
+      // Handle the error as needed
+    } else {
+      console.log('Migrations applied successfully:', results);
+    }
+  })
+
 </script>
 
 <template>
-  <main class="container">
-    <h1>Welcome to Tauri + Vue</h1>
+  
+  <Suspense>
+    <template #default>
+        <v-responsive class="border rounded" >
+        
+        <v-app>
+          
+          <v-app-bar data-tauri-drag-region id="titlebar" density="compact" height="45" ></v-app-bar>
+          
 
-    <div class="row">
-      <a href="https://vitejs.dev" target="_blank">
-        <img src="/vite.svg" class="logo vite" alt="Vite logo" />
-      </a>
-      <a href="https://tauri.app" target="_blank">
-        <img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
-      </a>
-      <a href="https://vuejs.org/" target="_blank">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </a>
-    </div>
-    <p>Click on the Tauri, Vite, and Vue logos to learn more.</p>
+          <v-navigation-drawer
+                expand-on-hover
+                rail
+                permanent
+              >
+                <v-list>
+                  <v-list-item>
+                    <v-list-item-title>Marc</v-list-item-title>
+                    <v-list-item-subtitle>marc@lammers.dev</v-list-item-subtitle>
+                    <template v-slot:prepend>
+                      <v-icon :icon="mdiAccountCircle"></v-icon>
+                    </template>
+                  </v-list-item>
+                </v-list>
+                <v-divider></v-divider>
+                <v-list density="compact" :items="items" nav />
+          </v-navigation-drawer>
 
-    <form class="row" @submit.prevent="greet">
-      <input id="greet-input" v-model="name" placeholder="Enter a name..." />
-      <button type="submit">Greet</button>
-    </form>
-    <p>{{ greetMsg }}</p>
-  </main>
+          <v-main class="main-content" :style="{backgroundImage:`url(${settingsStore.appBackground})`}">
+            <v-container fluid class="main-container" >
+              <RouterView /> 
+            </v-container>
+          </v-main>
+        </v-app>
+      </v-responsive>
+    </template>
+    <template #fallback>
+      <div>Laden...</div> 
+    </template> 
+  </Suspense>
 </template>
 
-<style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
 
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
-}
+<style lang="scss">
+$main-color: #329ea3;
+$titlebar-height: 45px;
 
-</style>
-<style>
 :root {
+  overflow: hidden;
+
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
@@ -61,100 +132,24 @@ async function greet() {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
+.main-content {
+  background-size: cover;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: 0.75s;
+.main-container {
+  height: calc(100vh - $titlebar-height);
+  overflow: auto;
 }
-
-.logo.tauri:hover {
-  filter: drop-shadow(0 0 2em #24c8db);
-}
-
-.row {
-  display: flex;
-  justify-content: center;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-
-a:hover {
-  color: #535bf2;
-}
-
-h1 {
-  text-align: center;
-}
-
-input,
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  color: #0f0f0f;
-  background-color: #ffffff;
-  transition: border-color 0.25s;
-  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
-}
-
-button {
-  cursor: pointer;
-}
-
-button:hover {
-  border-color: #396cd8;
-}
-button:active {
-  border-color: #396cd8;
-  background-color: #e8e8e8;
-}
-
-input,
-button {
-  outline: none;
-}
-
-#greet-input {
-  margin-right: 5px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    color: #f6f6f6;
-    background-color: #2f2f2f;
-  }
-
-  a:hover {
-    color: #24c8db;
-  }
-
-  input,
-  button {
-    color: #ffffff;
-    background-color: #0f0f0f98;
-  }
-  button:active {
-    background-color: #0f0f0f69;
-  }
+.main-content {
+  margin-top: 15px;
 }
 
 </style>
