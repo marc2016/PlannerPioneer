@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { VForm } from 'vuetify/components/VForm';
-import { Task } from "../database/TaskDatabase";
+import { Person } from '../database/Types';
 
 const open = defineModel('open', {
   type: Boolean,
@@ -9,13 +9,12 @@ const open = defineModel('open', {
 })
 
 const props = defineProps<{
-  createTask: (task: Task) => void
+  createPerson: (person: Person) => void
 }>()
 
-const task = ref<Task>({
+const person = ref<Person>({
+  id: BigInt(0),
   name: '',
-  description: '',
-  done: false,
   createdAt: new Date(),
   updatedAt: new Date()
 })
@@ -28,28 +27,27 @@ const nameRules = [
 
 watch(open, (newOpen) => {
   if (newOpen) {
-    task.value = {
+    person.value = {
+      id: BigInt(0),
       name: '',
-      description: '',
-      done: false,
       createdAt: new Date(),
       updatedAt: new Date()
     }
   }
 })
 
-async function createTaskInternal() {
-  task.value.createdAt = new Date()
-  task.value.updatedAt = new Date()
-  props.createTask(task.value)
+async function createPersonInternal() {
+  person.value.createdAt = new Date()
+  person.value.updatedAt = new Date()
+  props.createPerson(person.value)
   open.value = false
 }
 
-async function validateAndCreateTask() {
+async function validateAndCreatePerson() {
   if (form.value) {
     const validation =  await form.value.validate()
     if(validation.valid)
-      createTaskInternal()
+      createPersonInternal()
   }
 }
 </script>
@@ -66,13 +64,13 @@ async function validateAndCreateTask() {
       <v-container>
         <v-row>
           <v-col cols="12">
-            <div class="text-h4 font-weight-black">Neue Aufgabe</div>
+            <div class="text-h4 font-weight-black">Neue Person</div>
           </v-col>
         </v-row>
         <v-row>
           <v-col cols="12">
             <v-text-field
-              v-model="task.name"
+              v-model="person.name"
               label="Name"
               :rules="nameRules"
               variant="outlined"
@@ -81,7 +79,7 @@ async function validateAndCreateTask() {
         </v-row>
         <v-row>
           <v-col cols="12">
-            <v-textarea v-model="task.description" label="Beschreibung" variant="outlined" rows="4"></v-textarea>
+            
           </v-col>
         </v-row>
         <v-row align-content="end">
@@ -91,7 +89,7 @@ async function validateAndCreateTask() {
             </v-btn>
           </v-col>
           <v-col cols="auto" align-self="end">
-            <v-btn variant="outlined" color="success" @click="validateAndCreateTask">
+            <v-btn variant="outlined" color="success" @click="validateAndCreatePerson">
               Anlegen
             </v-btn>
           </v-col>

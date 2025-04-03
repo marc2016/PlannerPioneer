@@ -2,11 +2,12 @@
 import { onMounted, ref, onBeforeMount } from "vue";
 import { RouterView } from 'vue-router'
 
-import { mdiCogs, mdiHome,mdiCheckboxMarkedCircleOutline,mdiAccountCircle } from '@mdi/js';
+import { mdiCogs, mdiHome,mdiAccountGroup,mdiAccountCircle } from '@mdi/js';
 import { useSettingsStore } from "./store";
 import { Migrator } from "kysely";
-import taskDb from "./database/TaskDatabase";
+
 import { CustomMigrationProvider } from "./database/CustomMigrationProvider";
+import database from "./database/Database";
 
 const settingsStore = useSettingsStore();
 
@@ -28,11 +29,11 @@ const items = ref([
         },
         
         {
-          title: 'Aufgaben',
+          title: 'Personen',
           value: 2,
           props: {
-            prependIcon: mdiCheckboxMarkedCircleOutline,
-            to: 'taskList'
+            prependIcon: mdiAccountGroup,
+            to: 'personsView'
           },
         },
         {
@@ -52,7 +53,7 @@ const items = ref([
 
   onBeforeMount(async ()=>{
     const migrator = new Migrator({
-      db: taskDb,
+      db: database,
       provider: new CustomMigrationProvider(),
     });
 

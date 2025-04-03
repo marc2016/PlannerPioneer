@@ -13,14 +13,29 @@ export class SqliteTypePlugin<T extends Record<string, any>> implements KyselyPl
   private booleanColumns: (keyof T)[];
   private dateColumns: (keyof T)[];
 
-  constructor(type: T) {
-    // Automatically determine boolean and date columns based on the type
-    this.booleanColumns = Object.keys(type).filter(
-      (key) => typeof type[key as keyof T] === "boolean"
+  constructor(types: T[]) {
+    // Automatically determine boolean and date columns based on the list of types
+    this.booleanColumns = Array.from(
+      new Set(
+        types.flatMap((type) =>
+          Object.keys(type).filter(
+            (key) => typeof type[key as keyof T] === "boolean"
+          )
+        )
+      )
     ) as (keyof T)[];
 
-    this.dateColumns = Object.keys(type).filter(
-      (key) => type[key as keyof T] != null && typeof type[key as keyof T] === "object" && (type[key as keyof T] as unknown) instanceof Date
+    this.dateColumns = Array.from(
+      new Set(
+        types.flatMap((type) =>
+          Object.keys(type).filter(
+            (key) =>
+              type[key as keyof T] != null &&
+              typeof type[key as keyof T] === "object" &&
+              (type[key as keyof T] as unknown) instanceof Date
+          )
+        )
+      )
     ) as (keyof T)[];
   }
 

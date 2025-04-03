@@ -8,7 +8,16 @@
   "permissions": [
     "core:default",
     "opener:default",
+    "core:window:default",
+    "core:window:allow-start-dragging",
+    "sql:allow-load",
     "sql:default",
-    "fs:default"
+    "sql:allow-execute",
+    "fs:default",
+    {
+      "identifier": "fs:allow-config-write-recursive",
+      "allow": [{ "path": "$APPCONFIG/*" }]
+    },
+    { "identifier": "fs:allow-exists", "allow": [ { "path": "**/**" } ] }
   ]
 }

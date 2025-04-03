@@ -1,13 +1,13 @@
 import { type Migration } from "kysely";
-import taskV1 from "./migrations/taskV1";
+import V1_init from "./migrations/V1_init";
 
 export type NamedMigration = Migration & {
   name: string;
 }
 
 export const migrations: Record<string, Migration> = {
-  [taskV1.name]: {
-    up: taskV1.up,
-    down: taskV1.down,
+  [V1_init.name]: {
+    up: V1_init.up,
+    down: V1_init.down,
   },
 };

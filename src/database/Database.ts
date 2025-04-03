@@ -3,19 +3,17 @@ import Database from '@tauri-apps/plugin-sql'
 import { Kysely } from 'kysely'
 import { TauriSqliteDialect } from 'kysely-dialect-tauri';
 
-import { TaskDatabase, TaskTable } from './TaskTypes';
 import { SqliteTypePlugin } from './plugins/SqlitePlugin';
+import { PlannerPioneerDatabase, PersonTable } from './Types';
 
 const appData = await appDataDir();
 const dialect = new TauriSqliteDialect({
-  database: async prefix => Database.load(`${prefix}${appData}/task.db`),
+  database: async prefix => Database.load(`${prefix}${appData}/PlannerPioneer.db`),
   
 })
 
-const taskExample: TaskTable = {
+const personExample: PersonTable = {
   name: '',
-  description: '',
-  done: false,
   id: {
     __select__: 0n,
     __insert__: undefined,
@@ -25,11 +23,15 @@ const taskExample: TaskTable = {
   updatedAt: new Date()
 };
 
-const taskDb = new Kysely<TaskDatabase>({
+const blub = {
+  name: '',
+}
+
+const database = new Kysely<PlannerPioneerDatabase>({
   dialect,
   plugins: [
-    new SqliteTypePlugin(taskExample)
+    new SqliteTypePlugin([personExample, blub])
   ]
 })
 
-export default taskDb
+export default database

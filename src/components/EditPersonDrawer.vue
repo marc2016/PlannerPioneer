@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { VForm } from 'vuetify/components/VForm';
-import { hasTaskChanged } from '../helper/TaskHelper'
-import { Task } from "../database/TaskDatabase";
+import { hasPersonChanged } from '../helper/PersonHelper'
+import { Person } from '../database/Types';
 
 const open = defineModel('open', {
   type: Boolean,
   default: false
 })
 
-const selectedTask = defineModel('task', {
+const selectedPerson = defineModel('person', {
   type: Object,
   default: null
 })
 
-const internalTask = ref<Task | null>(null)
+const internalPerson = ref<Person | null>(null)
 
 const form = ref<VForm | null>(null)
 
@@ -22,11 +22,9 @@ const nameRules = [
   (v: string) => !!v || 'Name ist erforderlich'
 ]
 
-
-
 watch(open, async (newOpen) => {
   if (newOpen) {
-    internalTask.value = selectedTask.value ? { ...selectedTask.value } : null
+    internalPerson.value = selectedPerson.value ? { ...selectedPerson.value } : null
   } else {
     if (form.value) {
       const validationResult = await form.value.validate()
@@ -35,9 +33,9 @@ watch(open, async (newOpen) => {
         return
       }
     }
-    if (internalTask.value && selectedTask.value && hasTaskChanged(internalTask.value, selectedTask.value)) {
-      internalTask.value.updatedAt = new Date()
-      Object.assign(selectedTask.value, internalTask.value)
+    if (internalPerson.value && selectedPerson.value && hasPersonChanged(internalPerson.value, selectedPerson.value)) {
+      internalPerson.value.updatedAt = new Date()
+      Object.assign(selectedPerson.value, internalPerson.value)
     }
   }
 })
@@ -55,23 +53,21 @@ watch(open, async (newOpen) => {
       <v-container>
         <v-row>
           <v-col cols="12">
-            <div class="text-h4 font-weight-black">Aufgabe bearbeiten</div>
+            <div class="text-h4 font-weight-black">Person bearbeiten</div>
           </v-col>
         </v-row>
-        <v-row v-if="internalTask">
+        <v-row v-if="internalPerson">
           <v-col cols="12">
             <v-text-field
-              v-model="internalTask.name"
+              v-model="internalPerson.name"
               label="Name"
               :rules="nameRules"
               variant="outlined"
             ></v-text-field>
           </v-col>
         </v-row>
-        <v-row v-if="internalTask">
-          <v-col cols="12">
-            <v-textarea v-model="internalTask.description" label="Beschreibung" variant="outlined" rows="4"></v-textarea>
-          </v-col>
+        <v-row v-if="internalPerson">
+          
         </v-row>
       </v-container>
     </v-form>
