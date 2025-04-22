@@ -12,9 +12,13 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from './router/index.ts';
 import { initSettingsStore } from './store/index.ts';
+import { VDateInput } from 'vuetify/labs/VDateInput'
 
 const vuetify = createVuetify({
-    components,
+    components: {
+      ...components,
+      VDateInput,
+    },
     directives,
     icons: {
         defaultSet: 'mdi',

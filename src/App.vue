@@ -2,7 +2,7 @@
 import { onMounted, ref, onBeforeMount } from "vue";
 import { RouterView } from 'vue-router'
 
-import { mdiCogs, mdiHome,mdiAccountGroup,mdiAccountCircle } from '@mdi/js';
+import { mdiCogs, mdiHome,mdiAccountGroup,mdiAccountCircle,mdiChartGantt } from '@mdi/js';
 import { useSettingsStore } from "./store";
 import { Migrator } from "kysely";
 
@@ -27,7 +27,6 @@ const items = ref([
             prependIcon: mdiHome
           },
         },
-        
         {
           title: 'Personen',
           value: 2,
@@ -37,8 +36,16 @@ const items = ref([
           },
         },
         {
-          title: 'Einstellungen',
+          title: 'Planner',
           value: 3,
+          props: {
+            prependIcon: mdiChartGantt,
+            to: 'plannerView'
+          },
+        },
+        {
+          title: 'Einstellungen',
+          value: 4,
           props: {
             prependIcon: mdiCogs,
             to: 'settings'

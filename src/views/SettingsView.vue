@@ -30,6 +30,7 @@ const store = await useSettingsStore()
       </v-list-item>
     </v-list>
   </v-card>
+  
 </template>
 
 <style scoped>

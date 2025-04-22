@@ -4,12 +4,11 @@ import { Kysely } from 'kysely'
 import { TauriSqliteDialect } from 'kysely-dialect-tauri';
 
 import { SqliteTypePlugin } from './plugins/SqlitePlugin';
-import { PlannerPioneerDatabase, PersonTable } from './Types';
+import { PlannerPioneerDatabase, PersonTable, SprintTable, TaskTable } from './Types';
 
 const appData = await appDataDir();
 const dialect = new TauriSqliteDialect({
   database: async prefix => Database.load(`${prefix}${appData}/PlannerPioneer.db`),
-  
 })
 
 const personExample: PersonTable = {
@@ -23,14 +22,38 @@ const personExample: PersonTable = {
   updatedAt: new Date()
 };
 
-const blub = {
+const sprintExample: SprintTable = {
   name: '',
-}
+  id: {
+    __select__: 0n,
+    __insert__: undefined,
+    __update__: 0n
+  },
+  startDate: new Date(),
+  endDate: new Date(),
+  createdAt: new Date(),
+  updatedAt: new Date(),
+  tasks: []
+};
+
+const taskExample: TaskTable = {
+  name: '',
+  id: {
+    __select__: 0n,
+    __insert__: undefined,
+    __update__: 0n
+  },
+  description: '',
+  done: false,
+  sprintId: 0n,
+  createdAt: new Date(),
+  updatedAt: new Date()
+};
 
 const database = new Kysely<PlannerPioneerDatabase>({
   dialect,
   plugins: [
-    new SqliteTypePlugin([personExample, blub])
+    new SqliteTypePlugin([personExample, sprintExample, taskExample])
   ]
 })
 
