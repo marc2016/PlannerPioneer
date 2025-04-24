@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { VForm } from 'vuetify/components/VForm';
 import { hasPersonChanged } from '../helper/PersonHelper'
-import { Person } from '../database/Types';
+import { PersonDb } from '../database/Types';
 
 const open = defineModel('open', {
   type: Boolean,
@@ -14,7 +14,7 @@ const selectedPerson = defineModel('person', {
   default: null
 })
 
-const internalPerson = ref<Person | null>(null)
+const internalPerson = ref<PersonDb | null>(null)
 
 const form = ref<VForm | null>(null)
 

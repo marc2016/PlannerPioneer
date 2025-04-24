@@ -31,9 +31,18 @@ const migration: NamedMigration = {
       .addColumn('createdAt', 'datetime', (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
       .addColumn('updatedAt', 'datetime', (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`).notNull())
       .execute()
+    await db.schema
+      .createTable('personToTask')
+      .addColumn('id', 'integer', (col) => col.primaryKey().autoIncrement())
+      .addColumn('taskId', 'integer', (col) => col.notNull())
+      .addColumn('personId', 'integer', (col) => col.notNull())
+      .execute()
   },
   down: async (db: Kysely<any>): Promise<void> => {
     await db.schema.dropTable('person').execute()
+    await db.schema.dropTable('sprint').execute()
+    await db.schema.dropTable('task').execute()
+    await db.schema.dropTable('personToTask').execute()
   }
 }
 

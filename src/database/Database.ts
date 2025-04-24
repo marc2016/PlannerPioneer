@@ -33,7 +33,8 @@ const sprintExample: SprintTable = {
   endDate: new Date(),
   createdAt: new Date(),
   updatedAt: new Date(),
-  tasks: []
+  tasks: [],
+  dateOverlapping: false
 };
 
 const taskExample: TaskTable = {
@@ -45,9 +46,10 @@ const taskExample: TaskTable = {
   },
   description: '',
   done: false,
-  sprintId: 0n,
+  sprintId: 0,
   createdAt: new Date(),
-  updatedAt: new Date()
+  updatedAt: new Date(),
+  persons: []
 };
 
 const database = new Kysely<PlannerPioneerDatabase>({

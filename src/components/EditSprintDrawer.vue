@@ -2,7 +2,7 @@
 import { ref, watch } from 'vue';
 import { VForm } from 'vuetify/components/VForm';
 import { hasPersonChanged } from '../helper/PersonHelper'
-import { Person, Sprint } from '../database/Types';
+import { PersonDb, Sprint } from '../database/Types';
 
 const open = defineModel('open', {
   type: Boolean,

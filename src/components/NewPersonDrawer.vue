@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { VForm } from 'vuetify/components/VForm';
-import { Person } from '../database/Types';
+import { PersonDb } from '../database/Types';
+import { Person } from '../models/Person';
 
 const open = defineModel('open', {
   type: Boolean,
@@ -13,7 +14,7 @@ const props = defineProps<{
 }>()
 
 const person = ref<Person>({
-  id: BigInt(0),
+  id: null,
   name: '',
   createdAt: new Date(),
   updatedAt: new Date()
@@ -28,7 +29,7 @@ const nameRules = [
 watch(open, (newOpen) => {
   if (newOpen) {
     person.value = {
-      id: BigInt(0),
+      id: null,
       name: '',
       createdAt: new Date(),
       updatedAt: new Date()

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { mdiCalendarMonth, mdiTrashCan, mdiPencil, mdiPlus } from '@mdi/js'
 import { computed } from 'vue'
-import { Person, Sprint, Task } from '../database/Types';
+import { PersonDb, Sprint, Task } from '../database/Types';
 import TaskCard from './TaskCard.vue';
 import database from '../database/Database';
 

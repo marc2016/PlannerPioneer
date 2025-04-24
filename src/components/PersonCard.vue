@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { mdiAccount, mdiTrashCan, mdiUpdate } from '@mdi/js'
 import { computed } from 'vue'
-import { Person } from '../database/Types';
+import { PersonDb } from '../database/Types';
+import { Person } from '../models/Person';
 
 const props = defineProps<{ 
   person: Person,

@@ -5,12 +5,15 @@
   import EditPersonDrawer from '../components/EditPersonDrawer.vue'
   import NewPersonDrawer from '../components/NewPersonDrawer.vue'
   import database from '../database/Database'
-  import { Person } from '../database/Types'
+  import { PersonDb } from '../database/Types'
   import PersonCard from '../components/PersonCard.vue'
+import { Person } from '../models/Person'
+import { PersonRepository } from '../repositories/PersonRepository'
 
-  const dbPersons = await database.selectFrom('person').selectAll().execute();
+  const personRepository = new PersonRepository()
+  const persons = await personRepository.getAll();
 
-  const allPersons = ref<Person[]>(dbPersons)
+  const allPersons = ref<Person[]>(persons)
 
   const allPersonsSorted = computed(() => (allPersons.value.sort((a, b) => {
     return b.updatedAt.getTime() - a.updatedAt.getTime()
@@ -41,12 +44,10 @@
   }
 
   async function deletePerson(person: Person) {    
-    const index = allPersons.value.indexOf(person)
-    allPersons.value.splice(index, 1)
-    await database.deleteFrom('person').where('id', '=', person.id).execute()
+    await personRepository.delete(person)
   }
 
-  function deepCopyPerson(person: Person): Person {
+  function deepCopyPerson(person: PersonDb): PersonDb {
     return {
       id: person.id,
       name: person.name,
@@ -59,15 +60,22 @@
     if (!shouldWatch) return
     shouldWatch = false
     for (const person of newPersons) {
-      if (person.id) {
-        await database.updateTable('person').set(person).where('id', '=', person.id).execute()
-      } else {
-        const personCopy = deepCopyPerson(person)
-        personCopy.id = undefined
-        const result = await database.insertInto('person').values(personCopy).execute()
-        if(result.length > 0 && result[0].insertId !== undefined)
-          person.id = BigInt(result[0].insertId); 
+      const newPerson = await personRepository.createOrUpdate(person);
+      if (newPerson) {
+        person.id = newPerson.id
+        // person.createdAt = newPerson.createdAt
+        // person.updatedAt = newPerson.updatedAt
       }
+      
+      // if (person.id) {
+      //   await database.updateTable('person').set(person).where('id', '=', person.id).execute()
+      // } else {
+      //   const personCopy = deepCopyPerson(person)
+      //   personCopy.id = undefined
+      //   const result = await database.insertInto('person').values(personCopy).execute()
+      //   if(result.length > 0 && result[0].insertId !== undefined)
+      //     person.id = BigInt(result[0].insertId); 
+      // }
     }
     shouldWatch = true
   }, { deep: true })

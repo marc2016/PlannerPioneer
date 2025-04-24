@@ -1,15 +1,16 @@
 <script setup lang="ts">
   import database from '../database/Database';
   import { mdiPlus } from '@mdi/js';
-import { Sprint, Task } from '../database/Types';
-import { ref, watch, computed } from 'vue';
-import SprintCard from '../components/SprintCard.vue';
-import { da } from 'vuetify/locale';
+  import { Sprint, Task } from '../database/Types';
+  import { ref, watch, computed } from 'vue';
+  import SprintCard from '../components/SprintCard.vue';
+  import { da } from 'vuetify/locale';
 
-function deepCopySprint(sprint: Sprint): Sprint {
-  return JSON.parse(JSON.stringify(sprint));
-}
-import EditSprintDrawer from '../components/EditSprintDrawer.vue';
+  function deepCopySprint(sprint: Sprint): Sprint {
+    return JSON.parse(JSON.stringify(sprint));
+  }
+  import EditSprintDrawer from '../components/EditSprintDrawer.vue';
+import { TaskRepository } from '../repositories/TaskRepository';
 
   function isDateRangeOverlapping(sprint: Sprint, otherSprints: Sprint[]): boolean {
     const sprintStart = new Date(sprint.startDate).getTime();
@@ -25,20 +26,24 @@ import EditSprintDrawer from '../components/EditSprintDrawer.vue';
     });
   }
 
+  const taskRepository = new TaskRepository();
   const dbSprints = await database.selectFrom('sprint').selectAll().execute();
   const allSprints = ref<Sprint[]>(dbSprints)
   const dbTasks = await database.selectFrom('task').selectAll().execute();
   const allTasks = ref<Task[]>(dbTasks)
   allSprints.value.forEach(sprint => {
-    allTasks.value.forEach(task => {
-      if (task.sprintId !== undefined && sprint.id !== undefined && BigInt(task.sprintId) === BigInt(sprint.id)) {
-        sprint.tasks = sprint.tasks || [];
-        sprint.tasks.push({
-          ...task,
-          id: task.id ? { __select__: task.id, __insert__: task.id, __update__: task.id } : undefined
-        });
-      }
-    });
+    if (sprint.id !== undefined) {
+      taskRepository.getTasksForSprint(Number(sprint.id));
+    }
+    // allTasks.value.forEach(task => {
+    //   if (task.sprintId !== undefined && sprint.id !== undefined && BigInt(task.sprintId) === BigInt(sprint.id)) {
+    //     sprint.tasks = sprint.tasks || [];
+    //     sprint.tasks.push({
+    //       ...task,
+    //       id: task.id ? { __select__: task.id, __insert__: task.id, __update__: task.id } : undefined
+    //     });
+    //   }
+    // });
   });
 
   const sortedSprints = computed(() => {
@@ -53,28 +58,6 @@ import EditSprintDrawer from '../components/EditSprintDrawer.vue';
 
   const editSprintDrawer = ref(false)
   const selectedSprint = ref<Sprint | null>(null)
-  // const result = await database.insertInto('sprint')
-  //   .values({
-  //     name: 'Sprint 1',
-  //     startDate: new Date('2023-10-01'),
-  //     endDate: new Date('2023-10-14'),
-  //     createdAt: new Date(),
-  //     updatedAt: new Date()
-  //   })
-  //   .execute()
-
-  //   if(result[0].insertId !== undefined) {
-  //     const sprintId = Number(result[0].insertId);
-  //     const result1 = await database.insertInto('task').values({
-  //       name: 'Task 1',
-  //       description: 'Description of Task 1',
-  //       createdAt: new Date(),
-  //       updatedAt: new Date(),
-  //       sprintId: sprintId,
-  //       done: false,
-        
-  //     }).execute()
-  //   }
   
   async function addNewSprint() {
     const newSprint: Sprint = {
