@@ -3,6 +3,10 @@ import { ref, watch } from 'vue';
 import { VForm } from 'vuetify/components/VForm';
 import { hasPersonChanged } from '../helper/PersonHelper'
 import { PersonDb } from '../database/Types';
+import { PersonRepository } from '../repositories/PersonRepository';
+import { Person } from '../models/Person';
+
+const personRepository = new PersonRepository()
 
 const open = defineModel('open', {
   type: Boolean,
@@ -14,7 +18,7 @@ const selectedPerson = defineModel('person', {
   default: null
 })
 
-const internalPerson = ref<PersonDb | null>(null)
+const internalPerson = ref<Person | null>(null)
 
 const form = ref<VForm | null>(null)
 
@@ -36,6 +40,7 @@ watch(open, async (newOpen) => {
     if (internalPerson.value && selectedPerson.value && hasPersonChanged(internalPerson.value, selectedPerson.value)) {
       internalPerson.value.updatedAt = new Date()
       Object.assign(selectedPerson.value, internalPerson.value)
+      const savedPerson = await personRepository.createOrUpdate(internalPerson.value);
     }
   }
 })

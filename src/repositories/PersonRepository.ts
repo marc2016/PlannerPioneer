@@ -71,7 +71,7 @@ export class PersonRepository {
       .updateTable("person")
       .set({
         name: person.name,
-        // updatedAt: new Date(),
+        updatedAt: new Date(),
       })
       .where("id", "=", person.id as any)
       .returningAll()

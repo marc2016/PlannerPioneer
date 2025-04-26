@@ -1,14 +1,11 @@
 <script setup lang="ts">
-
-  import { computed, ref, watch } from 'vue'
+  import { computed, ref } from 'vue'
   import { mdiPlus } from '@mdi/js'
   import EditPersonDrawer from '../components/EditPersonDrawer.vue'
   import NewPersonDrawer from '../components/NewPersonDrawer.vue'
-  import database from '../database/Database'
-  import { PersonDb } from '../database/Types'
   import PersonCard from '../components/PersonCard.vue'
-import { Person } from '../models/Person'
-import { PersonRepository } from '../repositories/PersonRepository'
+  import { Person } from '../models/Person'
+  import { PersonRepository } from '../repositories/PersonRepository'
 
   const personRepository = new PersonRepository()
   const persons = await personRepository.getAll();
@@ -22,21 +19,15 @@ import { PersonRepository } from '../repositories/PersonRepository'
   const newPersonDrawer = ref(false)
   const editPersonDrawer = ref(false)
   const selectedPerson = ref<Person | null>(null)
-  let shouldWatch = true
 
   async function openNewPersonDrawer() {
     newPersonDrawer.value = true
   }
 
   async function addNewPerson(newPerson: Person) {
-    allPersons.value.unshift(newPerson)
+    const savedPerson = await personRepository.createOrUpdate(newPerson);
+    allPersons.value.unshift(savedPerson)
   }
-
-  watch(newPersonDrawer, (newDrawer) => {
-    if (!newDrawer) {
-      selectedPerson.value = null
-    }
-  })
 
   function openPersonDetails(person: Person) {
     editPersonDrawer.value = !editPersonDrawer.value
@@ -45,41 +36,8 @@ import { PersonRepository } from '../repositories/PersonRepository'
 
   async function deletePerson(person: Person) {    
     await personRepository.delete(person)
+    allPersons.value.splice(allPersons.value.indexOf(person), 1)
   }
-
-  function deepCopyPerson(person: PersonDb): PersonDb {
-    return {
-      id: person.id,
-      name: person.name,
-      createdAt: new Date(person.createdAt),
-      updatedAt: new Date(person.updatedAt)
-    }
-  }
-
-  watch(allPersons, async (newPersons) => {
-    if (!shouldWatch) return
-    shouldWatch = false
-    for (const person of newPersons) {
-      const newPerson = await personRepository.createOrUpdate(person);
-      if (newPerson) {
-        person.id = newPerson.id
-        // person.createdAt = newPerson.createdAt
-        // person.updatedAt = newPerson.updatedAt
-      }
-      
-      // if (person.id) {
-      //   await database.updateTable('person').set(person).where('id', '=', person.id).execute()
-      // } else {
-      //   const personCopy = deepCopyPerson(person)
-      //   personCopy.id = undefined
-      //   const result = await database.insertInto('person').values(personCopy).execute()
-      //   if(result.length > 0 && result[0].insertId !== undefined)
-      //     person.id = BigInt(result[0].insertId); 
-      // }
-    }
-    shouldWatch = true
-  }, { deep: true })
-
 </script>
 
 <template>

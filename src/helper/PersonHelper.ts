@@ -1,6 +1,6 @@
-import { PersonDb } from "../database/Types";
+import { Person } from "../models/Person";
 
-function hasPersonChanged(person1: PersonDb, person2: PersonDb): boolean {
+function hasPersonChanged(person1: Person, person2: Person): boolean {
   return person1.name !== person2.name
 }
 

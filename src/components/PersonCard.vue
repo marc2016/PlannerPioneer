@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { mdiAccount, mdiTrashCan, mdiUpdate } from '@mdi/js'
 import { computed } from 'vue'
-import { PersonDb } from '../database/Types';
 import { Person } from '../models/Person';
 
 const props = defineProps<{ 
@@ -24,10 +23,6 @@ const formattedDate = computed(() => {
 
 <template>
   <v-card outlined hover link @click="openPersonDetails(person)" class="card-max-width card-max-height d-flex flex-column bg-grey-lighten-4" >
-    <!-- <transition name="fade">
-      <v-icon v-if="task.done" :icon="mdiCheckCircleOutline" size="200" class="background-icon text-green-lighten-4"></v-icon>
-      <v-icon v-else :icon="mdiRecordCircleOutline" size="200" class="background-icon text-orange-lighten-4"></v-icon>
-    </transition> -->
     <v-icon  :icon="mdiAccount" size="200" class="background-icon text-blue-lighten-4"></v-icon>
     <v-card-title class="multiline-title">{{ person.name }}</v-card-title>
     <v-card-text class="flex-grow-1 multiline-text"></v-card-text>

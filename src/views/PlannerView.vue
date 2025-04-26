@@ -67,7 +67,8 @@ import { TaskRepository } from '../repositories/TaskRepository';
       endDate: new Date('2023-10-14'),
       createdAt: new Date(),
       updatedAt: new Date(),
-      tasks: undefined
+      tasks: undefined,
+      dateOverlapping: false
     }
     const result = await database.insertInto('sprint').values(newSprint).execute()
     if(!result)
