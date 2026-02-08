@@ -1,4 +1,5 @@
 import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, Divider } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState, useMemo } from "react";
 import { useFeatureStore, Feature } from "../store/useFeatureStore";
@@ -74,11 +75,19 @@ export default function Features() {
     const completedFeatures = filteredFeatures.filter(f => f.completed);
     const { t } = useTranslation();
 
+    const location = useLocation();
+
     useEffect(() => {
         init();
         initModules();
         initProjects();
-    }, [init, initModules, initProjects]);
+
+        const params = new URLSearchParams(location.search);
+        const moduleId = params.get('moduleId');
+        if (moduleId) {
+            setModuleFilter(moduleId);
+        }
+    }, [init, initModules, initProjects, location.search]);
 
     const handleAddClick = () => {
         setSelectedFeature(null);

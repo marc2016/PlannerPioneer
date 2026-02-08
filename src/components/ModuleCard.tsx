@@ -6,19 +6,22 @@ import {
     Box,
     Divider,
     CardActionArea,
-    Chip
+    Chip,
+    Tooltip
 } from "@mui/material";
 import {
     CheckCircleOutline,
     Delete,
     ViewModule, // Changed icon
     Close,
-    AccountTree
+    AccountTree,
+    ViewList
 } from "@mui/icons-material";
 import { Module } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 
 interface ModuleCardProps {
     module: Module;
@@ -30,6 +33,7 @@ interface ModuleCardProps {
 export default function ModuleCard({ module, onToggle, onDelete, onClick }: ModuleCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const { projects } = useProjectStore();
     const project = projects.find(p => p.id === module.project_id);
 
@@ -152,6 +156,20 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                         >
                             {module.completed ? <ViewModule /> : <CheckCircleOutline />}
                         </IconButton>
+
+                        {/* View Features Button */}
+                        <Tooltip title={t('modules.view_features', "View Features")}>
+                            <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/features?moduleId=${module.id}`);
+                                }}
+                                sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            >
+                                <ViewList />
+                            </IconButton>
+                        </Tooltip>
 
                         {/* Delete Button */}
                         <IconButton
