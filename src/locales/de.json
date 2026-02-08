@@ -13,7 +13,6 @@
     "navigation": {
         "dashboard": "Dashboard",
         "projects": "Projekte",
-        "tasks": "Aufgaben",
         "settings": "Einstellungen"
     },
     "dashboard": {
@@ -39,13 +38,6 @@
             "description": "Beschreibung",
             "color": "Farbe"
         }
-    },
-    "tasks": {
-        "title": "Aufgaben",
-        "page_title": "Aufgabenseite",
-        "add_task": "Aufgabe hinzufügen",
-        "no_tasks": "Keine Aufgaben gefunden",
-        "duration": "Dauer"
     },
     "settings": {
         "title": "Einstellungen",
