@@ -5,15 +5,18 @@ import {
     IconButton,
     Box,
     Divider,
-    CardActionArea
+    CardActionArea,
+    Chip
 } from "@mui/material";
 import {
     CheckCircleOutline,
     Delete,
     ViewModule, // Changed icon
-    Close
+    Close,
+    AccountTree
 } from "@mui/icons-material";
 import { Module } from "../store/useModuleStore";
+import { useProjectStore } from "../store/useProjectStore";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -27,6 +30,8 @@ interface ModuleCardProps {
 export default function ModuleCard({ module, onToggle, onDelete, onClick }: ModuleCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const { t } = useTranslation();
+    const { projects } = useProjectStore();
+    const project = projects.find(p => p.id === module.project_id);
 
     return (
         <Card
@@ -77,6 +82,8 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                     height: '100%'
                 }}
             >
+
+
                 <Typography
                     variant="h6"
                     component="div"
@@ -111,7 +118,22 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                 >
                     {module.description || t('modules.no_description', "No description")}
                 </Typography>
-
+                {project && (
+                    <Chip
+                        icon={<AccountTree sx={{ fontSize: 16 }} />}
+                        label={project.title}
+                        size="small"
+                        sx={{
+                            mb: 1,
+                            zIndex: 1,
+                            bgcolor: project.color || 'action.selected',
+                            color: project.color ? '#fff' : 'text.primary',
+                            '& .MuiChip-icon': {
+                                color: 'inherit'
+                            }
+                        }}
+                    />
+                )}
             </CardActionArea>
 
             <Divider />
@@ -174,6 +196,6 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                     </>
                 )}
             </CardActions>
-        </Card>
+        </Card >
     );
 }
