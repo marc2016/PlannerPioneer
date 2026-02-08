@@ -5,15 +5,20 @@ import {
     IconButton,
     Box,
     Divider,
-    CardActionArea
+    CardActionArea,
+    Chip
 } from "@mui/material";
 import {
     CheckCircleOutline,
     Delete,
     Calculate, // Changed icon for Feature (Calculation Item)
-    Close
+    Close,
+    AccountTree,
+    ViewModule
 } from "@mui/icons-material";
 import { Feature } from "../store/useFeatureStore";
+import { useModuleStore } from "../store/useModuleStore";
+import { useProjectStore } from "../store/useProjectStore";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -27,6 +32,11 @@ interface FeatureCardProps {
 export default function FeatureCard({ feature, onToggle, onDelete, onClick }: FeatureCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const { t } = useTranslation();
+    const { modules } = useModuleStore();
+    const { projects } = useProjectStore();
+
+    const module = feature.module_id ? modules.find(m => m.id === feature.module_id) : undefined;
+    const project = module?.project_id ? projects.find(p => p.id === module.project_id) : undefined;
 
     return (
         <Card
@@ -96,6 +106,7 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                 <Typography
                     variant="body2"
                     color="text.secondary"
+
                     sx={{
                         width: '100%',
                         whiteSpace: 'pre-wrap',
@@ -106,12 +117,45 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                         WebkitLineClamp: 3,
                         WebkitBoxOrient: 'vertical',
                         flexGrow: 1,
-                        zIndex: 1
+                        zIndex: 1,
+                        mb: 1
                     }}
                 >
                     {feature.description || t('features.no_description', "No description")}
                 </Typography>
 
+                <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end', mb: 1, zIndex: 1 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
+                        {project && (
+                            <Chip
+                                icon={<AccountTree sx={{ fontSize: 16 }} />}
+                                label={project.title}
+                                size="small"
+                                sx={{
+                                    bgcolor: project.color || 'action.selected',
+                                    color: project.color ? '#fff' : 'text.primary',
+                                    '& .MuiChip-icon': {
+                                        color: 'inherit'
+                                    }
+                                }}
+                            />
+                        )}
+                        {module && (
+                            <Chip
+                                icon={<ViewModule sx={{ fontSize: 16 }} />}
+                                label={module.title}
+                                size="small"
+                                sx={{
+                                    bgcolor: module.color || 'action.selected',
+                                    color: module.color ? '#fff' : 'text.primary',
+                                    '& .MuiChip-icon': {
+                                        color: 'inherit'
+                                    }
+                                }}
+                            />
+                        )}
+                    </Box>
+                </Box>
             </CardActionArea>
 
             <Divider />
