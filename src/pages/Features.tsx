@@ -174,14 +174,26 @@ export default function Features() {
                                 <MenuItem value="all">{t('filters.all_modules', "Alle Module")}</MenuItem>
                                 <MenuItem value="unassigned">{t('filters.no_module', "Kein Modul")}</MenuItem>
                                 <Divider />
-                                {availableModules.map((module) => (
-                                    <MenuItem key={module.id} value={module.id}>
-                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: module.color }} />
-                                            {module.title}
-                                        </Box>
-                                    </MenuItem>
-                                ))}
+                                {availableModules.map((module) => {
+                                    const project = projects.find(p => p.id === module.project_id);
+                                    return (
+                                        <MenuItem key={module.id} value={module.id}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: module.color }} />
+                                                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <Typography variant="body2" sx={{ lineHeight: 1.2 }}>
+                                                        {module.title}
+                                                    </Typography>
+                                                    {project && (
+                                                        <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.1 }}>
+                                                            {project.title}
+                                                        </Typography>
+                                                    )}
+                                                </Box>
+                                            </Box>
+                                        </MenuItem>
+                                    );
+                                })}
                             </Select>
                         </FormControl>
 
