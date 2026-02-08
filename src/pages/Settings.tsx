@@ -1,5 +1,7 @@
 import { Typography, Box, Paper, Grid, Card, CardMedia, CardActionArea } from "@mui/material";
 import { useSettingsStore } from "../store/useSettingsStore";
+import { useTranslation } from "react-i18next";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 
 // Import all backgrounds
 import greenField from "../assets/backgrounds/green-field.jpg";
@@ -20,6 +22,7 @@ const backgrounds = [
 
 export default function Settings() {
     const { appBackground, setAppBackground } = useSettingsStore();
+    const { t } = useTranslation();
 
     return (
         <Box>
@@ -33,9 +36,12 @@ export default function Settings() {
                     borderRadius: 2
                 }}
             >
-                <Typography variant="h4" gutterBottom>
-                    Settings
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Typography variant="h4" gutterBottom>
+                        {t('settings.title')}
+                    </Typography>
+                    <LanguageSwitcher />
+                </Box>
 
                 <Typography variant="h6" sx={{ mt: 4, mb: 2 }}>
                     App Background

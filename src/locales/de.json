@@ -1,0 +1,56 @@
+{
+    "common": {
+        "app_name": "PlannerPioneer",
+        "save": "Speichern",
+        "cancel": "Abbrechen",
+        "delete": "Löschen",
+        "edit": "Bearbeiten",
+        "confirm": "Bestätigen",
+        "confirm_delete": "Löschen bestätigen",
+        "back": "Zurück",
+        "language": "Sprache"
+    },
+    "navigation": {
+        "dashboard": "Dashboard",
+        "projects": "Projekte",
+        "tasks": "Aufgaben",
+        "settings": "Einstellungen"
+    },
+    "dashboard": {
+        "welcome": "Willkommen bei Tauri + React",
+        "click_logos": "Klicken Sie auf die Tauri, Vite und React Logos, um mehr zu erfahren.",
+        "enter_name": "Namen eingeben...",
+        "greet": "Grüßen"
+    },
+    "projects": {
+        "title": "Projekte",
+        "add_project": "Projekt hinzufügen",
+        "no_projects": "Keine Projekte gefunden",
+        "delete_confirmation": "Möchtest du dieses Projekt wirklich löschen?",
+        "total": "Gesamt:",
+        "active": "Aktiv:",
+        "completed": "Abgeschlossen:",
+        "completed_title": "Abgeschlossene Projekte",
+        "no_description": "Keine Beschreibung",
+        "edit_project": "Projekt bearbeiten",
+        "new_project": "Neues Projekt",
+        "form": {
+            "title": "Projekttitel",
+            "description": "Beschreibung",
+            "color": "Farbe"
+        }
+    },
+    "tasks": {
+        "title": "Aufgaben",
+        "page_title": "Aufgabenseite",
+        "add_task": "Aufgabe hinzufügen",
+        "no_tasks": "Keine Aufgaben gefunden",
+        "duration": "Dauer"
+    },
+    "settings": {
+        "title": "Einstellungen",
+        "theme": "Design",
+        "dark_mode": "Dunkelmodus",
+        "light_mode": "Hellmodus"
+    }
+}

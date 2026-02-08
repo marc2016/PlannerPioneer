@@ -76,11 +76,14 @@ const MuiDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== "open" 
     })
 );
 
+import { useTranslation } from "react-i18next";
+//...
 export default function RootLayout() {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const { appBackground, init } = useSettingsStore();
+    const { t } = useTranslation();
 
     useEffect(() => {
         init();
@@ -95,9 +98,9 @@ export default function RootLayout() {
     };
 
     const menuItems = [
-        { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
-        { text: "Projects", icon: <AccountTreeIcon />, path: "/projects" },
-        { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
+        { text: t('navigation.dashboard'), icon: <DashboardIcon />, path: "/" },
+        { text: t('navigation.projects'), icon: <AccountTreeIcon />, path: "/projects" },
+        { text: t('navigation.settings'), icon: <SettingsIcon />, path: "/settings" },
     ];
 
     return (
@@ -144,7 +147,7 @@ export default function RootLayout() {
                     </IconButton>
                     {open && (
                         <Typography variant="h6" noWrap component="div" sx={{ ml: 1, fontWeight: 'bold' }}>
-                            PlannerPioneer
+                            {t('common.app_name')}
                         </Typography>
                     )}
                 </DrawerHeader>

@@ -1,0 +1,56 @@
+{
+    "common": {
+        "app_name": "PlannerPioneer",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "confirm": "Confirm",
+        "confirm_delete": "Confirm Delete",
+        "back": "Back",
+        "language": "Language"
+    },
+    "navigation": {
+        "dashboard": "Dashboard",
+        "projects": "Projects",
+        "tasks": "Tasks",
+        "settings": "Settings"
+    },
+    "dashboard": {
+        "welcome": "Welcome to Tauri + React",
+        "click_logos": "Click on the Tauri, Vite, and React logos to learn more.",
+        "enter_name": "Enter a name...",
+        "greet": "Greet"
+    },
+    "projects": {
+        "title": "Projects",
+        "add_project": "Add Project",
+        "no_projects": "No projects found",
+        "delete_confirmation": "Are you sure you want to delete this project?",
+        "total": "Total:",
+        "active": "Active:",
+        "completed": "Completed:",
+        "completed_title": "Completed Projects",
+        "no_description": "No description",
+        "edit_project": "Edit Project",
+        "new_project": "New Project",
+        "form": {
+            "title": "Project Title",
+            "description": "Description",
+            "color": "Color"
+        }
+    },
+    "tasks": {
+        "title": "Tasks",
+        "page_title": "Tasks Page",
+        "add_task": "Add Task",
+        "no_tasks": "No tasks found",
+        "duration": "Duration"
+    },
+    "settings": {
+        "title": "Settings",
+        "theme": "Theme",
+        "dark_mode": "Dark Mode",
+        "light_mode": "Light Mode"
+    }
+}

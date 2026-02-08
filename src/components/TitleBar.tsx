@@ -1,7 +1,10 @@
 import { Typography } from "@mui/material";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 
+import { useTranslation } from "react-i18next";
+//...
 export default function TitleBar() {
+    const { t } = useTranslation();
     const handleMouseDown = () => {
         getCurrentWindow().startDragging();
     };
@@ -35,7 +38,7 @@ export default function TitleBar() {
                     pointerEvents: "none",
                 }}
             >
-                PlannerPioneer
+                {t('common.app_name')}
             </Typography>
         </div>
     );

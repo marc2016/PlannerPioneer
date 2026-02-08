@@ -24,8 +24,11 @@ interface ProjectCardProps {
     onClick?: (project: Project) => void;
 }
 
+import { useTranslation } from "react-i18next";
+//...
 export default function ProjectCard({ project, onToggle, onDelete, onClick }: ProjectCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
+    const { t } = useTranslation();
 
     // Helper to format date if needed, or just display raw for now?
     // Let's not complicate it yet.
@@ -112,7 +115,7 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                         zIndex: 1
                     }}
                 >
-                    {project.description || "No description"}
+                    {project.description || t('projects.no_description')}
                 </Typography>
 
             </CardActionArea>
@@ -142,6 +145,7 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                                 setIsDeleting(true);
                             }}
                             sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            aria-label={t('common.delete')}
                         >
                             <Delete />
                         </IconButton>
@@ -156,6 +160,7 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                                 setIsDeleting(false);
                             }}
                             sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            aria-label={t('common.cancel')}
                         >
                             <Close />
                         </IconButton>
@@ -168,6 +173,7 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                                 onDelete(project.id);
                             }}
                             color="error"
+                            aria-label={t('common.confirm_delete')}
                         >
                             <Delete />
                         </IconButton>

@@ -18,8 +18,11 @@ interface ProjectDrawerProps {
     project?: Project | null; // If null, creating new
 }
 
+import { useTranslation } from "react-i18next";
+//...
 export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerProps) {
     const { addProject, updateProject, deleteProject } = useProjectStore();
+    const { t } = useTranslation();
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -67,7 +70,7 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
-                    {project ? "Edit Project" : "New Project"}
+                    {project ? t('projects.edit_project') : t('projects.new_project')}
                 </Typography>
                 <IconButton onClick={onClose}>
                     <Close />
@@ -76,7 +79,7 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
 
             <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <TextField
-                    label="Project Title"
+                    label={t('projects.form.title')}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     fullWidth
@@ -84,7 +87,7 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
                 />
 
                 <TextField
-                    label="Description"
+                    label={t('projects.form.description')}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     fullWidth
@@ -93,7 +96,7 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
                 />
 
                 <Box>
-                    <Typography variant="subtitle2" sx={{ mb: 1 }}>Color</Typography>
+                    <Typography variant="subtitle2" sx={{ mb: 1 }}>{t('projects.form.color')}</Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                         {COLORS.map((c) => (
                             <Box
@@ -118,22 +121,22 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
                     {project && (
                         !showDeleteConfirm ? (
                             <Button color="error" onClick={() => setShowDeleteConfirm(true)}>
-                                Delete
+                                {t('common.delete')}
                             </Button>
                         ) : (
                             <Box sx={{ display: 'flex', gap: 1 }}>
                                 <Button color="inherit" onClick={() => setShowDeleteConfirm(false)}>
-                                    Cancel
+                                    {t('common.cancel')}
                                 </Button>
                                 <Button color="error" variant="contained" onClick={handleDelete}>
-                                    Confirm Delete
+                                    {t('common.confirm_delete')}
                                 </Button>
                             </Box>
                         )
                     )}
                     {!showDeleteConfirm && (
                         <Button variant="contained" onClick={handleSave} disabled={!title.trim()}>
-                            Save
+                            {t('common.save')}
                         </Button>
                     )}
                 </Box>

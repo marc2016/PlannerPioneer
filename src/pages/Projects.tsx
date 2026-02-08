@@ -6,18 +6,21 @@ import ProjectCard from "../components/ProjectCard";
 import ProjectDrawer from "../components/ProjectDrawer";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
-import { spring } from "../constants/animations";
+import { spring } from "../constants";
 
 const MotionBox = motion(Box);
 const MotionPaper = motion(Paper);
 
 
+import { useTranslation } from "react-i18next";
+//...
 export default function Projects() {
     const { projects, init, deleteProject, toggleProject } = useProjectStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const completedProjects = projects.filter(p => p.completed);
     const activeProjects = projects.filter(p => !p.completed);
+    const { t } = useTranslation();
 
     useEffect(() => {
         init();
@@ -52,17 +55,17 @@ export default function Projects() {
             >
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary' }}>
-                        Projects
+                        {t('projects.title')}
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 3 }}>
                         <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 300 }}>
-                            Total: <Box component="span" sx={{ fontWeight: 500, color: 'text.primary' }}>{projects.length}</Box>
+                            {t('projects.total')} <Box component="span" sx={{ fontWeight: 500, color: 'text.primary' }}>{projects.length}</Box>
                         </Typography>
                         <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 300 }}>
-                            Active: <Box component="span" sx={{ fontWeight: 500, color: 'primary.main' }}>{projects.filter(p => !p.completed).length}</Box>
+                            {t('projects.active')} <Box component="span" sx={{ fontWeight: 500, color: 'primary.main' }}>{projects.filter(p => !p.completed).length}</Box>
                         </Typography>
                         <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 300 }}>
-                            Completed: <Box component="span" sx={{ fontWeight: 500, color: 'success.main' }}>{projects.filter(p => p.completed).length}</Box>
+                            {t('projects.completed')} <Box component="span" sx={{ fontWeight: 500, color: 'success.main' }}>{projects.filter(p => p.completed).length}</Box>
                         </Typography>
                     </Box>
                 </Box>
@@ -116,7 +119,7 @@ export default function Projects() {
                 >
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary' }}>
-                            Completed Projects
+                            {t('projects.completed_title')}
                         </Typography>
                     </Box>
                 </MotionPaper>

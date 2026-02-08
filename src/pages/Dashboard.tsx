@@ -3,9 +3,12 @@ import reactLogo from "../assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
 import "../App.css";
 
+import { useTranslation } from "react-i18next";
+//...
 function Dashboard() {
     const [greetMsg, setGreetMsg] = useState("");
     const [name, setName] = useState("");
+    const { t } = useTranslation();
 
     async function greet() {
         // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
@@ -14,7 +17,7 @@ function Dashboard() {
 
     return (
         <main className="container">
-            <h1>Welcome to Tauri + React</h1>
+            <h1>{t('dashboard.welcome')}</h1>
 
             <div className="row">
                 <a href="https://vite.dev" target="_blank">
@@ -27,7 +30,7 @@ function Dashboard() {
                     <img src={reactLogo} className="logo react" alt="React logo" />
                 </a>
             </div>
-            <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+            <p>{t('dashboard.click_logos')}</p>
 
             <form
                 className="row"
@@ -39,9 +42,9 @@ function Dashboard() {
                 <input
                     id="greet-input"
                     onChange={(e) => setName(e.currentTarget.value)}
-                    placeholder="Enter a name..."
+                    placeholder={t('dashboard.enter_name')}
                 />
-                <button type="submit">Greet</button>
+                <button type="submit">{t('dashboard.greet')}</button>
             </form>
             <p>{greetMsg}</p>
         </main>
