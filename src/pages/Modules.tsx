@@ -13,6 +13,7 @@ const MotionBox = motion(Box);
 const MotionPaper = motion(Paper);
 
 
+import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 export default function Modules() {
@@ -43,11 +44,19 @@ export default function Modules() {
     const activeModules = filteredModules.filter(m => !m.completed);
     const completedModules = filteredModules.filter(m => m.completed);
     const { t } = useTranslation();
+    const location = useLocation();
 
     useEffect(() => {
         init();
         initProjects();
-    }, [init, initProjects]);
+
+        // Check for projectId in query params
+        const params = new URLSearchParams(location.search);
+        const projectId = params.get('projectId');
+        if (projectId) {
+            setProjectFilter(projectId);
+        }
+    }, [init, initProjects, location.search]);
 
     const handleAddClick = () => {
         setSelectedModule(null);

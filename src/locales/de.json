@@ -39,7 +39,8 @@
             "title": "Projekttitel",
             "description": "Beschreibung",
             "color": "Farbe"
-        }
+        },
+        "view_modules": "Module anzeigen"
     },
     "modules": {
         "title": "Module",

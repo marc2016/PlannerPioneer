@@ -11,10 +11,12 @@ import {
     CheckCircleOutline,
     Delete,
     Folder,
-    Close
+    Close,
 } from "@mui/icons-material";
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import { Project } from "../store/useProjectStore";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 interface ProjectCardProps {
@@ -29,6 +31,7 @@ import { useTranslation } from "react-i18next";
 export default function ProjectCard({ project, onToggle, onDelete, onClick }: ProjectCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const { t } = useTranslation();
+    const navigate = useNavigate();
 
     // Helper to format date if needed, or just display raw for now?
     // Let's not complicate it yet.
@@ -125,6 +128,18 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
             <CardActions sx={{ bgcolor: 'white', justifyContent: 'flex-end', zIndex: 2, p: 1 }} onClick={(e) => e.stopPropagation()}>
                 {!isDeleting ? (
                     <>
+                        {/* View Modules Button */}
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/modules?projectId=${project.id}`);
+                            }}
+                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            title={t('projects.view_modules')}
+                        >
+                            <ViewModuleIcon />
+                        </IconButton>
                         {/* Toggle Button */}
                         <IconButton
                             size="small"
@@ -149,6 +164,8 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                         >
                             <Delete />
                         </IconButton>
+
+
                     </>
                 ) : (
                     <>
