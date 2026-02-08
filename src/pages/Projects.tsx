@@ -1,4 +1,4 @@
-import { Box, Typography, Fab, Paper } from "@mui/material";
+import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { useEffect, useState } from "react";
 import { useProjectStore, Project } from "../store/useProjectStore";
@@ -18,8 +18,18 @@ export default function Projects() {
     const { projects, init, deleteProject, toggleProject } = useProjectStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-    const completedProjects = projects.filter(p => p.completed);
-    const activeProjects = projects.filter(p => !p.completed);
+    const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
+
+    // Filter projects based on status
+    const filteredProjects = projects.filter(p => {
+        if (statusFilter === 'active') return !p.completed;
+        if (statusFilter === 'completed') return p.completed;
+        return true;
+    });
+
+    const activeProjects = filteredProjects.filter(p => !p.completed);
+    const completedProjects = filteredProjects.filter(p => p.completed);
+
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -53,10 +63,34 @@ export default function Projects() {
                     borderRadius: 4
                 }}
             >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary' }}>
                         {t('projects.title')}
                     </Typography>
+
+                    <FormControl size="small" sx={{ minWidth: 200 }}>
+                        <Select
+                            value={statusFilter}
+                            onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'completed')}
+                            displayEmpty
+                            variant="outlined"
+                            sx={{
+                                backgroundColor: 'rgba(255,255,255,0.5)',
+                                borderRadius: 2,
+                                '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                            }}
+                        >
+                            <MenuItem value="all">{t('filters.all', "Alle")}</MenuItem>
+                            <MenuItem value="active">{t('filters.active', "Aktiv")}</MenuItem>
+                            <MenuItem value="completed">{t('filters.completed', "Abgeschlossen")}</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <Box sx={{ flexGrow: 1 }} />
+
                     <Box sx={{ display: 'flex', gap: 3 }}>
                         <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 300 }}>
                             {t('projects.total')} <Box component="span" sx={{ fontWeight: 500, color: 'text.primary' }}>{projects.length}</Box>

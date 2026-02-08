@@ -1,7 +1,9 @@
-import { Box, Typography, Fab, Paper } from "@mui/material";
+import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, Divider } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useFeatureStore, Feature } from "../store/useFeatureStore";
+import { useModuleStore } from "../store/useModuleStore";
+import { useProjectStore } from "../store/useProjectStore";
 import FeatureCard from "../components/FeatureCard";
 import FeatureDrawer from "../components/FeatureDrawer";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
@@ -16,15 +18,67 @@ import { useTranslation } from "react-i18next";
 
 export default function Features() {
     const { features, init, deleteFeature, toggleFeature } = useFeatureStore();
+    const { modules, init: initModules } = useModuleStore();
+    const { projects, init: initProjects } = useProjectStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
-    const completedFeatures = features.filter(f => f.completed);
-    const activeFeatures = features.filter(f => !f.completed);
+
+    const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
+    const [projectFilter, setProjectFilter] = useState<string>('all');
+    const [moduleFilter, setModuleFilter] = useState<string>('all');
+
+    // Filter available modules based on selected project
+    const availableModules = useMemo(() => {
+        if (projectFilter === 'all') return modules;
+        if (projectFilter === 'unassigned') return modules.filter(m => !m.project_id);
+        return modules.filter(m => m.project_id === projectFilter);
+    }, [modules, projectFilter]);
+
+    const filteredFeatures = features.filter(f => {
+        // Status filter
+        if (statusFilter === 'active' && f.completed) return false;
+        if (statusFilter === 'completed' && !f.completed) return false;
+
+        // Module filter
+        if (moduleFilter !== 'all') {
+            if (moduleFilter === 'unassigned') {
+                if (f.module_id) return false;
+            } else {
+                if (f.module_id !== moduleFilter) return false;
+            }
+        }
+
+        // Project filter (via module)
+        if (projectFilter !== 'all') {
+            if (!f.module_id) {
+                // If feature has no module, it can only match if looking for 'unassigned' project?
+                // Or if checking explicitly for unassigned project features.
+                if (projectFilter !== 'unassigned') return false;
+                // If projectFilter IS 'unassigned', we keep it (as it's not in any project)
+            } else {
+                const module = modules.find(m => m.id === f.module_id);
+                if (!module) return false; // Should exist if ID exists
+
+                if (projectFilter === 'unassigned') {
+                    if (module.project_id) return false;
+                } else {
+                    if (module.project_id !== projectFilter) return false;
+                }
+            }
+        }
+
+        return true;
+    });
+
+    const activeFeatures = filteredFeatures.filter(f => !f.completed);
+    const completedFeatures = filteredFeatures.filter(f => f.completed);
     const { t } = useTranslation();
 
     useEffect(() => {
         init();
-    }, [init]);
+        initModules();
+        initProjects();
+    }, [init, initModules, initProjects]);
 
     const handleAddClick = () => {
         setSelectedFeature(null);
@@ -53,10 +107,100 @@ export default function Features() {
                     borderRadius: 4
                 }}
             >
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary' }}>
                         {t('features.title', "Features")}
                     </Typography>
+
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        {/* Project Filter */}
+                        <FormControl size="small" sx={{ minWidth: 200 }}>
+                            <Select
+                                value={projectFilter}
+                                onChange={(e) => {
+                                    setProjectFilter(e.target.value);
+                                    setModuleFilter('all'); // Reset module filter when project changes
+                                }}
+                                displayEmpty
+                                variant="outlined"
+                                sx={{
+                                    backgroundColor: 'rgba(255,255,255,0.5)',
+                                    borderRadius: 2,
+                                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                                }}
+                            >
+                                <MenuItem value="all">{t('filters.all_projects', "Alle Projekte")}</MenuItem>
+                                <MenuItem value="unassigned">{t('filters.no_project', "Kein Projekt")}</MenuItem>
+                                <Divider />
+                                {projects.map((project) => (
+                                    <MenuItem key={project.id} value={project.id}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: project.color }} />
+                                            {project.title}
+                                        </Box>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        {/* Module Filter */}
+                        <FormControl size="small" sx={{ minWidth: 200 }}>
+                            <Select
+                                value={moduleFilter}
+                                onChange={(e) => setModuleFilter(e.target.value)}
+                                displayEmpty
+                                variant="outlined"
+                                sx={{
+                                    backgroundColor: 'rgba(255,255,255,0.5)',
+                                    borderRadius: 2,
+                                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                                }}
+                            >
+                                <MenuItem value="all">{t('filters.all_modules', "Alle Module")}</MenuItem>
+                                <MenuItem value="unassigned">{t('filters.no_module', "Kein Modul")}</MenuItem>
+                                <Divider />
+                                {availableModules.map((module) => (
+                                    <MenuItem key={module.id} value={module.id}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: module.color }} />
+                                            {module.title}
+                                        </Box>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+
+                        {/* Status Filter */}
+                        <FormControl size="small" sx={{ minWidth: 150 }}>
+                            <Select
+                                value={statusFilter}
+                                onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'completed')}
+                                displayEmpty
+                                variant="outlined"
+                                sx={{
+                                    backgroundColor: 'rgba(255,255,255,0.5)',
+                                    borderRadius: 2,
+                                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                                }}
+                            >
+                                <MenuItem value="all">{t('filters.all', "Alle")}</MenuItem>
+                                <MenuItem value="active">{t('filters.active', "Aktiv")}</MenuItem>
+                                <MenuItem value="completed">{t('filters.completed', "Abgeschlossen")}</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Box>
+
+                    <Box sx={{ flexGrow: 1 }} />
+
                     <Box sx={{ display: 'flex', gap: 3 }}>
                         <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 300 }}>
                             {t('features.total', "Total:")} <Box component="span" sx={{ fontWeight: 500, color: 'text.primary' }}>{features.length}</Box>
