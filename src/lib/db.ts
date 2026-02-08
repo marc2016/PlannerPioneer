@@ -12,8 +12,32 @@ export interface ProjectsTable {
     updated_at: number;
 }
 
+export interface ModulesTable {
+    id: Generated<string>;
+    project_id?: string;
+    title: string;
+    description: string;
+    color: string;
+    completed: number;
+    created_at: number;
+    updated_at: number;
+}
+
+export interface FeaturesTable {
+    id: Generated<string>;
+    module_id?: string;
+    title: string;
+    description: string;
+    color: string;
+    completed: number;
+    created_at: number;
+    updated_at: number;
+}
+
 export interface DatabaseSchema {
     projects: ProjectsTable;
+    modules: ModulesTable;
+    features: FeaturesTable;
 }
 
 export const db = new Kysely<DatabaseSchema>({
@@ -30,6 +54,34 @@ export const initDb = async () => {
             .createTable('projects')
             .ifNotExists()
             .addColumn('id', 'text', (col) => col.primaryKey())
+            .addColumn('title', 'text', (col) => col.notNull())
+            .addColumn('description', 'text')
+            .addColumn('color', 'text', (col) => col.notNull())
+            .addColumn('completed', 'integer', (col) => col.notNull().defaultTo(0))
+            .addColumn('created_at', 'integer', (col) => col.notNull())
+            .addColumn('updated_at', 'integer', (col) => col.notNull())
+            .execute();
+
+        // Modules Table
+        await db.schema
+            .createTable('modules')
+            .ifNotExists()
+            .addColumn('id', 'text', (col) => col.primaryKey())
+            .addColumn('project_id', 'text') // Optional Foreign Key
+            .addColumn('title', 'text', (col) => col.notNull())
+            .addColumn('description', 'text')
+            .addColumn('color', 'text', (col) => col.notNull())
+            .addColumn('completed', 'integer', (col) => col.notNull().defaultTo(0))
+            .addColumn('created_at', 'integer', (col) => col.notNull())
+            .addColumn('updated_at', 'integer', (col) => col.notNull())
+            .execute();
+
+        // Features Table
+        await db.schema
+            .createTable('features')
+            .ifNotExists()
+            .addColumn('id', 'text', (col) => col.primaryKey())
+            .addColumn('module_id', 'text') // Optional Foreign Key
             .addColumn('title', 'text', (col) => col.notNull())
             .addColumn('description', 'text')
             .addColumn('color', 'text', (col) => col.notNull())

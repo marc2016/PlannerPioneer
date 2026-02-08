@@ -13,6 +13,8 @@
     "navigation": {
         "dashboard": "Dashboard",
         "projects": "Projekte",
+        "modules": "Module",
+        "features": "Kalkulation",
         "settings": "Einstellungen"
     },
     "dashboard": {
@@ -37,6 +39,44 @@
             "title": "Projekttitel",
             "description": "Beschreibung",
             "color": "Farbe"
+        }
+    },
+    "modules": {
+        "title": "Module",
+        "add_module": "Modul hinzufügen",
+        "no_modules": "Keine Module gefunden",
+        "delete_confirmation": "Möchtest du dieses Modul wirklich löschen?",
+        "total": "Gesamt:",
+        "active": "Aktiv:",
+        "completed": "Abgeschlossen:",
+        "completed_title": "Abgeschlossene Module",
+        "no_description": "Keine Beschreibung",
+        "edit_module": "Modul bearbeiten",
+        "new_module": "Neues Modul",
+        "form": {
+            "title": "Modultitel",
+            "description": "Beschreibung",
+            "color": "Farbe",
+            "project": "Projekt"
+        }
+    },
+    "features": {
+        "title": "Kalkulation",
+        "add_feature": "Item hinzufügen",
+        "no_features": "Keine Items gefunden",
+        "delete_confirmation": "Möchtest du dieses Item wirklich löschen?",
+        "total": "Gesamt:",
+        "active": "Aktiv:",
+        "completed": "Abgeschlossen:",
+        "completed_title": "Abgeschlossene Items",
+        "no_description": "Keine Beschreibung",
+        "edit_feature": "Item bearbeiten",
+        "new_feature": "Neues Item",
+        "form": {
+            "title": "Itemtitel",
+            "description": "Beschreibung",
+            "color": "Farbe",
+            "module": "Modul"
         }
     },
     "settings": {

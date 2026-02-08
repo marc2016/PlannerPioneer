@@ -13,6 +13,8 @@
     "navigation": {
         "dashboard": "Dashboard",
         "projects": "Projects",
+        "modules": "Modules",
+        "features": "Features",
         "settings": "Settings"
     },
     "dashboard": {
@@ -37,6 +39,44 @@
             "title": "Project Title",
             "description": "Description",
             "color": "Color"
+        }
+    },
+    "modules": {
+        "title": "Modules",
+        "add_module": "Add Module",
+        "no_modules": "No modules found",
+        "delete_confirmation": "Are you sure you want to delete this module?",
+        "total": "Total:",
+        "active": "Active:",
+        "completed": "Completed:",
+        "completed_title": "Completed Modules",
+        "no_description": "No description",
+        "edit_module": "Edit Module",
+        "new_module": "New Module",
+        "form": {
+            "title": "Module Title",
+            "description": "Description",
+            "color": "Color",
+            "project": "Project"
+        }
+    },
+    "features": {
+        "title": "Features",
+        "add_feature": "Add Feature",
+        "no_features": "No features found",
+        "delete_confirmation": "Are you sure you want to delete this feature?",
+        "total": "Total:",
+        "active": "Active:",
+        "completed": "Completed:",
+        "completed_title": "Completed Features",
+        "no_description": "No description",
+        "edit_feature": "Edit Feature",
+        "new_feature": "New Feature",
+        "form": {
+            "title": "Feature Title",
+            "description": "Description",
+            "color": "Color",
+            "module": "Module"
         }
     },
     "settings": {
