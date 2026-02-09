@@ -12,6 +12,7 @@ import {
     Delete,
     Folder,
     Close,
+    Adjust,
 } from "@mui/icons-material";
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import { Project } from "../store/useProjectStore";
@@ -149,7 +150,7 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                             }}
                             sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
                         >
-                            {project.completed ? <Folder /> : <CheckCircleOutline />}
+                            {project.completed ? <Adjust /> : <CheckCircleOutline />}
                         </IconButton>
 
                         {/* Delete Button */}

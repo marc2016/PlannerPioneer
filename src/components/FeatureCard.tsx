@@ -14,12 +14,14 @@ import {
     Calculate, // Changed icon for Feature (Calculation Item)
     Close,
     AccountTree,
-    ViewModule
+    ViewModule,
+    Adjust
 } from "@mui/icons-material";
 import { Feature } from "../store/useFeatureStore";
 import { useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 interface FeatureCardProps {
@@ -32,6 +34,7 @@ interface FeatureCardProps {
 export default function FeatureCard({ feature, onToggle, onDelete, onClick }: FeatureCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const { modules } = useModuleStore();
     const { projects } = useProjectStore();
 
@@ -131,12 +134,17 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                                 icon={<AccountTree sx={{ fontSize: 16 }} />}
                                 label={project.title}
                                 size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/modules?projectId=${project.id}`);
+                                }}
                                 sx={{
                                     bgcolor: project.color || 'action.selected',
                                     color: project.color ? '#fff' : 'text.primary',
                                     '& .MuiChip-icon': {
                                         color: 'inherit'
-                                    }
+                                    },
+                                    cursor: 'pointer'
                                 }}
                             />
                         )}
@@ -145,12 +153,17 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                                 icon={<ViewModule sx={{ fontSize: 16 }} />}
                                 label={module.title}
                                 size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/features?moduleId=${module.id}`);
+                                }}
                                 sx={{
                                     bgcolor: module.color || 'action.selected',
                                     color: module.color ? '#fff' : 'text.primary',
                                     '& .MuiChip-icon': {
                                         color: 'inherit'
-                                    }
+                                    },
+                                    cursor: 'pointer'
                                 }}
                             />
                         )}
@@ -172,7 +185,7 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                             }}
                             sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
                         >
-                            {feature.completed ? <Calculate /> : <CheckCircleOutline />}
+                            {feature.completed ? <Adjust /> : <CheckCircleOutline />}
                         </IconButton>
 
                         {/* Delete Button */}

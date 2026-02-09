@@ -15,7 +15,8 @@ import {
     ViewModule, // Changed icon
     Close,
     AccountTree,
-    ViewList
+    ViewList,
+    Adjust
 } from "@mui/icons-material";
 import { Module } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
@@ -122,22 +123,32 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                 >
                     {module.description || t('modules.no_description', "No description")}
                 </Typography>
-                {project && (
-                    <Chip
-                        icon={<AccountTree sx={{ fontSize: 16 }} />}
-                        label={project.title}
-                        size="small"
-                        sx={{
-                            mb: 1,
-                            zIndex: 1,
-                            bgcolor: project.color || 'action.selected',
-                            color: project.color ? '#fff' : 'text.primary',
-                            '& .MuiChip-icon': {
-                                color: 'inherit'
-                            }
-                        }}
-                    />
-                )}
+                <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end', mb: 1, zIndex: 1 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
+                        {project && (
+                            <Chip
+                                icon={<AccountTree sx={{ fontSize: 16 }} />}
+                                label={project.title}
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/modules?projectId=${project.id}`);
+                                }}
+                                sx={{
+                                    mb: 1,
+                                    zIndex: 1,
+                                    bgcolor: project.color || 'action.selected',
+                                    color: project.color ? '#fff' : 'text.primary',
+                                    '& .MuiChip-icon': {
+                                        color: 'inherit'
+                                    },
+                                    cursor: 'pointer'
+                                }}
+                            />
+                        )}
+
+                    </Box>
+                </Box>
             </CardActionArea>
 
             <Divider />
@@ -154,7 +165,7 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                             }}
                             sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
                         >
-                            {module.completed ? <ViewModule /> : <CheckCircleOutline />}
+                            {module.completed ? <Adjust /> : <CheckCircleOutline />}
                         </IconButton>
 
                         {/* View Features Button */}
