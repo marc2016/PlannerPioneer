@@ -9,6 +9,7 @@ export interface Module {
     completed: boolean;
     color?: string; // Hex color code
     createdAt?: number;
+    updatedAt?: number;
 }
 
 interface ModuleState {
@@ -38,7 +39,8 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
                 description: m.description || undefined,
                 completed: Boolean(m.completed),
                 color: m.color,
-                createdAt: m.created_at
+                createdAt: m.created_at,
+                updatedAt: m.updated_at
             }))
         });
     },

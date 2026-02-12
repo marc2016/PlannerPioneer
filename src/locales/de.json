@@ -18,10 +18,15 @@
         "settings": "Einstellungen"
     },
     "dashboard": {
-        "welcome": "Willkommen bei Tauri + React",
-        "click_logos": "Klicken Sie auf die Tauri, Vite und React Logos, um mehr zu erfahren.",
-        "enter_name": "Namen eingeben...",
-        "greet": "Grüßen"
+        "welcome": "Willkommen zurück",
+        "description": "Hier ist eine Übersicht deiner aktuellen Projekte und Statistiken.",
+        "summary": "Zusammenfassung",
+        "total_projects": "Projekte",
+        "total_modules": "Module",
+        "total_features": "Items",
+        "recent_projects": "Zuletzt bearbeitet",
+        "recent_modules": "Zuletzt bearbeitete Module",
+        "quick_actions": "Schnellzugriff"
     },
     "projects": {
         "title": "Projekte",

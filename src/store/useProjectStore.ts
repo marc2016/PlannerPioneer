@@ -16,6 +16,7 @@ export interface Project {
     completed: boolean;
     color?: string; // Hex color code
     createdAt?: number;
+    updatedAt?: number;
     moduleCount?: number;
     totalDuration?: number;
     factors?: ProjectFactor[];
@@ -69,6 +70,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
                 completed: Boolean(p.completed),
                 color: p.color,
                 createdAt: p.created_at,
+                updatedAt: p.updated_at,
                 moduleCount: Number(p.moduleCount || 0),
                 totalDuration: p.totalDuration || 0,
                 factors: factors.filter(f => f.project_id === p.id).map(f => ({
