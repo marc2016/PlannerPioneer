@@ -53,7 +53,7 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                 overflow: 'hidden',
                 bgcolor: '#F5F5F5',
                 transition: '0.3s',
-                borderLeft: `6px solid ${feature.color || '#FFE0B2'}`,
+                borderLeft: `6px solid ${(module && module.color) ? module.color : (feature.color || '#FFE0B2')}`,
                 '&:hover': {
                     boxShadow: 6,
                     cursor: 'pointer'
@@ -74,7 +74,7 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                 {feature.completed ? (
                     <CheckCircleOutline sx={{ fontSize: 200, color: '#C8E6C9' }} />
                 ) : (
-                    <Calculate sx={{ fontSize: 200, color: feature.color ? feature.color : '#FFE0B2', opacity: 0.2 }} />
+                    <Calculate sx={{ fontSize: 200, color: (module && module.color) ? module.color : (feature.color || '#FFE0B2'), opacity: 0.2 }} />
                 )}
             </Box>
 

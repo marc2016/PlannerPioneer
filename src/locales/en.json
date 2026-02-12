@@ -43,7 +43,13 @@
         "view_modules": "View Modules",
         "view_features": "View Features",
         "module_count": "Modules",
-        "total_duration": "Total Duration"
+        "total_duration": "Total Duration",
+        "factors": {
+            "title": "Factors",
+            "add_factor": "Add Factor",
+            "label": "Label",
+            "value": "Value (%)"
+        }
     },
     "modules": {
         "title": "Modules",

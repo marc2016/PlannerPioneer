@@ -261,6 +261,7 @@ export default function Modules() {
                 open={drawerOpen}
                 onClose={handleDrawerClose}
                 module={selectedModule}
+                initialProjectId={projectFilter}
             />
         </Box>
     );

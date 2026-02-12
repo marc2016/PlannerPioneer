@@ -2,6 +2,13 @@ import { create } from 'zustand';
 import { db, initDb } from '../lib/db';
 import { sql } from 'kysely';
 
+export interface ProjectFactor {
+    id: string;
+    projectId: string;
+    label: string;
+    value: number;
+}
+
 export interface Project {
     id: string;
     title: string;
@@ -11,15 +18,18 @@ export interface Project {
     createdAt?: number;
     moduleCount?: number;
     totalDuration?: number;
+    factors?: ProjectFactor[];
 }
 
 interface ProjectState {
     projects: Project[];
     init: () => Promise<void>;
-    addProject: (project: Omit<Project, 'id' | 'createdAt' | 'completed' | 'moduleCount' | 'totalDuration'> & { id?: string }) => Promise<void>;
-    updateProject: (id: string, project: Partial<Omit<Project, 'id' | 'createdAt' | 'completed' | 'moduleCount' | 'totalDuration'>>) => Promise<void>;
+    addProject: (project: Omit<Project, 'id' | 'createdAt' | 'completed' | 'moduleCount' | 'totalDuration' | 'factors'> & { id?: string }) => Promise<void>;
+    updateProject: (id: string, project: Partial<Omit<Project, 'id' | 'createdAt' | 'completed' | 'moduleCount' | 'totalDuration' | 'factors'>>) => Promise<void>;
     toggleProject: (id: string) => Promise<void>;
     deleteProject: (id: string) => Promise<void>;
+    addFactor: (projectId: string, label: string, value: number) => Promise<void>;
+    removeFactor: (factorId: string) => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -35,19 +45,6 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
                     .whereRef('modules.project_id', '=', 'projects.id')
                     .as('moduleCount'),
 
-                // Using a subquery for total duration is tricky with pure SQL if we need the complex PERT formula
-                // Let's try and fetch all projects first, and then enrich them or do a join
-                // Actually, for simplicity and since we don't have stored functions, maybe just fetching all data is okay for small scale?
-                // Or better:
-                // We can use a subquery that joins modules and features.
-
-                // Optimized approach:
-                // Fetch projects with module count
-                // Then fetch duration separately or in same query if possible.
-                // Kysely subquery for sum of PERT:
-                // sum((optimistic + 4*most_likely + pessimistic) / 6)
-                // We need to handle nulls. coalesce(optimistic, most_likely), etc.
-
                 eb.selectFrom('modules')
                     .innerJoin('features', 'features.module_id', 'modules.id')
                     .select(sql<number>`total(
@@ -62,6 +59,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             .orderBy('created_at', 'desc')
             .execute();
 
+        const factors = await db.selectFrom('project_factors').selectAll().execute();
+
         set({
             projects: projects.map(p => ({
                 id: p.id,
@@ -71,8 +70,13 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
                 color: p.color,
                 createdAt: p.created_at,
                 moduleCount: Number(p.moduleCount || 0),
-                // Format directly ? No, keep as number
-                totalDuration: p.totalDuration || 0
+                totalDuration: p.totalDuration || 0,
+                factors: factors.filter(f => f.project_id === p.id).map(f => ({
+                    id: f.id,
+                    projectId: f.project_id,
+                    label: f.label,
+                    value: f.value
+                }))
             }))
         });
     },
@@ -130,6 +134,26 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             .where('id', '=', id)
             .execute();
 
+        await get().init();
+    },
+
+    addFactor: async (projectId: string, label: string, value: number) => {
+        await db.insertInto('project_factors')
+            .values({
+                id: crypto.randomUUID(),
+                project_id: projectId,
+                label,
+                value,
+                created_at: Date.now()
+            })
+            .execute();
+        await get().init();
+    },
+
+    removeFactor: async (factorId: string) => {
+        await db.deleteFrom('project_factors')
+            .where('id', '=', factorId)
+            .execute();
         await get().init();
     }
 }));

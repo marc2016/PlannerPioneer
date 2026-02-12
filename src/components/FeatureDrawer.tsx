@@ -22,9 +22,11 @@ interface FeatureDrawerProps {
     open: boolean;
     onClose: () => void;
     feature?: Feature | null; // If null, creating new
+    initialModuleId?: string;
+    filterProjectId?: string;
 }
 
-export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerProps) {
+export default function FeatureDrawer({ open, onClose, feature, initialModuleId, filterProjectId }: FeatureDrawerProps) {
     const { addFeature, updateFeature, deleteFeature } = useFeatureStore();
     const { modules } = useModuleStore(); // Get modules list
     const { t } = useTranslation();
@@ -54,13 +56,20 @@ export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerP
             setTitle("");
             setDescription("");
             setColor(COLORS[5]);
-            setModuleId("");
+
+            // Pre-fill Module ID
+            if (initialModuleId && initialModuleId !== 'all' && initialModuleId !== 'unassigned') {
+                setModuleId(initialModuleId);
+            } else {
+                setModuleId("");
+            }
+
             setPertOptimistic("");
             setPertMostLikely("");
             setPertPessimistic("");
             setShowDeleteConfirm(false);
         }
-    }, [feature, open]);
+    }, [feature, open, initialModuleId]);
 
     // Auto-update color when Module is selected
     useEffect(() => {
@@ -71,6 +80,13 @@ export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerP
             }
         }
     }, [moduleId, modules]);
+
+    // Filter available modules used in dropdown
+    const availableModules = modules.filter(m => {
+        if (!filterProjectId || filterProjectId === 'all') return true;
+        if (filterProjectId === 'unassigned') return !m.project_id;
+        return m.project_id === filterProjectId;
+    });
 
     const handleSave = async () => {
         if (!title.trim()) return;
@@ -215,7 +231,7 @@ export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerP
                         <MenuItem value="">
                             <em>{t('common.none', "None")}</em>
                         </MenuItem>
-                        {modules.map((m) => (
+                        {availableModules.map((m) => (
                             <MenuItem key={m.id} value={m.id}>
                                 {m.title}
                             </MenuItem>

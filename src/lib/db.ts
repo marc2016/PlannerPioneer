@@ -37,10 +37,19 @@ export interface FeaturesTable {
     updated_at: number;
 }
 
+export interface ProjectFactorsTable {
+    id: Generated<string>;
+    project_id: string;
+    label: string;
+    value: number;
+    created_at: number;
+}
+
 export interface DatabaseSchema {
     projects: ProjectsTable;
     modules: ModulesTable;
     features: FeaturesTable;
+    project_factors: ProjectFactorsTable;
 }
 
 export const db = new Kysely<DatabaseSchema>({
@@ -63,6 +72,17 @@ export const initDb = async () => {
             .addColumn('completed', 'integer', (col) => col.notNull().defaultTo(0))
             .addColumn('created_at', 'integer', (col) => col.notNull())
             .addColumn('updated_at', 'integer', (col) => col.notNull())
+            .execute();
+
+        // Project Factors Table
+        await db.schema
+            .createTable('project_factors')
+            .ifNotExists()
+            .addColumn('id', 'text', (col) => col.primaryKey())
+            .addColumn('project_id', 'text', (col) => col.notNull())
+            .addColumn('label', 'text', (col) => col.notNull())
+            .addColumn('value', 'real', (col) => col.notNull())
+            .addColumn('created_at', 'integer', (col) => col.notNull())
             .execute();
 
         // Modules Table

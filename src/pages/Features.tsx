@@ -349,6 +349,8 @@ export default function Features() {
                 open={drawerOpen}
                 onClose={handleDrawerClose}
                 feature={selectedFeature}
+                initialModuleId={moduleFilter}
+                filterProjectId={projectFilter}
             />
         </Box>
     );

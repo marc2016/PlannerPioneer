@@ -6,7 +6,8 @@ import {
     Box,
     Divider,
     CardActionArea,
-    Chip
+    Chip,
+    Tooltip
 } from "@mui/material";
 import {
     CheckCircleOutline,
@@ -21,7 +22,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { Project } from "../store/useProjectStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 
 interface ProjectCardProps {
     project: Project;
@@ -30,15 +31,15 @@ interface ProjectCardProps {
     onClick?: (project: Project) => void;
 }
 
-import { useTranslation } from "react-i18next";
-//...
 export default function ProjectCard({ project, onToggle, onDelete, onClick }: ProjectCardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const { t } = useTranslation();
     const navigate = useNavigate();
 
-    // Helper to format date if needed, or just display raw for now?
-    // Let's not complicate it yet.
+    const baseDuration = project.totalDuration || 0;
+    const factors = project.factors || [];
+    const factorDuration = factors.reduce((acc, factor) => acc + (baseDuration * (factor.value / 100)), 0);
+    const totalWithFactors = baseDuration + factorDuration;
 
     return (
         <Card
@@ -126,7 +127,23 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                     {project.description || t('projects.no_description')}
                 </Typography>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1, width: '100%', mb: 1, zIndex: 1 }}>
+                {/* Factors List */}
+                {factors.length > 0 && (
+                    <Box sx={{ mt: 1, display: 'flex', flexWrap: 'wrap', gap: 0.5, zIndex: 1 }}>
+                        {factors.map(f => (
+                            <Chip
+                                key={f.id}
+                                label={`+${f.label}: ${f.value}%`}
+                                size="small"
+                                variant="outlined"
+                                color="warning"
+                                sx={{ fontSize: '0.7rem', height: 20 }}
+                            />
+                        ))}
+                    </Box>
+                )}
+
+                <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1, width: '100%', mt: 'auto', pt: 1, zIndex: 1 }}>
                     {/* Module Count */}
                     <Chip
                         icon={<ViewModuleIcon fontSize="small" />}
@@ -137,15 +154,15 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                     />
 
                     {/* Total Duration */}
-                    {project.totalDuration !== undefined && (
+                    <Tooltip title={`${baseDuration.toFixed(1)}h + ${(factorDuration).toFixed(1)}h (Factors)`}>
                         <Chip
                             icon={<AccessTimeIcon fontSize="small" />}
-                            label={`${project.totalDuration.toFixed(1)}h`}
+                            label={`${totalWithFactors.toFixed(1)}h`}
                             size="small"
                             variant="outlined"
-                            sx={{ opacity: 0.8 }}
+                            sx={{ opacity: 0.8, fontWeight: 'bold' }}
                         />
-                    )}
+                    </Tooltip>
                 </Box>
 
             </CardActionArea>

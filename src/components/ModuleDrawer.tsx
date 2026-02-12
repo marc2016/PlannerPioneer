@@ -23,9 +23,10 @@ interface ModuleDrawerProps {
     open: boolean;
     onClose: () => void;
     module?: Module | null; // If null, creating new
+    initialProjectId?: string;
 }
 
-export default function ModuleDrawer({ open, onClose, module }: ModuleDrawerProps) {
+export default function ModuleDrawer({ open, onClose, module, initialProjectId }: ModuleDrawerProps) {
     const { addModule, updateModule, deleteModule } = useModuleStore();
     const { projects } = useProjectStore(); // Get projects list
     const { t } = useTranslation();
@@ -47,10 +48,30 @@ export default function ModuleDrawer({ open, onClose, module }: ModuleDrawerProp
             setTitle("");
             setDescription("");
             setColor(COLORS[5]);
-            setProjectId("");
+            // Pre-fill project if filter is active and not 'all' or 'unassigned'
+            // If 'unassigned', we also default to "" (None), effectively same as 'all' for now unless we want to enforce it?
+            // Usually "None" is the default anyway.
+            // But if a specific project is selected, we want that ID.
+            if (initialProjectId && initialProjectId !== 'all' && initialProjectId !== 'unassigned') {
+                setProjectId(initialProjectId);
+                // Also could auto-set color from project?
+                const proj = projects.find(p => p.id === initialProjectId);
+                if (proj && proj.color) {
+                    // Logic to set color palette or main color?
+                    // The color picker uses generateColorPalette from project color.
+                    // The color state is currently single color string.
+                    // When user selects a project manually, we don't auto-set the *value* of color, 
+                    // but we change the *options* available (the palette).
+                    // The default color is COLORS[5]. 
+                    // Maybe we should leave it as default or pick the project color?
+                    // Let's stick to just setting the ID for now.
+                }
+            } else {
+                setProjectId("");
+            }
             setShowDeleteConfirm(false);
         }
-    }, [module, open]);
+    }, [module, open, initialProjectId, projects]);
 
     const handleSave = async () => {
         if (!title.trim()) return;

@@ -43,7 +43,13 @@
         "view_modules": "Module anzeigen",
         "view_features": "Items anzeigen",
         "module_count": "Module",
-        "total_duration": "Gesamtzeit"
+        "total_duration": "Gesamtzeit",
+        "factors": {
+            "title": "Faktoren",
+            "add_factor": "Faktor hinzufügen",
+            "label": "Bezeichnung",
+            "value": "Wert (%)"
+        }
     },
     "modules": {
         "title": "Module",
