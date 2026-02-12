@@ -84,8 +84,18 @@ export default function Features() {
 
         const params = new URLSearchParams(location.search);
         const moduleId = params.get('moduleId');
+        const projectId = params.get('projectId');
+
         if (moduleId) {
             setModuleFilter(moduleId);
+        }
+
+        if (projectId) {
+            setProjectFilter(projectId);
+            // If we filter by project, we should probably reset module filter unless it's also specified?
+            // Existing logic in Select onChange resets module filter when project changes.
+            // But here, if both are present (unlikely from ProjectCard, but possible), we might want to respect both if valid.
+            // For now, just setting project filter is enough as it filters the module dropdown options too.
         }
     }, [init, initModules, initProjects, location.search]);
 

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { db, initDb } from '../lib/db';
+import { sql } from 'kysely';
 
 export interface Project {
     id: string;
@@ -8,13 +9,15 @@ export interface Project {
     completed: boolean;
     color?: string; // Hex color code
     createdAt?: number;
+    moduleCount?: number;
+    totalDuration?: number;
 }
 
 interface ProjectState {
     projects: Project[];
     init: () => Promise<void>;
-    addProject: (project: Omit<Project, 'id' | 'createdAt' | 'completed'> & { id?: string }) => Promise<void>;
-    updateProject: (id: string, project: Partial<Omit<Project, 'id' | 'createdAt' | 'completed'>>) => Promise<void>;
+    addProject: (project: Omit<Project, 'id' | 'createdAt' | 'completed' | 'moduleCount' | 'totalDuration'> & { id?: string }) => Promise<void>;
+    updateProject: (id: string, project: Partial<Omit<Project, 'id' | 'createdAt' | 'completed' | 'moduleCount' | 'totalDuration'>>) => Promise<void>;
     toggleProject: (id: string) => Promise<void>;
     deleteProject: (id: string) => Promise<void>;
 }
@@ -26,6 +29,36 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         await initDb();
         const projects = await db.selectFrom('projects')
             .selectAll()
+            .select((eb) => [
+                eb.selectFrom('modules')
+                    .select(db.fn.count<number>('id').as('count'))
+                    .whereRef('modules.project_id', '=', 'projects.id')
+                    .as('moduleCount'),
+
+                // Using a subquery for total duration is tricky with pure SQL if we need the complex PERT formula
+                // Let's try and fetch all projects first, and then enrich them or do a join
+                // Actually, for simplicity and since we don't have stored functions, maybe just fetching all data is okay for small scale?
+                // Or better:
+                // We can use a subquery that joins modules and features.
+
+                // Optimized approach:
+                // Fetch projects with module count
+                // Then fetch duration separately or in same query if possible.
+                // Kysely subquery for sum of PERT:
+                // sum((optimistic + 4*most_likely + pessimistic) / 6)
+                // We need to handle nulls. coalesce(optimistic, most_likely), etc.
+
+                eb.selectFrom('modules')
+                    .innerJoin('features', 'features.module_id', 'modules.id')
+                    .select(sql<number>`total(
+                        (COALESCE(features.pert_optimistic, features.pert_most_likely) + 
+                         4 * features.pert_most_likely + 
+                         COALESCE(features.pert_pessimistic, features.pert_most_likely)
+                        ) / 6.0
+                    )`.as('total_duration'))
+                    .whereRef('modules.project_id', '=', 'projects.id')
+                    .as('totalDuration')
+            ])
             .orderBy('created_at', 'desc')
             .execute();
 
@@ -36,7 +69,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
                 description: p.description,
                 completed: Boolean(p.completed),
                 color: p.color,
-                createdAt: p.created_at
+                createdAt: p.created_at,
+                moduleCount: Number(p.moduleCount || 0),
+                // Format directly ? No, keep as number
+                totalDuration: p.totalDuration || 0
             }))
         });
     },

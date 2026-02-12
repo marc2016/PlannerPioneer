@@ -5,7 +5,8 @@ import {
     IconButton,
     Box,
     Divider,
-    CardActionArea
+    CardActionArea,
+    Chip
 } from "@mui/material";
 import {
     CheckCircleOutline,
@@ -13,8 +14,10 @@ import {
     Folder,
     Close,
     Adjust,
+    ViewList
 } from "@mui/icons-material";
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { Project } from "../store/useProjectStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -122,6 +125,28 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                     {project.description || t('projects.no_description')}
                 </Typography>
 
+                <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 1, width: '100%', mb: 1, zIndex: 1 }}>
+                    {/* Module Count */}
+                    <Chip
+                        icon={<ViewModuleIcon fontSize="small" />}
+                        label={`${project.moduleCount || 0} ${t('projects.module_count')}`}
+                        size="small"
+                        variant="outlined"
+                        sx={{ opacity: 0.8 }}
+                    />
+
+                    {/* Total Duration */}
+                    {project.totalDuration !== undefined && (
+                        <Chip
+                            icon={<AccessTimeIcon fontSize="small" />}
+                            label={`${project.totalDuration.toFixed(1)}h`}
+                            size="small"
+                            variant="outlined"
+                            sx={{ opacity: 0.8 }}
+                        />
+                    )}
+                </Box>
+
             </CardActionArea>
 
             <Divider />
@@ -141,6 +166,20 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                         >
                             <ViewModuleIcon />
                         </IconButton>
+
+                        {/* View Features Button */}
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/features?projectId=${project.id}`);
+                            }}
+                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            title={t('projects.view_features')}
+                        >
+                            <ViewList />
+                        </IconButton>
+
                         {/* Toggle Button */}
                         <IconButton
                             size="small"

@@ -40,7 +40,10 @@
             "description": "Beschreibung",
             "color": "Farbe"
         },
-        "view_modules": "Module anzeigen"
+        "view_modules": "Module anzeigen",
+        "view_features": "Items anzeigen",
+        "module_count": "Module",
+        "total_duration": "Gesamtzeit"
     },
     "modules": {
         "title": "Module",

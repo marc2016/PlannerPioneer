@@ -16,7 +16,8 @@ import {
     Close,
     AccountTree,
     ViewList,
-    Adjust
+    Adjust,
+    AccessTime
 } from "@mui/icons-material";
 import { Module } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
@@ -154,17 +155,19 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                         )}
                         <Box sx={{ display: 'flex', gap: 1 }}>
                             <Chip
+                                icon={<ViewList fontSize="small" />}
                                 label={`${featureCount} ${t('modules.form.feature_count', "Items")}`}
                                 size="small"
-                                sx={{ bgcolor: 'rgba(0, 0, 0, 0.08)', fontWeight: 500 }}
+                                variant="outlined"
+                                sx={{ opacity: 0.8 }}
                             />
                             {totalDuration > 0 && (
                                 <Chip
-                                    label={`${totalDuration}h`}
+                                    icon={<AccessTime fontSize="small" />}
+                                    label={`${totalDuration.toFixed(1)}h`}
                                     size="small"
-                                    color="primary"
                                     variant="outlined"
-                                    sx={{ fontWeight: 'bold' }}
+                                    sx={{ opacity: 0.8 }}
                                 />
                             )}
                         </Box>
