@@ -58,7 +58,9 @@
             "title": "Module Title",
             "description": "Description",
             "color": "Color",
-            "project": "Project"
+            "project": "Project",
+            "feature_count": "Items",
+            "total_duration": "Total Duration"
         }
     },
     "features": {

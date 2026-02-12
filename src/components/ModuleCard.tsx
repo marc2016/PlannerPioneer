@@ -20,6 +20,7 @@ import {
 } from "@mui/icons-material";
 import { Module } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
+import { useFeatureStore } from "../store/useFeatureStore";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
@@ -36,7 +37,12 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { projects } = useProjectStore();
+    const { features } = useFeatureStore();
     const project = projects.find(p => p.id === module.project_id);
+
+    const moduleFeatures = features.filter(f => f.module_id === module.id);
+    const featureCount = moduleFeatures.length;
+    const totalDuration = moduleFeatures.reduce((sum, f) => sum + (f.expected_duration || 0), 0);
 
     return (
         <Card
@@ -146,6 +152,22 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                                 }}
                             />
                         )}
+                        <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Chip
+                                label={`${featureCount} ${t('modules.form.feature_count', "Items")}`}
+                                size="small"
+                                sx={{ bgcolor: 'rgba(0, 0, 0, 0.08)', fontWeight: 500 }}
+                            />
+                            {totalDuration > 0 && (
+                                <Chip
+                                    label={`${totalDuration}h`}
+                                    size="small"
+                                    color="primary"
+                                    variant="outlined"
+                                    sx={{ fontWeight: 'bold' }}
+                                />
+                            )}
+                        </Box>
 
                     </Box>
                 </Box>
