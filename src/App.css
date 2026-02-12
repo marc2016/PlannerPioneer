@@ -20,6 +20,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  /* Prevent rubber band effect */
+  overscroll-behavior: none;
 }
 
 .container {
