@@ -127,8 +127,19 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                     {feature.description || t('features.no_description', "No description")}
                 </Typography>
 
-                <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end', mb: 1, zIndex: 1 }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
+                <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', mb: 1, zIndex: 1 }}>
+                    {/* Duration Display */}
+                    {feature.expected_duration !== undefined && (
+                        <Chip
+                            label={`${feature.expected_duration}h`}
+                            size="small"
+                            variant="outlined"
+                            color="primary"
+                            sx={{ fontWeight: 'bold' }}
+                        />
+                    )}
+
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-end', flexGrow: 1 }}>
                         {project && (
                             <Chip
                                 icon={<AccountTree sx={{ fontSize: 16 }} />}

@@ -77,7 +77,13 @@
             "title": "Itemtitel",
             "description": "Beschreibung",
             "color": "Farbe",
-            "module": "Modul"
+            "module": "Modul",
+            "time_estimation": "Zeitschätzung (Stunden)",
+            "optimistic": "Optimistisch",
+            "most_likely": "Wahrscheinlich",
+            "pessimistic": "Pessimistisch",
+            "expected_duration": "Erwartete Dauer",
+            "optional": "Optional"
         }
     },
     "settings": {

@@ -77,7 +77,13 @@
             "title": "Feature Title",
             "description": "Description",
             "color": "Color",
-            "module": "Module"
+            "module": "Module",
+            "time_estimation": "Time Estimation (Hours)",
+            "optimistic": "Optimistic",
+            "most_likely": "Most Likely",
+            "pessimistic": "Pessimistic",
+            "expected_duration": "Expected Duration",
+            "optional": "Optional"
         }
     },
     "settings": {

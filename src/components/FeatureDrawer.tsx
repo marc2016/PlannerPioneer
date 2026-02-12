@@ -35,18 +35,29 @@ export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerP
     const [moduleId, setModuleId] = useState<string>("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
+    // PERT State
+    const [pertOptimistic, setPertOptimistic] = useState<string>("");
+    const [pertMostLikely, setPertMostLikely] = useState<string>("");
+    const [pertPessimistic, setPertPessimistic] = useState<string>("");
+
     useEffect(() => {
         if (feature) {
             setTitle(feature.title);
             setDescription(feature.description || "");
             setColor(feature.color || COLORS[5]);
             setModuleId(feature.module_id || "");
+            setPertOptimistic(feature.pert_optimistic?.toString() || "");
+            setPertMostLikely(feature.pert_most_likely?.toString() || "");
+            setPertPessimistic(feature.pert_pessimistic?.toString() || "");
             setShowDeleteConfirm(false);
         } else {
             setTitle("");
             setDescription("");
             setColor(COLORS[5]);
             setModuleId("");
+            setPertOptimistic("");
+            setPertMostLikely("");
+            setPertPessimistic("");
             setShowDeleteConfirm(false);
         }
     }, [feature, open]);
@@ -54,10 +65,24 @@ export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerP
     const handleSave = async () => {
         if (!title.trim()) return;
 
+        const pOptimistic = pertOptimistic ? parseFloat(pertOptimistic) : undefined;
+        const pMostLikely = pertMostLikely ? parseFloat(pertMostLikely) : undefined;
+        const pPessimistic = pertPessimistic ? parseFloat(pertPessimistic) : undefined;
+
+        const featureData = {
+            title,
+            description,
+            color,
+            module_id: moduleId || undefined,
+            pert_optimistic: pOptimistic,
+            pert_most_likely: pMostLikely,
+            pert_pessimistic: pPessimistic
+        };
+
         if (feature) {
-            await updateFeature(feature.id, { title, description, color, module_id: moduleId || undefined });
+            await updateFeature(feature.id, featureData);
         } else {
-            await addFeature({ title, description, color, module_id: moduleId || undefined });
+            await addFeature(featureData);
         }
         onClose();
     };
@@ -69,12 +94,34 @@ export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerP
         }
     };
 
+    // Calculate Expected Duration for preview
+    const calculateExpected = () => {
+        const o = parseFloat(pertOptimistic);
+        const m = parseFloat(pertMostLikely);
+        const p = parseFloat(pertPessimistic);
+
+        if (!isNaN(m)) {
+            // If only M is provided, Expected = M. 
+            // If O and P are provided, use PERT formula.
+            // Handling optional O/P by falling back to M if missing, similar to the store logic?
+            // The user said O/P are optional. 
+            // Let's mirror the logic: If O/P are missing, they default to M in the formula, effectively making result M.
+            const opt = !isNaN(o) ? o : m;
+            const pes = !isNaN(p) ? p : m;
+            const expected = (opt + 4 * m + pes) / 6;
+            return parseFloat(expected.toFixed(1));
+        }
+        return null;
+    };
+
+    const expectedDuration = calculateExpected();
+
     return (
         <Drawer
             anchor="right"
             open={open}
             onClose={onClose}
-            PaperProps={{ sx: { width: 400, p: 3 } }}
+            PaperProps={{ sx: { width: 600, p: 3 } }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
@@ -102,6 +149,49 @@ export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerP
                     multiline
                     minRows={3}
                 />
+
+                {/* PERT Estimation Section */}
+                <Box sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                        {t('features.form.time_estimation', "Time Estimation (Hours)")}
+                    </Typography>
+
+                    <Box sx={{ display: 'flex', gap: 1, mb: 1 }}>
+                        <TextField
+                            label={t('features.form.optimistic', "Optimistic")}
+                            type="number"
+                            value={pertOptimistic}
+                            onChange={(e) => setPertOptimistic(e.target.value)}
+                            size="small"
+                            fullWidth
+                            helperText={t('features.form.optional', "Optional")}
+                        />
+                        <TextField
+                            label={t('features.form.most_likely', "Most Likely")}
+                            type="number"
+                            value={pertMostLikely}
+                            onChange={(e) => setPertMostLikely(e.target.value)}
+                            size="small"
+                            fullWidth
+                            required
+                        />
+                        <TextField
+                            label={t('features.form.pessimistic', "Pessimistic")}
+                            type="number"
+                            value={pertPessimistic}
+                            onChange={(e) => setPertPessimistic(e.target.value)}
+                            size="small"
+                            fullWidth
+                            helperText={t('features.form.optional', "Optional")}
+                        />
+                    </Box>
+
+                    {expectedDuration !== null && (
+                        <Typography variant="body2" color="primary" sx={{ textAlign: 'center', mt: 1, fontWeight: 'bold' }}>
+                            {t('features.form.expected_duration', "Expected Duration")}: {expectedDuration}h
+                        </Typography>
+                    )}
+                </Box>
 
                 {/* Module Selection */}
                 <FormControl fullWidth>

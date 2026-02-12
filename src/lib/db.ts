@@ -30,6 +30,9 @@ export interface FeaturesTable {
     description: string;
     color: string;
     completed: number;
+    pert_optimistic?: number;
+    pert_most_likely?: number;
+    pert_pessimistic?: number;
     created_at: number;
     updated_at: number;
 }
@@ -86,9 +89,25 @@ export const initDb = async () => {
             .addColumn('description', 'text')
             .addColumn('color', 'text', (col) => col.notNull())
             .addColumn('completed', 'integer', (col) => col.notNull().defaultTo(0))
+            .addColumn('pert_optimistic', 'real') // Optional, in hours
+            .addColumn('pert_most_likely', 'real') // Required if used for est, but nullable here to support migration if needed? stick to plan: optional/required in app logic
+            .addColumn('pert_pessimistic', 'real') // Optional, in hours
             .addColumn('created_at', 'integer', (col) => col.notNull())
             .addColumn('updated_at', 'integer', (col) => col.notNull())
             .execute();
+
+        // Database Migrations regarding PERT (Safe add for existing tables)
+        const addColumnIfNotExists = async (table: string, column: string, type: 'text' | 'integer' | 'real') => {
+            try {
+                await db.schema.alterTable(table as any).addColumn(column, type).execute();
+            } catch (e) {
+                // Ignore error if column already exists
+            }
+        };
+
+        await addColumnIfNotExists('features', 'pert_optimistic', 'real');
+        await addColumnIfNotExists('features', 'pert_most_likely', 'real');
+        await addColumnIfNotExists('features', 'pert_pessimistic', 'real');
 
         console.log('Database initialized successfully');
     } catch (error) {
