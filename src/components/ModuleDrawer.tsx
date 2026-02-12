@@ -14,6 +14,7 @@ import { Close } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { Module, useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore"; // Import Project Store
+import { generateColorPalette } from "../lib/colorUtils";
 import { useTranslation } from "react-i18next";
 
 const COLORS = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'];
@@ -126,7 +127,13 @@ export default function ModuleDrawer({ open, onClose, module }: ModuleDrawerProp
                 <Box>
                     <Typography variant="subtitle2" sx={{ mb: 1 }}>{t('modules.form.color', "Color")}</Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {COLORS.map((c) => (
+                        {(projectId ?
+                            (() => {
+                                const selectedProject = projects.find(p => p.id === projectId);
+                                return selectedProject ? generateColorPalette(selectedProject.color || COLORS[5], 5) : COLORS;
+                            })()
+                            : COLORS
+                        ).map((c) => (
                             <Box
                                 key={c}
                                 onClick={() => setColor(c)}

@@ -62,6 +62,16 @@ export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerP
         }
     }, [feature, open]);
 
+    // Auto-update color when Module is selected
+    useEffect(() => {
+        if (moduleId) {
+            const selectedModule = modules.find(m => m.id === moduleId);
+            if (selectedModule && selectedModule.color) {
+                setColor(selectedModule.color);
+            }
+        }
+    }, [moduleId, modules]);
+
     const handleSave = async () => {
         if (!title.trim()) return;
 
@@ -215,24 +225,66 @@ export default function FeatureDrawer({ open, onClose, feature }: FeatureDrawerP
 
                 <Box>
                     <Typography variant="subtitle2" sx={{ mb: 1 }}>{t('features.form.color', "Color")}</Typography>
-                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {COLORS.map((c) => (
+
+                    {moduleId ? (
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <Box
-                                key={c}
-                                onClick={() => setColor(c)}
                                 sx={{
-                                    width: 24,
-                                    height: 24,
+                                    width: 40,
+                                    height: 40,
                                     borderRadius: '50%',
-                                    bgcolor: c,
-                                    cursor: 'pointer',
-                                    border: color === c ? '2px solid black' : '1px solid transparent',
-                                    transition: 'transform 0.1s',
-                                    '&:hover': { transform: 'scale(1.1)' }
+                                    bgcolor: color,
+                                    border: '1px solid #ccc'
                                 }}
                             />
-                        ))}
-                    </Box>
+                            <Typography variant="body2" color="text.secondary">
+                                {t('features.form.color_inherited', "Color inherited from Module")}
+                            </Typography>
+                        </Box>
+                    ) : (
+                        <>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                                <TextField
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    label={t('features.form.hex_code', "Hex Code")}
+                                    size="small"
+                                    sx={{ width: 120 }}
+                                />
+                                <input
+                                    type="color"
+                                    value={color}
+                                    onChange={(e) => setColor(e.target.value)}
+                                    style={{
+                                        width: 40,
+                                        height: 40,
+                                        padding: 0,
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        background: 'transparent'
+                                    }}
+                                />
+                            </Box>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                {COLORS.map((c) => (
+                                    <Box
+                                        key={c}
+                                        onClick={() => setColor(c)}
+                                        sx={{
+                                            width: 24,
+                                            height: 24,
+                                            borderRadius: '50%',
+                                            bgcolor: c,
+                                            cursor: 'pointer',
+                                            border: color === c ? '2px solid black' : '1px solid transparent',
+                                            transition: 'transform 0.1s',
+                                            '&:hover': { transform: 'scale(1.1)' }
+                                        }}
+                                    />
+                                ))}
+                            </Box>
+                        </>
+                    )}
                 </Box>
 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>

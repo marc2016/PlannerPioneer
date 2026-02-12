@@ -97,6 +97,31 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
 
                 <Box>
                     <Typography variant="subtitle2" sx={{ mb: 1 }}>{t('projects.form.color')}</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                        <TextField
+                            value={color}
+                            onChange={(e) => setColor(e.target.value)}
+                            label={t('projects.form.hex_code', "Hex Code")}
+                            size="small"
+                            sx={{ width: 120 }}
+                        />
+                        <input
+                            type="color"
+                            value={color}
+                            onChange={(e) => setColor(e.target.value)}
+                            style={{
+                                width: 40,
+                                height: 40,
+                                padding: 0,
+                                border: 'none',
+                                cursor: 'pointer',
+                                background: 'transparent'
+                            }}
+                        />
+                    </Box>
+                    <Typography variant="caption" sx={{ mb: 1, display: 'block' }}>
+                        {t('projects.form.presets', "Presets")}
+                    </Typography>
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                         {COLORS.map((c) => (
                             <Box

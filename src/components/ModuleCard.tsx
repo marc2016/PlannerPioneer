@@ -57,6 +57,7 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                 overflow: 'hidden',
                 bgcolor: '#F5F5F5', // distinct background?
                 transition: '0.3s',
+                borderLeft: `6px solid ${module.color || '#FFE0B2'}`,
                 '&:hover': {
                     boxShadow: 6,
                     cursor: 'pointer'

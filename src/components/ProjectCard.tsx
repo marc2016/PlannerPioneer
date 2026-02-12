@@ -52,6 +52,7 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                 overflow: 'hidden',
                 bgcolor: '#F5F5F5',
                 transition: '0.3s',
+                borderLeft: `6px solid ${project.color || '#FFE0B2'}`,
                 '&:hover': {
                     boxShadow: 6,
                     cursor: 'pointer'
