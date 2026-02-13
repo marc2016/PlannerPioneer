@@ -113,7 +113,8 @@
             "most_likely": "Wahrscheinlich",
             "pessimistic": "Pessimistisch",
             "expected": "Erwartet"
-        }
+        },
+        "total": "Gesamt"
     },
     "settings": {
         "title": "Einstellungen",

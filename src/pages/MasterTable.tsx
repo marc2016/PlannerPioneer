@@ -90,6 +90,7 @@ export default function MasterTable() {
             {
                 accessorKey: "moduleTitle",
                 header: t("table.columns.module"),
+                enableHiding: false,
                 Cell: ({ row }) =>
                     row.original.moduleTitle ? (
                         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -110,6 +111,7 @@ export default function MasterTable() {
             {
                 accessorKey: "featureTitle",
                 header: t("table.columns.feature"),
+                enableHiding: false,
                 Cell: ({ row }) => (
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Box
@@ -123,6 +125,7 @@ export default function MasterTable() {
                         {row.original.featureTitle}
                     </Box>
                 ),
+                Footer: () => <Box sx={{ fontWeight: 'bold', textAlign: 'right' }}>{t('table.total', 'Total')}:</Box>,
             },
             {
                 accessorKey: "optimistic",
@@ -135,6 +138,10 @@ export default function MasterTable() {
                         {cell.getValue<number>()?.toFixed(1)}
                     </Box>
                 ),
+                Footer: ({ table }) => {
+                    const total = table.getFilteredRowModel().rows.reduce((sum, row) => sum + (row.original.optimistic || 0), 0);
+                    return <Box sx={{ fontWeight: 'bold' }}>{total.toFixed(1)}</Box>;
+                },
             },
             {
                 accessorKey: "mostLikely",
@@ -147,6 +154,10 @@ export default function MasterTable() {
                         {cell.getValue<number>()?.toFixed(1)}
                     </Box>
                 ),
+                Footer: ({ table }) => {
+                    const total = table.getFilteredRowModel().rows.reduce((sum, row) => sum + (row.original.mostLikely || 0), 0);
+                    return <Box sx={{ fontWeight: 'bold' }}>{total.toFixed(1)}</Box>;
+                },
             },
             {
                 accessorKey: "pessimistic",
@@ -159,6 +170,10 @@ export default function MasterTable() {
                         {cell.getValue<number>()?.toFixed(1)}
                     </Box>
                 ),
+                Footer: ({ table }) => {
+                    const total = table.getFilteredRowModel().rows.reduce((sum, row) => sum + (row.original.pessimistic || 0), 0);
+                    return <Box sx={{ fontWeight: 'bold' }}>{total.toFixed(1)}</Box>;
+                },
             },
             {
                 accessorKey: "expected",
@@ -175,6 +190,10 @@ export default function MasterTable() {
                         {cell.getValue<number>()?.toFixed(1)}
                     </Box>
                 ),
+                Footer: ({ table }) => {
+                    const total = table.getFilteredRowModel().rows.reduce((sum, row) => sum + (row.original.expected || 0), 0);
+                    return <Box sx={{ fontWeight: 'bold', color: 'primary.main' }}>{total.toFixed(1)}</Box>;
+                },
             },
         ],
         [t]
@@ -238,6 +257,7 @@ export default function MasterTable() {
                 enablePagination
                 enableGrouping
                 localization={t('common.language') === 'Deutsch' || useTranslation().i18n.language.startsWith('de') ? MRT_Localization_DE : MRT_Localization_EN}
+                enableTableFooter
                 initialState={{
                     density: 'compact',
                     grouping: ['moduleTitle'],

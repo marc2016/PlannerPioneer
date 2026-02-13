@@ -108,7 +108,8 @@
             "most_likely": "Most Likely",
             "pessimistic": "Pessimistic",
             "expected": "Expected"
-        }
+        },
+        "total": "Total"
     },
     "settings": {
         "title": "Settings",
