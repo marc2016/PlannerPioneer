@@ -8,7 +8,10 @@
         "confirm": "Bestätigen",
         "confirm_delete": "Löschen bestätigen",
         "back": "Zurück",
-        "language": "Sprache"
+        "language": "Sprache",
+        "status": "Status",
+        "not_completed": "Nicht abgeschlossen",
+        "completed": "Abgeschlossen"
     },
     "navigation": {
         "dashboard": "Dashboard",
@@ -112,7 +115,8 @@
             "optimistic": "Optimistisch",
             "most_likely": "Wahrscheinlich",
             "pessimistic": "Pessimistisch",
-            "expected": "Erwartet"
+            "expected": "Erwartet",
+            "status": "Status"
         },
         "total": "Gesamt"
     },

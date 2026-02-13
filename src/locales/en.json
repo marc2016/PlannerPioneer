@@ -8,7 +8,10 @@
         "confirm": "Confirm",
         "confirm_delete": "Confirm Delete",
         "back": "Back",
-        "language": "Language"
+        "language": "Language",
+        "status": "Status",
+        "not_completed": "Not Completed",
+        "completed": "Completed"
     },
     "navigation": {
         "dashboard": "Dashboard",
@@ -19,10 +22,15 @@
         "settings": "Settings"
     },
     "dashboard": {
-        "welcome": "Welcome to Tauri + React",
-        "click_logos": "Click on the Tauri, Vite, and React logos to learn more.",
-        "enter_name": "Enter a name...",
-        "greet": "Greet"
+        "welcome": "Welcome back",
+        "description": "Here is an overview of your current projects and statistics.",
+        "summary": "Summary",
+        "total_projects": "Projects",
+        "total_modules": "Modules",
+        "total_features": "Items",
+        "recent_projects": "Recently Edited",
+        "recent_modules": "Recently Edited Modules",
+        "quick_actions": "Quick Actions"
     },
     "projects": {
         "title": "Projects",
@@ -107,7 +115,8 @@
             "optimistic": "Optimistic",
             "most_likely": "Most Likely",
             "pessimistic": "Pessimistic",
-            "expected": "Expected"
+            "expected": "Expected",
+            "status": "Status"
         },
         "total": "Total"
     },
