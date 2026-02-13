@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import Modules from "./pages/Modules";
 import Features from "./pages/Features";
+import MasterTable from "./pages/MasterTable";
 import Settings from "./pages/Settings";
 import "./App.css";
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="projects" element={<Projects />} />
           <Route path="modules" element={<Modules />} />
           <Route path="features" element={<Features />} />
+          <Route path="table" element={<MasterTable />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

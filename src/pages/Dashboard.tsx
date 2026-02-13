@@ -1,4 +1,4 @@
-import { useTranslation } from "react-i18next";
+
 import { DashboardStats } from "../components/DashboardStats";
 import { RecentProjects } from "../components/RecentProjects";
 import { RecentModules } from "../components/RecentModules";
@@ -6,7 +6,7 @@ import "../App.css";
 import { Paper } from "@mui/material";
 
 function Dashboard() {
-    const { t } = useTranslation();
+
 
     return (
         <main className="container dashboard-container">

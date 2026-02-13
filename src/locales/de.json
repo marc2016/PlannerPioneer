@@ -15,6 +15,7 @@
         "projects": "Projekte",
         "modules": "Module",
         "features": "Kalkulation",
+        "table": "Gesamttabelle",
         "settings": "Einstellungen"
     },
     "dashboard": {
@@ -100,6 +101,18 @@
             "pessimistic": "Pessimistisch",
             "expected_duration": "Erwartete Dauer",
             "optional": "Optional"
+        }
+    },
+    "table": {
+        "title": "Gesamttabelle",
+        "columns": {
+            "feature": "Item",
+            "module": "Modul",
+            "project": "Projekt",
+            "optimistic": "Optimistisch",
+            "most_likely": "Wahrscheinlich",
+            "pessimistic": "Pessimistisch",
+            "expected": "Erwartet"
         }
     },
     "settings": {

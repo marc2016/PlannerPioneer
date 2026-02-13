@@ -24,6 +24,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import CalculateIcon from '@mui/icons-material/Calculate';
+import TableChartIcon from '@mui/icons-material/TableChart';
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useSettingsStore } from "../store/useSettingsStore";
 import TitleBar from "../components/TitleBar";
@@ -104,6 +105,7 @@ export default function RootLayout() {
         { text: t('navigation.projects'), icon: <AccountTreeIcon />, path: "/projects" },
         { text: t('navigation.modules'), icon: <ViewModuleIcon />, path: "/modules" },
         { text: t('navigation.features'), icon: <CalculateIcon />, path: "/features" },
+        { text: t('navigation.table'), icon: <TableChartIcon />, path: "/table" },
         { text: t('navigation.settings'), icon: <SettingsIcon />, path: "/settings" },
     ];
 

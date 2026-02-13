@@ -15,6 +15,7 @@
         "projects": "Projects",
         "modules": "Modules",
         "features": "Features",
+        "table": "Master Table",
         "settings": "Settings"
     },
     "dashboard": {
@@ -95,6 +96,18 @@
             "pessimistic": "Pessimistic",
             "expected_duration": "Expected Duration",
             "optional": "Optional"
+        }
+    },
+    "table": {
+        "title": "Master Table",
+        "columns": {
+            "feature": "Feature",
+            "module": "Module",
+            "project": "Project",
+            "optimistic": "Optimistic",
+            "most_likely": "Most Likely",
+            "pessimistic": "Pessimistic",
+            "expected": "Expected"
         }
     },
     "settings": {
