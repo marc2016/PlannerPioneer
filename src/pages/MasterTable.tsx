@@ -341,12 +341,10 @@ export default function MasterTable() {
         <Box>
             <Paper
                 elevation={0}
+                className="glass-paper"
                 sx={{
                     mb: 4,
                     p: 2,
-                    backgroundColor: "rgba(255, 255, 255, 0.30)",
-                    backdropFilter: "blur(4px)",
-                    borderRadius: 4,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
@@ -405,12 +403,10 @@ export default function MasterTable() {
                     return (
                         <Paper
                             elevation={0}
+                            className="glass-paper"
                             sx={{
                                 mb: 4,
                                 p: 3,
-                                backgroundColor: "rgba(255, 255, 255, 0.30)",
-                                backdropFilter: "blur(4px)",
-                                borderRadius: 4,
                                 borderLeft: `6px solid ${selectedProject.color || '#FFE0B2'}`,
                             }}
                         >

@@ -118,12 +118,10 @@ export default function Features() {
         <Box>
             <Paper
                 elevation={0}
+                className="glass-paper"
                 sx={{
                     mb: 4,
-                    p: 2,
-                    backgroundColor: 'rgba(255, 255, 255, 0.30)',
-                    backdropFilter: 'blur(4px)',
-                    borderRadius: 4
+                    p: 2
                 }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -282,12 +280,10 @@ export default function Features() {
                     layout
                     transition={spring}
                     elevation={0}
+                    className="glass-paper"
                     sx={{
                         my: 4,
-                        p: 2,
-                        backgroundColor: 'rgba(255, 255, 255, 0.30)',
-                        backdropFilter: 'blur(4px)',
-                        borderRadius: 4
+                        p: 2
                     }}
                 >
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
