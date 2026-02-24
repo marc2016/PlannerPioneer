@@ -1,5 +1,6 @@
-import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem } from "@mui/material";
+import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, TextField, InputAdornment } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from "react";
 import { useProjectStore, Project } from "../store/useProjectStore";
 import ProjectCard from "../components/ProjectCard";
@@ -19,11 +20,20 @@ export default function Projects() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
+    const [searchQuery, setSearchQuery] = useState('');
 
-    // Filter projects based on status
+    // Filter projects based on status and search query
     const filteredProjects = projects.filter(p => {
-        if (statusFilter === 'active') return !p.completed;
-        if (statusFilter === 'completed') return p.completed;
+        if (statusFilter === 'active' && p.completed) return false;
+        if (statusFilter === 'completed' && !p.completed) return false;
+
+        if (searchQuery) {
+            const lowerQuery = searchQuery.toLowerCase();
+            const matchesTitle = p.title.toLowerCase().includes(lowerQuery);
+            const matchesDesc = p.description?.toLowerCase().includes(lowerQuery) ?? false;
+            if (!matchesTitle && !matchesDesc) return false;
+        }
+
         return true;
     });
 
@@ -61,10 +71,34 @@ export default function Projects() {
                     p: 2
                 }}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                    <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary', mr: 2 }}>
                         {t('projects.title')}
                     </Typography>
+
+                    <TextField
+                        variant="outlined"
+                        size="small"
+                        placeholder={t('search', 'Suche...') as string}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon fontSize="small" />
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{
+                            backgroundColor: 'rgba(255,255,255,0.5)',
+                            borderRadius: 2,
+                            '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                            '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                            minWidth: 200
+                        }}
+                    />
 
                     <FormControl size="small" sx={{ minWidth: 200 }}>
                         <Select

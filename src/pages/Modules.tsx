@@ -1,5 +1,6 @@
-import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, Divider } from "@mui/material";
+import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, Divider, TextField, InputAdornment } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
 import { useEffect, useState } from "react";
 import { useModuleStore, Module } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
@@ -23,6 +24,7 @@ export default function Modules() {
     const [selectedModule, setSelectedModule] = useState<Module | null>(null);
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
     const [projectFilter, setProjectFilter] = useState<string>('all');
+    const [searchQuery, setSearchQuery] = useState('');
 
     const filteredModules = modules.filter(m => {
         // Status filter
@@ -36,6 +38,14 @@ export default function Modules() {
             } else {
                 if (m.project_id !== projectFilter) return false;
             }
+        }
+
+        // Search filter
+        if (searchQuery) {
+            const lowerQuery = searchQuery.toLowerCase();
+            const matchesTitle = m.title.toLowerCase().includes(lowerQuery);
+            const matchesDesc = m.description?.toLowerCase().includes(lowerQuery) ?? false;
+            if (!matchesTitle && !matchesDesc) return false;
         }
 
         return true;
@@ -83,12 +93,36 @@ export default function Modules() {
                     p: 2
                 }}
             >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
+                    <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary', mr: 2 }}>
                         {t('modules.title', "Modules")}
                     </Typography>
 
-                    <Box sx={{ display: 'flex', gap: 2 }}>
+                    <TextField
+                        variant="outlined"
+                        size="small"
+                        placeholder={t('search', 'Suche...') as string}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon fontSize="small" />
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{
+                            backgroundColor: 'rgba(255,255,255,0.5)',
+                            borderRadius: 2,
+                            '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                            '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                            minWidth: 200
+                        }}
+                    />
+
+                    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                         <FormControl size="small" sx={{ minWidth: 200 }}>
                             <Select
                                 value={projectFilter}
