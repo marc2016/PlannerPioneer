@@ -349,12 +349,21 @@ export default function MasterTable() {
                     borderRadius: 4,
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "space-between"
+                    justifyContent: "space-between",
+                    borderLeft: `6px solid ${selectedProject?.color || '#FFE0B2'}`,
                 }}
             >
-                <Typography variant="h4" sx={{ fontWeight: 100, color: "text.secondary" }}>
-                    {t("table.title")}
-                </Typography>
+                {!selectedProject &&
+                    <Typography variant="h4" sx={{ fontWeight: 100, color: "text.secondary" }}>
+                        {t("table.title")}
+                    </Typography>}
+
+
+                {selectedProject &&
+                    <Typography variant="h4" sx={{ fontWeight: 100, color: "text.secondary" }}>
+                        {selectedProject.title}
+                    </Typography>
+                }
 
                 <FormControl size="small" sx={{ minWidth: 200 }}>
                     <Select
