@@ -337,6 +337,37 @@ export default function MasterTable() {
         }
     });
 
+    const renderProjectSelect = () => (
+        <FormControl size="small" sx={{ minWidth: 200 }}>
+            <Select
+                value={projectFilter}
+                onChange={(e) => setProjectFilter(e.target.value)}
+                displayEmpty
+                variant="outlined"
+                sx={{
+                    backgroundColor: 'rgba(255,255,255,0.5)',
+                    borderRadius: 2,
+                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                    '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                }}
+            >
+                <MenuItem value="all">{t('filters.all_projects', "Alle Projekte")}</MenuItem>
+                <MenuItem value="unassigned">{t('filters.no_project', "Kein Projekt")}</MenuItem>
+                <Divider />
+                {projects.map((project) => (
+                    <MenuItem key={project.id} value={project.id}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: project.color }} />
+                            {project.title}
+                        </Box>
+                    </MenuItem>
+                ))}
+            </Select>
+        </FormControl>
+    );
+
     return (
         <Box>
             <Paper
@@ -349,118 +380,65 @@ export default function MasterTable() {
                     alignItems: "center",
                     justifyContent: "space-between",
                     borderLeft: `6px solid ${selectedProject?.color || '#FFE0B2'}`,
+                    gap: 2,
+                    overflowX: 'auto',
+                    '&::-webkit-scrollbar': { display: 'none' }
                 }}
             >
-                {!selectedProject &&
-                    <Typography variant="h4" sx={{ fontWeight: 100, color: "text.secondary" }}>
-                        {t("table.title")}
-                    </Typography>}
+                {!selectedProject ? (
+                    <>
+                        <Typography variant="h4" sx={{ fontWeight: 100, color: "text.secondary", whiteSpace: "nowrap" }}>
+                            {t("table.title")}
+                        </Typography>
+                        {renderProjectSelect()}
+                    </>
+                ) : (
+                    (() => {
+                        const baseDuration = selectedProject.totalDuration || 0;
+                        const factors = selectedProject.factors || [];
+                        const factorDuration = factors.reduce((acc, factor) => acc + (baseDuration * (factor.value / 100)), 0);
+                        const totalWithFactors = baseDuration + factorDuration;
 
+                        return (
+                            <>
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>
+                                    <Typography variant="h4" sx={{ fontWeight: 100, color: "text.secondary", whiteSpace: "nowrap" }}>
+                                        {selectedProject.title}
+                                    </Typography>
+                                    <IconButton size="small" onClick={() => setIsDrawerOpen(true)} sx={{ flexShrink: 0 }}>
+                                        <Edit fontSize="small" />
+                                    </IconButton>
 
-                {selectedProject &&
-                    <Typography variant="h4" sx={{ fontWeight: 100, color: "text.secondary" }}>
-                        {selectedProject.title}
-                    </Typography>
-                }
+                                    <Divider orientation="vertical" flexItem sx={{ mx: 2, borderColor: 'text.disabled' }} />
 
-                <FormControl size="small" sx={{ minWidth: 200 }}>
-                    <Select
-                        value={projectFilter}
-                        onChange={(e) => setProjectFilter(e.target.value)}
-                        displayEmpty
-                        variant="outlined"
-                        sx={{
-                            backgroundColor: 'rgba(255,255,255,0.5)',
-                            borderRadius: 2,
-                            '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                            '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-                        }}
-                    >
-                        <MenuItem value="all">{t('filters.all_projects', "Alle Projekte")}</MenuItem>
-                        <MenuItem value="unassigned">{t('filters.no_project', "Kein Projekt")}</MenuItem>
-                        <Divider />
-                        {projects.map((project) => (
-                            <MenuItem key={project.id} value={project.id}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: project.color }} />
-                                    {project.title}
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'nowrap' }}>
+                                        <Typography variant="body1" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                                            {t('table.total', 'Total')}: <strong>{totalWithFactors.toFixed(1)}h</strong>
+                                        </Typography>
+
+                                        {factors.length > 0 && (
+                                            <Box sx={{ display: 'flex', gap: 1 }}>
+                                                {factors.map(f => (
+                                                    <Chip
+                                                        key={f.id}
+                                                        label={`${f.label}: ${f.value > 0 ? '+' : ''}${f.value}%`}
+                                                        size="small"
+                                                        variant="outlined"
+                                                        color="warning"
+                                                    />
+                                                ))}
+                                            </Box>
+                                        )}
+                                    </Box>
                                 </Box>
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                                <Box sx={{ flexShrink: 0 }}>
+                                    {renderProjectSelect()}
+                                </Box>
+                            </>
+                        );
+                    })()
+                )}
             </Paper>
-
-            {selectedProject && (
-                (() => {
-                    const baseDuration = selectedProject.totalDuration || 0;
-                    const factors = selectedProject.factors || [];
-                    const factorDuration = factors.reduce((acc, factor) => acc + (baseDuration * (factor.value / 100)), 0);
-                    const totalWithFactors = baseDuration + factorDuration;
-
-                    return (
-                        <Paper
-                            elevation={0}
-                            className="glass-paper"
-                            sx={{
-                                mb: 4,
-                                p: 3,
-                                borderLeft: `6px solid ${selectedProject.color || '#FFE0B2'}`,
-                            }}
-                        >
-                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                                <Box>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                                        <Typography variant="h5" sx={{ fontWeight: 500 }}>
-                                            {selectedProject.title}
-                                        </Typography>
-                                        <IconButton size="small" onClick={() => setIsDrawerOpen(true)}>
-                                            <Edit fontSize="small" />
-                                        </IconButton>
-                                    </Box>
-                                    <Typography variant="body1" color="text.secondary" sx={{ whiteSpace: 'pre-wrap' }}>
-                                        {selectedProject.description || t('projects.no_description')}
-                                    </Typography>
-                                </Box>
-                                <Box sx={{ textAlign: 'right' }}>
-                                    <Typography variant="subtitle2" color="text.secondary">
-                                        {t('table.total', 'Total Duration')}
-                                    </Typography>
-                                    <Typography variant="h6">
-                                        {totalWithFactors.toFixed(1)}h
-                                    </Typography>
-                                    {factors.length > 0 && (
-                                        <Typography variant="caption" color="text.secondary">
-                                            ({baseDuration.toFixed(1)}h + {factorDuration.toFixed(1)}h factors)
-                                        </Typography>
-                                    )}
-                                </Box>
-                            </Box>
-
-                            {factors.length > 0 && (
-                                <Box sx={{ mt: 2 }}>
-                                    <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                                        {t('projects.factors.title', 'Factors')}
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                                        {factors.map(f => (
-                                            <Chip
-                                                key={f.id}
-                                                label={`${f.label}: ${f.value > 0 ? '+' : ''}${f.value}%`}
-                                                size="small"
-                                                variant="outlined"
-                                                color="warning"
-                                            />
-                                        ))}
-                                    </Box>
-                                </Box>
-                            )}
-                        </Paper>
-                    );
-                })()
-            )}
 
 
             <MaterialReactTable table={table} />
