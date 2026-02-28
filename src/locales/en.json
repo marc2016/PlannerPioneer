@@ -124,7 +124,12 @@
         "project_variance": "Project Variance:",
         "project_std_dev": "Project Standard Deviation:",
         "project_variance_tooltip": "The variance of a project is the sum of the variances of all its features.",
-        "project_std_dev_tooltip": "The standard deviation of the project is the square root of the project variance. It indicates how much the actual project duration is expected to scatter."
+        "project_std_dev_tooltip": "The standard deviation of the project is the square root of the project variance. It indicates how much the actual project duration is expected to scatter.",
+        "sigma_level": "Sigma-Level (99.7%):",
+        "sigma_tooltip_title": "Confidence intervals based on standard deviation (Expected Value + n * SD):",
+        "sigma_1": "1-Sigma (68.3%):",
+        "sigma_2": "2-Sigma (95.5%):",
+        "sigma_3": "3-Sigma (99.7%):"
     },
     "settings": {
         "title": "Settings",

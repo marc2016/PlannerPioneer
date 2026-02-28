@@ -124,7 +124,12 @@
         "project_variance": "Projektvarianz:",
         "project_std_dev": "Projekt-Standardabweichung:",
         "project_variance_tooltip": "Die Varianz eines Projekts ergibt sich aus der Summe der Varianzen aller zugehörigen Items.",
-        "project_std_dev_tooltip": "Die Standardabweichung des Projekts ist die Wurzel aus der Projektvarianz. Sie gibt an, wie stark die tatsächliche Projektdauer voraussichtlich streuen wird."
+        "project_std_dev_tooltip": "Die Standardabweichung des Projekts ist die Wurzel aus der Projektvarianz. Sie gibt an, wie stark die tatsächliche Projektdauer voraussichtlich streuen wird.",
+        "sigma_level": "Sigma-Level (99.7%):",
+        "sigma_tooltip_title": "Konfidenzintervalle auf Basis der Standardabweichung (Erwartungswert + n * SD):",
+        "sigma_1": "1-Sigma (68.3%):",
+        "sigma_2": "2-Sigma (95.5%):",
+        "sigma_3": "3-Sigma (99.7%):"
     },
     "settings": {
         "title": "Einstellungen",

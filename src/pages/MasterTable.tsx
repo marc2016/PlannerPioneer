@@ -498,6 +498,32 @@ export default function MasterTable() {
                                             </Tooltip>
                                         </Box>
 
+                                        <Divider orientation="vertical" flexItem sx={{ my: 1, borderColor: 'text.disabled' }} />
+
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                            <Typography variant="body1" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                                                {t('table.sigma_level', 'Sigma-Level (99.7%):')} <strong>{(totalWithFactors + 3 * projectStdDev).toFixed(1)}h</strong>
+                                            </Typography>
+                                            <Tooltip
+                                                title={
+                                                    <Box>
+                                                        <Typography variant="body2" sx={{ mb: 1, fontWeight: 'bold' }}>{t('table.sigma_tooltip_title', 'Konfidenzintervalle auf Basis der Standardabweichung (Erwartungswert + n * SD):')}</Typography>
+                                                        <Box component="ul" sx={{ m: 0, pl: 2, typography: 'body2' }}>
+                                                            <li><strong>{t('table.sigma_1', '1-Sigma (68.3%):')}</strong> {(totalWithFactors + projectStdDev).toFixed(1)}h</li>
+                                                            <li><strong>{t('table.sigma_2', '2-Sigma (95.5%):')}</strong> {(totalWithFactors + 2 * projectStdDev).toFixed(1)}h</li>
+                                                            <li><strong>{t('table.sigma_3', '3-Sigma (99.7%):')}</strong> {(totalWithFactors + 3 * projectStdDev).toFixed(1)}h</li>
+                                                        </Box>
+                                                    </Box>
+                                                }
+                                                enterTouchDelay={0}
+                                                leaveTouchDelay={2000}
+                                            >
+                                                <IconButton size="small" sx={{ p: 0.5 }}>
+                                                    <InfoOutlined fontSize="small" color="action" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Box>
+
                                         {factors.length > 0 && (
                                             <>
                                                 <Divider orientation="vertical" flexItem sx={{ my: 1, borderColor: 'text.disabled' }} />
