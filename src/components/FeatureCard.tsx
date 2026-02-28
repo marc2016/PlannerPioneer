@@ -15,14 +15,16 @@ import {
     Close,
     AccountTree,
     ViewModule,
-    Adjust
+    Adjust,
+    Description
 } from "@mui/icons-material";
-import { Feature } from "../store/useFeatureStore";
+import { Feature, useFeatureStore } from "../store/useFeatureStore";
 import { useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import DescriptionModal from "./DescriptionModal";
 
 interface FeatureCardProps {
     feature: Feature;
@@ -32,7 +34,9 @@ interface FeatureCardProps {
 }
 
 export default function FeatureCard({ feature, onToggle, onDelete, onClick }: FeatureCardProps) {
+    const { updateFeature } = useFeatureStore();
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { modules } = useModuleStore();
@@ -182,6 +186,19 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                             {feature.completed ? <Adjust /> : <CheckCircleOutline />}
                         </IconButton>
 
+                        {/* Edit Description Button */}
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsDescriptionModalOpen(true);
+                            }}
+                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            title={t('common.edit_description', 'Beschreibung bearbeiten')}
+                        >
+                            <Description />
+                        </IconButton>
+
                         {/* Delete Button */}
                         <IconButton
                             size="small"
@@ -225,6 +242,14 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                     </>
                 )}
             </CardActions>
+
+            <DescriptionModal
+                open={isDescriptionModalOpen}
+                onClose={() => setIsDescriptionModalOpen(false)}
+                title={feature.title}
+                initialDescription={feature.description || ""}
+                onSave={(desc) => updateFeature(feature.id, { description: desc })}
+            />
         </Card>
     );
 }

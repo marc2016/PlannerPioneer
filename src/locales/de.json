@@ -11,7 +11,8 @@
         "language": "Sprache",
         "status": "Status",
         "not_completed": "Nicht abgeschlossen",
-        "completed": "Abgeschlossen"
+        "completed": "Abgeschlossen",
+        "edit_description": "Beschreibung bearbeiten"
     },
     "navigation": {
         "dashboard": "Dashboard",

@@ -17,14 +17,16 @@ import {
     AccountTree,
     ViewList,
     Adjust,
-    AccessTime
+    AccessTime,
+    Description
 } from "@mui/icons-material";
-import { Module } from "../store/useModuleStore";
+import { Module, useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
 import { useFeatureStore } from "../store/useFeatureStore";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import DescriptionModal from "./DescriptionModal";
 
 interface ModuleCardProps {
     module: Module;
@@ -34,7 +36,9 @@ interface ModuleCardProps {
 }
 
 export default function ModuleCard({ module, onToggle, onDelete, onClick }: ModuleCardProps) {
+    const { updateModule } = useModuleStore();
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { projects } = useProjectStore();
@@ -178,6 +182,19 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                             {module.completed ? <Adjust /> : <CheckCircleOutline />}
                         </IconButton>
 
+                        {/* Edit Description Button */}
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsDescriptionModalOpen(true);
+                            }}
+                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            title={t('common.edit_description', 'Beschreibung bearbeiten')}
+                        >
+                            <Description />
+                        </IconButton>
+
                         {/* View Features Button */}
                         <Tooltip title={t('modules.view_features', "View Features")}>
                             <IconButton
@@ -235,6 +252,14 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                     </>
                 )}
             </CardActions>
+
+            <DescriptionModal
+                open={isDescriptionModalOpen}
+                onClose={() => setIsDescriptionModalOpen(false)}
+                title={module.title}
+                initialDescription={module.description || ""}
+                onSave={(desc) => updateModule(module.id, { description: desc })}
+            />
         </Card >
     );
 }

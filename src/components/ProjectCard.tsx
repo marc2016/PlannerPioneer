@@ -15,14 +15,16 @@ import {
     Folder,
     Close,
     Adjust,
-    ViewList
+    ViewList,
+    Description
 } from "@mui/icons-material";
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import { Project } from "../store/useProjectStore";
+import { Project, useProjectStore } from "../store/useProjectStore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import DescriptionModal from "./DescriptionModal";
 
 interface ProjectCardProps {
     project: Project;
@@ -32,7 +34,9 @@ interface ProjectCardProps {
 }
 
 export default function ProjectCard({ project, onToggle, onDelete, onClick }: ProjectCardProps) {
+    const { updateProject } = useProjectStore();
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
     const { t } = useTranslation();
     const navigate = useNavigate();
 
@@ -169,6 +173,19 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                             <ViewModuleIcon />
                         </IconButton>
 
+                        {/* Edit Description Button */}
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsDescriptionModalOpen(true);
+                            }}
+                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            title={t('common.edit_description', 'Beschreibung bearbeiten')}
+                        >
+                            <Description />
+                        </IconButton>
+
                         {/* View Features Button */}
                         <IconButton
                             size="small"
@@ -239,6 +256,14 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                     </>
                 )}
             </CardActions>
+
+            <DescriptionModal
+                open={isDescriptionModalOpen}
+                onClose={() => setIsDescriptionModalOpen(false)}
+                title={project.title}
+                initialDescription={project.description || ""}
+                onSave={(desc) => updateProject(project.id, { description: desc })}
+            />
         </Card>
     );
 }
