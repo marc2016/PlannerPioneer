@@ -298,7 +298,7 @@ export default function Features() {
                                 layout
                                 exit={{ opacity: 0, scale: 0.8 }}
                                 transition={spring}
-                                sx={{ maxWidth: 280, width: '100%', mx: 'auto' }}
+                                sx={{ maxWidth: 280, width: '100%', height: '100%', mx: 'auto' }}
                             >
                                 <FeatureCard
                                     feature={feature}
@@ -347,7 +347,7 @@ export default function Features() {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={spring}
-                                sx={{ maxWidth: 280, width: '100%', mx: 'auto' }}
+                                sx={{ maxWidth: 280, width: '100%', height: '100%', mx: 'auto' }}
                             >
                                 <FeatureCard
                                     feature={feature}

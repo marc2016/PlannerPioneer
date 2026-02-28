@@ -46,6 +46,7 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
             variant="outlined"
             sx={{
                 width: '100%',
+                height: '100%',
                 minHeight: 200,
                 display: 'flex',
                 flexDirection: 'column',
