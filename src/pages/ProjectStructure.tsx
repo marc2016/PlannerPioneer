@@ -33,6 +33,7 @@ const CustomizedContent = (props: any) => {
 
     return (
         <g>
+
             <rect
                 x={x}
                 y={y}
@@ -43,7 +44,7 @@ const CustomizedContent = (props: any) => {
                     stroke: '#fff',
                     strokeWidth: 2 / (depth + 1e-10),
                     strokeOpacity: 1,
-                    fillOpacity: isModule ? 0.3 : 0.8
+                    fillOpacity: isModule ? 1 : 0
                 }}
             />
             {
@@ -62,20 +63,20 @@ const CustomizedContent = (props: any) => {
             }
             {
                 width > 50 && height > 50 && isModule ? (
+
                     <text
-                        x={x + 4}
-                        y={y + 16}
-                        fill="#000"
-                        fontSize={14}
-                        fontWeight="bold"
-                        fillOpacity={0.7}
+                        x={x + 10}
+                        y={y + 21}
+                        fill="#fff"
+                        fontSize={16}
                         style={{ pointerEvents: 'none' }}
                     >
                         {name}
                     </text>
+
                 ) : null
             }
-        </g>
+        </g >
     );
 };
 
@@ -190,7 +191,7 @@ export default function ProjectStructure() {
                                 <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 3 }}>
                                     {t('structure.composition_treemap', 'Struktur (Module & Items)')}
                                 </Typography>
-                                <Box sx={{ width: '100%', height: 400 }}>
+                                <Box sx={{ width: '100%', height: 300 }}>
                                     <ResponsiveContainer>
                                         <Treemap
                                             data={data}
