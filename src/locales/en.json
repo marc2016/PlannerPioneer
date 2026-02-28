@@ -120,7 +120,11 @@
             "variance": "Variance",
             "status": "Status"
         },
-        "total": "Total"
+        "total": "Total",
+        "project_variance": "Project Variance:",
+        "project_std_dev": "Project Standard Deviation:",
+        "project_variance_tooltip": "The variance of a project is the sum of the variances of all its features.",
+        "project_std_dev_tooltip": "The standard deviation of the project is the square root of the project variance. It indicates how much the actual project duration is expected to scatter."
     },
     "settings": {
         "title": "Settings",

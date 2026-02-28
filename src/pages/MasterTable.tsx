@@ -2,12 +2,12 @@ import { useMemo, useEffect, useState } from "react";
 import { MaterialReactTable, type MRT_ColumnDef, useMaterialReactTable } from "material-react-table";
 import { MRT_Localization_DE } from "material-react-table/locales/de";
 import { MRT_Localization_EN } from "material-react-table/locales/en";
-import { Box, Paper, Typography, FormControl, Select, MenuItem, Divider, Chip, IconButton } from "@mui/material";
+import { Box, Paper, Typography, FormControl, Select, MenuItem, Divider, Chip, IconButton, Tooltip } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { useFeatureStore } from "../store/useFeatureStore";
 import { useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
-import { Edit } from "@mui/icons-material"; // Import Edit icon
+import { Edit, InfoOutlined } from "@mui/icons-material"; // Import Edit icon
 import ProjectDrawer from "../components/ProjectDrawer"; // Import ProjectDrawer
 
 
@@ -443,6 +443,10 @@ export default function MasterTable() {
                         const factorDuration = factors.reduce((acc, factor) => acc + (baseDuration * (factor.value / 100)), 0);
                         const totalWithFactors = baseDuration + factorDuration;
 
+                        // Calculate variance and std dev for project based on current data
+                        const projectVariance = data.reduce((sum, row) => sum + (Number(row.variance) || 0), 0);
+                        const projectStdDev = Math.sqrt(projectVariance);
+
                         return (
                             <>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>
@@ -460,18 +464,55 @@ export default function MasterTable() {
                                             {t('table.total', 'Total')}: <strong>{totalWithFactors.toFixed(1)}h</strong>
                                         </Typography>
 
+                                        <Divider orientation="vertical" flexItem sx={{ my: 1, borderColor: 'text.disabled' }} />
+
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                            <Typography variant="body1" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                                                {t('table.project_variance', 'Projektvarianz:')} <strong>{projectVariance.toFixed(2)}</strong>
+                                            </Typography>
+                                            <Tooltip
+                                                title={t('table.project_variance_tooltip', 'Die Varianz eines Projekts ergibt sich aus der Summe der Varianzen aller zugehörigen Items.')}
+                                                enterTouchDelay={0}
+                                                leaveTouchDelay={2000}
+                                            >
+                                                <IconButton size="small" sx={{ p: 0.5 }}>
+                                                    <InfoOutlined fontSize="small" color="action" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Box>
+
+                                        <Divider orientation="vertical" flexItem sx={{ my: 1, borderColor: 'text.disabled' }} />
+
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                            <Typography variant="body1" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
+                                                {t('table.project_std_dev', 'Projekt-Standardabweichung:')} <strong>{projectStdDev.toFixed(2)}</strong>
+                                            </Typography>
+                                            <Tooltip
+                                                title={t('table.project_std_dev_tooltip', 'Die Standardabweichung des Projekts ist die Wurzel aus der Projektvarianz. Sie gibt an, wie stark die tatsächliche Projektdauer voraussichtlich streuen wird.')}
+                                                enterTouchDelay={0}
+                                                leaveTouchDelay={2000}
+                                            >
+                                                <IconButton size="small" sx={{ p: 0.5 }}>
+                                                    <InfoOutlined fontSize="small" color="action" />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </Box>
+
                                         {factors.length > 0 && (
-                                            <Box sx={{ display: 'flex', gap: 1 }}>
-                                                {factors.map(f => (
-                                                    <Chip
-                                                        key={f.id}
-                                                        label={`${f.label}: ${f.value > 0 ? '+' : ''}${f.value}%`}
-                                                        size="small"
-                                                        variant="outlined"
-                                                        color="warning"
-                                                    />
-                                                ))}
-                                            </Box>
+                                            <>
+                                                <Divider orientation="vertical" flexItem sx={{ my: 1, borderColor: 'text.disabled' }} />
+                                                <Box sx={{ display: 'flex', gap: 1 }}>
+                                                    {factors.map(f => (
+                                                        <Chip
+                                                            key={f.id}
+                                                            label={`${f.label}: ${f.value > 0 ? '+' : ''}${f.value}%`}
+                                                            size="small"
+                                                            variant="outlined"
+                                                            color="warning"
+                                                        />
+                                                    ))}
+                                                </Box>
+                                            </>
                                         )}
                                     </Box>
                                 </Box>

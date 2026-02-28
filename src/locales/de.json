@@ -120,7 +120,11 @@
             "variance": "Varianz",
             "status": "Status"
         },
-        "total": "Gesamt"
+        "total": "Gesamt",
+        "project_variance": "Projektvarianz:",
+        "project_std_dev": "Projekt-Standardabweichung:",
+        "project_variance_tooltip": "Die Varianz eines Projekts ergibt sich aus der Summe der Varianzen aller zugehörigen Items.",
+        "project_std_dev_tooltip": "Die Standardabweichung des Projekts ist die Wurzel aus der Projektvarianz. Sie gibt an, wie stark die tatsächliche Projektdauer voraussichtlich streuen wird."
     },
     "settings": {
         "title": "Einstellungen",
