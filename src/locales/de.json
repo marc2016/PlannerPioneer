@@ -19,6 +19,7 @@
         "modules": "Module",
         "features": "Kalkulation",
         "table": "Gesamttabelle",
+        "structure": "Projektstruktur",
         "settings": "Einstellungen"
     },
     "dashboard": {
@@ -136,5 +137,13 @@
         "theme": "Design",
         "dark_mode": "Dunkelmodus",
         "light_mode": "Hellmodus"
+    },
+    "structure": {
+        "title": "Projektstruktur",
+        "no_data": "Keine Daten zur Anzeige der Struktur vorhanden.",
+        "composition_treemap": "Struktur (Module & Items)",
+        "module_distribution": "Modulanteile (Dauer)",
+        "no_durations": "Keine Dauerschätzungen vorhanden",
+        "total_modules": "Anzahl Module"
     }
 }

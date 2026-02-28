@@ -19,6 +19,7 @@
         "modules": "Modules",
         "features": "Features",
         "table": "Master Table",
+        "structure": "Project Structure",
         "settings": "Settings"
     },
     "dashboard": {
@@ -136,5 +137,13 @@
         "theme": "Theme",
         "dark_mode": "Dark Mode",
         "light_mode": "Light Mode"
+    },
+    "structure": {
+        "title": "Project Structure",
+        "no_data": "No data available to display the structure.",
+        "composition_treemap": "Structure (Modules & Items)",
+        "module_distribution": "Module Distribution (Duration)",
+        "no_durations": "No duration estimations available",
+        "total_modules": "Number of Modules"
     }
 }

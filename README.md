@@ -63,7 +63,7 @@ npm run tauri build
 Die fertigen, optimierten Binaries findest du anschließend im Verzeichnis `src-tauri/target/release`.
 
 ## 📸 Screenshots
-*(Füge hier ein paar coole Screenshots der MasterTable oder der Roadmap-Ansicht ein, um das Projekt noch besser in Szene zu setzen!)*
+
 
 ---
 *Entwickelt mit ❤️ und bereit, das Planen auf das nächste Level zu heben.*
