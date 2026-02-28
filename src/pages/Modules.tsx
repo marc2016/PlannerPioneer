@@ -6,6 +6,7 @@ import { useModuleStore, Module } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
 import ModuleCard from "../components/ModuleCard";
 import ModuleDrawer from "../components/ModuleDrawer";
+import { useSettingsStore } from "../store/useSettingsStore";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
 import { spring } from "../constants";
@@ -20,10 +21,10 @@ import { useTranslation } from "react-i18next";
 export default function Modules() {
     const { modules, init, deleteModule, toggleModule } = useModuleStore();
     const { projects, init: initProjects } = useProjectStore();
+    const { selectedProjectId: projectFilter, setSelectedProjectId: setProjectFilter } = useSettingsStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedModule, setSelectedModule] = useState<Module | null>(null);
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
-    const [projectFilter, setProjectFilter] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredModules = modules.filter(m => {

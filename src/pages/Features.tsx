@@ -8,6 +8,7 @@ import { useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
 import FeatureCard from "../components/FeatureCard";
 import FeatureDrawer from "../components/FeatureDrawer";
+import { useSettingsStore } from "../store/useSettingsStore";
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion";
 
 import { spring } from "../constants";
@@ -22,11 +23,11 @@ export default function Features() {
     const { features, init, deleteFeature, toggleFeature } = useFeatureStore();
     const { modules, init: initModules } = useModuleStore();
     const { projects, init: initProjects } = useProjectStore();
+    const { selectedProjectId: projectFilter, setSelectedProjectId: setProjectFilter } = useSettingsStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
 
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
-    const [projectFilter, setProjectFilter] = useState<string>('all');
     const [moduleFilter, setModuleFilter] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
 

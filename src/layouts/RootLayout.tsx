@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import {
     CssBaseline,
     Container,
@@ -81,13 +81,20 @@ const MuiDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== "open" 
 );
 
 import { useTranslation } from "react-i18next";
+import { useProjectStore } from "../store/useProjectStore";
 //...
 export default function RootLayout() {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
-    const { appBackground, init } = useSettingsStore();
+    const { appBackground, init, selectedProjectId } = useSettingsStore();
+    const { projects } = useProjectStore();
     const { t } = useTranslation();
+
+    const selectedProject = useMemo(() => {
+        if (!selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return null;
+        return projects.find(p => p.id === selectedProjectId) || null;
+    }, [projects, selectedProjectId]);
 
     useEffect(() => {
         init();
@@ -213,6 +220,87 @@ export default function RootLayout() {
                         </ListItem>
                     ))}
                 </List>
+                <Box sx={{ flexGrow: 1 }} />
+                {selectedProject && (
+                    <>
+                        <Divider />
+                        <List sx={{ mb: 1 }}>
+                            <ListItem disablePadding sx={{ display: "block" }}>
+                                <ListItemButton
+                                    sx={[
+                                        {
+                                            minHeight: 48,
+                                            px: 2.5,
+                                        },
+                                        open
+                                            ? {
+                                                justifyContent: "initial",
+                                                flexDirection: "row"
+                                            }
+                                            : {
+                                                justifyContent: "center",
+                                                flexDirection: "column-reverse",
+                                                py: 2,
+                                                height: 'auto'
+                                            },
+                                    ]}
+                                >
+                                    <ListItemIcon
+                                        sx={[
+                                            {
+                                                minWidth: 0,
+                                                justifyContent: "center",
+                                                alignItems: "center"
+                                            },
+                                            open
+                                                ? {
+                                                    mr: 3,
+                                                    mb: 0,
+                                                    mt: 0
+                                                }
+                                                : {
+                                                    mr: "auto",
+                                                    ml: "auto",
+                                                    mb: 0,
+                                                    mt: 2
+                                                },
+                                        ]}
+                                    >
+                                        <Box sx={{ width: 16, height: 16, borderRadius: '50%', bgcolor: selectedProject.color || 'primary.main', flexShrink: 0 }} />
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={selectedProject.title}
+                                        primaryTypographyProps={{
+                                            variant: 'body2',
+                                            fontWeight: 'bold',
+                                            noWrap: true,
+                                            sx: open ? {} : {
+                                                writingMode: 'vertical-rl',
+                                                transform: 'rotate(180deg)',
+                                                whiteSpace: 'nowrap'
+                                            }
+                                        }}
+                                        sx={[
+                                            open
+                                                ? {
+                                                    opacity: 1,
+                                                    m: 0
+                                                }
+                                                : {
+                                                    opacity: 1,
+                                                    m: 0,
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    overflow: 'visible'
+                                                },
+                                        ]}
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        </List>
+                    </>
+                )}
             </MuiDrawer>
             <Box
                 component="main"

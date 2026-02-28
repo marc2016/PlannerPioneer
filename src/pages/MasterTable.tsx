@@ -7,9 +7,9 @@ import { useTranslation } from "react-i18next";
 import { useFeatureStore } from "../store/useFeatureStore";
 import { useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
+import { useSettingsStore } from "../store/useSettingsStore";
 import { Edit, InfoOutlined } from "@mui/icons-material"; // Import Edit icon
 import ProjectDrawer from "../components/ProjectDrawer"; // Import ProjectDrawer
-
 
 interface TableRow {
     featureId: string;
@@ -35,8 +35,7 @@ export default function MasterTable() {
     const { features, init: initFeatures } = useFeatureStore();
     const { modules, init: initModules } = useModuleStore();
     const { projects, init: initProjects } = useProjectStore();
-
-    const [projectFilter, setProjectFilter] = useState<string>('all');
+    const { selectedProjectId: projectFilter, setSelectedProjectId: setProjectFilter } = useSettingsStore();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
     const selectedProject = useMemo(() => projects.find(p => p.id === projectFilter), [projects, projectFilter]);

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
     Box,
     Typography,
@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useProjectStore } from '../store/useProjectStore';
 import { useModuleStore } from '../store/useModuleStore';
 import { useFeatureStore } from '../store/useFeatureStore';
+import { useSettingsStore } from '../store/useSettingsStore';
 import { motion } from 'framer-motion';
 
 // Customized Treemap Content
@@ -87,13 +88,12 @@ export default function ProjectStructure() {
     const { projects } = useProjectStore();
     const { modules } = useModuleStore();
     const { features } = useFeatureStore();
-
-    const [selectedProjectId, setSelectedProjectId] = useState<string>(projects[0]?.id || '');
+    const { selectedProjectId, setSelectedProjectId } = useSettingsStore();
 
     const selectedProject = projects.find(p => p.id === selectedProjectId);
 
     const data = useMemo(() => {
-        if (!selectedProjectId) return [];
+        if (!selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return [];
 
         const projectModules = modules.filter(m => m.project_id === selectedProjectId);
 
