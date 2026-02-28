@@ -116,6 +116,8 @@
             "most_likely": "Wahrscheinlich",
             "pessimistic": "Pessimistisch",
             "expected": "Erwartet",
+            "standard_deviation": "Standardabweichung",
+            "variance": "Varianz",
             "status": "Status"
         },
         "total": "Gesamt"

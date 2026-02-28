@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { db, initDb } from '../lib/db';
-import { calculatePert } from '../lib/timeUtils';
+import { calculatePert, calculateStandardDeviation, calculateVariance } from '../lib/timeUtils';
 
 export interface Feature {
     id: string;
@@ -13,6 +13,8 @@ export interface Feature {
     pert_most_likely?: number;
     pert_pessimistic?: number;
     expected_duration?: number;
+    standard_deviation?: number;
+    variance?: number;
     createdAt?: number;
 }
 
@@ -37,9 +39,14 @@ export const useFeatureStore = create<FeatureState>((set, get) => ({
 
         set({
             features: features.map(f => {
-                const expected = f.pert_most_likely
+                const expected = f.pert_most_likely !== undefined && f.pert_most_likely !== null
                     ? calculatePert(f.pert_optimistic, f.pert_most_likely, f.pert_pessimistic)
                     : undefined;
+
+                const stdDev = f.pert_most_likely !== undefined && f.pert_most_likely !== null
+                    ? calculateStandardDeviation(f.pert_optimistic, f.pert_most_likely, f.pert_pessimistic)
+                    : undefined;
+                const variance = calculateVariance(stdDev);
 
                 return {
                     id: f.id,
@@ -52,6 +59,8 @@ export const useFeatureStore = create<FeatureState>((set, get) => ({
                     pert_most_likely: f.pert_most_likely,
                     pert_pessimistic: f.pert_pessimistic,
                     expected_duration: expected,
+                    standard_deviation: stdDev,
+                    variance: variance,
                     createdAt: f.created_at
                 };
             })

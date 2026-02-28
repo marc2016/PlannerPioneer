@@ -21,11 +21,13 @@ interface TableRow {
     projectId: string | null;
     projectTitle: string | null;
     projectColor: string | null;
-    status: "active" | "completed";
+    status: string;
     optimistic: number | null;
     mostLikely: number | null;
     pessimistic: number | null;
     expected: number | null;
+    standardDeviation: number | null;
+    variance: number | null;
 }
 
 export default function MasterTable() {
@@ -84,6 +86,7 @@ export default function MasterTable() {
             return {
                 featureId: feature.id,
                 featureTitle: feature.title,
+                featureColor: feature.color || null,
                 status: status,
                 moduleId: module?.id || null,
                 moduleTitle: module?.title || null,
@@ -91,10 +94,12 @@ export default function MasterTable() {
                 projectId: project?.id || null,
                 projectTitle: project?.title || null,
                 projectColor: project?.color || null,
-                optimistic: feature.pert_optimistic || null,
-                mostLikely: feature.pert_most_likely || null,
-                pessimistic: feature.pert_pessimistic || null,
-                expected: feature.expected_duration || null,
+                optimistic: feature.pert_optimistic ?? null,
+                mostLikely: feature.pert_most_likely ?? null,
+                pessimistic: feature.pert_pessimistic ?? null,
+                expected: feature.expected_duration ?? null,
+                standardDeviation: feature.standard_deviation ?? null,
+                variance: feature.variance ?? null,
             };
         });
     }, [features, modules, projects, projectFilter]);
@@ -205,7 +210,7 @@ export default function MasterTable() {
                 }),
                 Cell: ({ cell }) => {
                     const val = cell.getValue<number | string | null>();
-                    return (val !== null && val !== undefined && val !== '') ? Number(val).toFixed(1) : "-";
+                    return (typeof val === 'number' || (typeof val === 'string' && val !== '')) ? Number(val).toFixed(1) : "-";
                 },
                 size: 100,
                 aggregationFn: "sum",
@@ -231,7 +236,7 @@ export default function MasterTable() {
                 }),
                 Cell: ({ cell }) => {
                     const val = cell.getValue<number | string | null>();
-                    return (val !== null && val !== undefined && val !== '') ? Number(val).toFixed(1) : "-";
+                    return (typeof val === 'number' || (typeof val === 'string' && val !== '')) ? Number(val).toFixed(1) : "-";
                 },
                 size: 100,
                 aggregationFn: "sum",
@@ -257,7 +262,7 @@ export default function MasterTable() {
                 }),
                 Cell: ({ cell }) => {
                     const val = cell.getValue<number | string | null>();
-                    return (val !== null && val !== undefined && val !== '') ? Number(val).toFixed(1) : "-";
+                    return (typeof val === 'number' || (typeof val === 'string' && val !== '')) ? Number(val).toFixed(1) : "-";
                 },
                 size: 100,
                 aggregationFn: "sum",
@@ -279,7 +284,7 @@ export default function MasterTable() {
                     const val = cell.getValue<number | string | null>();
                     return (
                         <Typography variant="body2" fontWeight="bold">
-                            {(val !== null && val !== undefined && val !== '') ? Number(val).toFixed(1) : "-"}
+                            {(typeof val === 'number' || (typeof val === 'string' && val !== '')) ? Number(val).toFixed(1) : "-"}
                         </Typography>
                     );
                 },
@@ -293,6 +298,45 @@ export default function MasterTable() {
                 Footer: ({ table }) => {
                     const total = table.getFilteredRowModel().rows.reduce((sum, row) => sum + (Number(row.original.expected) || 0), 0);
                     return <Box sx={{ fontWeight: 'bold', color: 'primary.main' }}>{total.toFixed(1)}</Box>;
+                },
+            },
+            {
+                accessorKey: "variance",
+                header: t("table.columns.variance"),
+                enableEditing: false,
+                Cell: ({ cell }) => {
+                    const val = cell.getValue<number | string | null>();
+                    return (typeof val === 'number' || (typeof val === 'string' && val !== '')) ? Number(val).toFixed(2) : "-";
+                },
+                size: 100,
+                aggregationFn: "sum",
+                AggregatedCell: ({ cell }) => (
+                    <Box sx={{ fontWeight: 'bold' }}>
+                        {Number(cell.getValue())?.toFixed(2)}
+                    </Box>
+                ),
+                Footer: ({ table }) => {
+                    const total = table.getFilteredRowModel().rows.reduce((sum, row) => sum + (Number(row.original.variance) || 0), 0);
+                    return <Box sx={{ fontWeight: 'bold' }}>{total.toFixed(2)}</Box>;
+                },
+            },
+            {
+                accessorKey: "standardDeviation",
+                header: t("table.columns.standard_deviation"),
+                enableEditing: false,
+                Cell: ({ cell }) => {
+                    const val = cell.getValue<number | string | null>();
+                    return (typeof val === 'number' || (typeof val === 'string' && val !== '')) ? Number(val).toFixed(2) : "-";
+                },
+                size: 100,
+                AggregatedCell: ({ row }) => {
+                    const leafRows = row.getLeafRows();
+                    const sumVariance = leafRows.reduce((sum, r) => sum + (Number(r.original.variance) || 0), 0);
+                    return <Box sx={{ fontWeight: 'bold' }}>{Math.sqrt(sumVariance).toFixed(2)}</Box>;
+                },
+                Footer: ({ table }) => {
+                    const totalVariance = table.getFilteredRowModel().rows.reduce((sum, row) => sum + (Number(row.original.variance) || 0), 0);
+                    return <Box sx={{ fontWeight: 'bold' }}>{Math.sqrt(totalVariance).toFixed(2)}</Box>;
                 },
             },
         ],

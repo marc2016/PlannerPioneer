@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { db, initDb } from '../lib/db';
-import { sql } from 'kysely';
+import { calculatePert } from '../lib/timeUtils';
 
 export interface ProjectFactor {
     id: string;
@@ -44,42 +44,51 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
                 eb.selectFrom('modules')
                     .select(db.fn.count<number>('id').as('count'))
                     .whereRef('modules.project_id', '=', 'projects.id')
-                    .as('moduleCount'),
-
-                eb.selectFrom('modules')
-                    .innerJoin('features', 'features.module_id', 'modules.id')
-                    .select(sql<number>`total(
-                        (COALESCE(features.pert_optimistic, features.pert_most_likely) + 
-                         4 * features.pert_most_likely + 
-                         COALESCE(features.pert_pessimistic, features.pert_most_likely)
-                        ) / 6.0
-                    )`.as('total_duration'))
-                    .whereRef('modules.project_id', '=', 'projects.id')
-                    .as('totalDuration')
+                    .as('moduleCount')
             ])
             .orderBy('created_at', 'desc')
             .execute();
 
         const factors = await db.selectFrom('project_factors').selectAll().execute();
 
+        const features = await db.selectFrom('features')
+            .innerJoin('modules', 'modules.id', 'features.module_id')
+            .select([
+                'modules.project_id',
+                'features.pert_optimistic',
+                'features.pert_most_likely',
+                'features.pert_pessimistic'
+            ])
+            .execute();
+
         set({
-            projects: projects.map(p => ({
-                id: p.id,
-                title: p.title,
-                description: p.description,
-                completed: Boolean(p.completed),
-                color: p.color,
-                createdAt: p.created_at,
-                updatedAt: p.updated_at,
-                moduleCount: Number(p.moduleCount || 0),
-                totalDuration: p.totalDuration || 0,
-                factors: factors.filter(f => f.project_id === p.id).map(f => ({
-                    id: f.id,
-                    projectId: f.project_id,
-                    label: f.label,
-                    value: f.value
-                }))
-            }))
+            projects: projects.map(p => {
+                const projectFeatures = features.filter(f => f.project_id === p.id);
+                const totalDuration = projectFeatures.reduce((sum, f) => {
+                    if (f.pert_most_likely !== null && f.pert_most_likely !== undefined) {
+                        return sum + calculatePert(f.pert_optimistic ?? undefined, f.pert_most_likely, f.pert_pessimistic ?? undefined);
+                    }
+                    return sum;
+                }, 0);
+
+                return {
+                    id: p.id,
+                    title: p.title,
+                    description: p.description,
+                    completed: Boolean(p.completed),
+                    color: p.color,
+                    createdAt: p.created_at,
+                    updatedAt: p.updated_at,
+                    moduleCount: Number(p.moduleCount || 0),
+                    totalDuration: parseFloat(totalDuration.toFixed(1)),
+                    factors: factors.filter(f => f.project_id === p.id).map(f => ({
+                        id: f.id,
+                        projectId: f.project_id,
+                        label: f.label,
+                        value: f.value
+                    }))
+                };
+            })
         });
     },
 
