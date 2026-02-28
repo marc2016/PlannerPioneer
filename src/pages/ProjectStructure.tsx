@@ -21,12 +21,12 @@ import { motion } from 'framer-motion';
 
 // Customized Treemap Content
 const CustomizedContent = (props: any) => {
-    const { depth, x, y, width, height, payload, name } = props;
+    const { depth, x, y, width, height, name, featureColor, color, fill } = props;
 
     // We only render depth 1 (Modules) or depth 2 (Features)
     const isModule = depth === 1;
     const isFeature = depth === 2;
-    const bgColor = payload?.color || payload?.root?.color || '#ccc';
+    const bgColor = featureColor || color || fill || '#ccc';
 
     // Fallback simple colors if depth is 1
     const moduleColor = isModule ? (bgColor !== '#ccc' ? bgColor : '#1976d2') : 'transparent';
@@ -101,6 +101,7 @@ export default function ProjectStructure() {
             const children = moduleFeatures.map(feat => ({
                 name: feat.title,
                 size: feat.expected_duration ? Math.max(feat.expected_duration, 0.1) : 0.1, // Treemap needs size > 0
+                featureColor: feat.color || theme.palette.primary.main,
                 color: feat.color || theme.palette.primary.main,
                 duration: feat.expected_duration || 0,
             }));
@@ -110,8 +111,9 @@ export default function ProjectStructure() {
 
             return {
                 name: mod.title,
+                featureColor: mod.color || theme.palette.secondary.main,
                 color: mod.color || theme.palette.secondary.main,
-                children: children.length > 0 ? children : [{ name: t('common.no_features', 'Keine Items'), size: 0.1, color: '#e0e0e0', duration: 0 }],
+                children: children.length > 0 ? children : [{ name: t('common.no_features', 'Keine Items'), size: 0.1, featureColor: '#e0e0e0', color: '#e0e0e0', duration: 0 }],
                 duration: moduleDuration
             };
         });
