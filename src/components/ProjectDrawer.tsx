@@ -8,9 +8,25 @@ import {
     InputAdornment
 } from "@mui/material";
 import { Close, Delete } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Project, ProjectFactor, useProjectStore } from "../store/useProjectStore";
 import { useTranslation } from "react-i18next";
+import {
+    MDXEditor,
+    headingsPlugin,
+    listsPlugin,
+    quotePlugin,
+    thematicBreakPlugin,
+    markdownShortcutPlugin,
+    toolbarPlugin,
+    UndoRedo,
+    BoldItalicUnderlineToggles,
+    BlockTypeSelect,
+    ListsToggle,
+    diffSourcePlugin,
+    DiffSourceToggleWrapper
+} from '@mdxeditor/editor';
+import '@mdxeditor/editor/style.css';
 
 const COLORS = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'];
 
@@ -112,6 +128,25 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
         onClose();
     };
 
+    const mdxPlugins = useMemo(() => [
+        headingsPlugin(),
+        listsPlugin(),
+        quotePlugin(),
+        thematicBreakPlugin(),
+        markdownShortcutPlugin(),
+        diffSourcePlugin({ viewMode: 'rich-text' }),
+        toolbarPlugin({
+            toolbarContents: () => (
+                <DiffSourceToggleWrapper>
+                    <UndoRedo />
+                    <BoldItalicUnderlineToggles />
+                    <BlockTypeSelect />
+                    <ListsToggle />
+                </DiffSourceToggleWrapper>
+            )
+        })
+    ], []);
+
     const handleDelete = async () => {
         if (project) {
             await deleteProject(project.id);
@@ -144,14 +179,15 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
                     required
                 />
 
-                <TextField
-                    label={t('projects.form.description')}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    fullWidth
-                    multiline
-                    minRows={3}
-                />
+                <Box sx={{ border: '1px solid #c4c4c4', borderRadius: 1, p: 1, minHeight: 250, '& .mdxeditor': { minHeight: 250 }, '& .mdxeditor-toolbar': { zIndex: 10 }, '& [data-radix-popper-content-wrapper]': { zIndex: 1300 } }}>
+                    <MDXEditor
+                        markdown={description}
+                        onChange={setDescription}
+                        placeholder={t('projects.form.description', "Description")}
+                        plugins={mdxPlugins}
+                        contentEditableClassName="prose max-w-none"
+                    />
+                </Box>
 
                 {/* Factors Section */}
                 <Box>

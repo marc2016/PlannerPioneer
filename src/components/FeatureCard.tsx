@@ -108,26 +108,7 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                     {feature.title}
                 </Typography>
 
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-
-                    sx={{
-                        width: '100%',
-                        whiteSpace: 'pre-wrap',
-                        wordWrap: 'break-word',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: 'vertical',
-                        flexGrow: 1,
-                        zIndex: 1,
-                        mb: 1
-                    }}
-                >
-                    {feature.description || t('features.no_description', "No description")}
-                </Typography>
+                <Box sx={{ flexGrow: 1, mb: 1 }} />
 
                 <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', mb: 1, zIndex: 1 }}>
                     {/* Duration Display */}

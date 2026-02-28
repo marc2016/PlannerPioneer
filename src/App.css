@@ -25,6 +25,16 @@
   overscroll-behavior: none;
 }
 
+/* Fix MDXEditor z-index in MUI Drawers */
+.mdxeditor-popup-container {
+  z-index: 1400 !important;
+}
+
+/* Override global h1 text-align: center for the editor */
+.mdxeditor h1 {
+  text-align: left;
+}
+
 .container {
   margin: 0;
   padding-top: 4vh;

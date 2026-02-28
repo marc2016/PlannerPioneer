@@ -11,10 +11,26 @@ import {
     MenuItem
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Feature, useFeatureStore } from "../store/useFeatureStore";
 import { useModuleStore } from "../store/useModuleStore"; // Import Module Store
 import { useTranslation } from "react-i18next";
+import {
+    MDXEditor,
+    headingsPlugin,
+    listsPlugin,
+    quotePlugin,
+    thematicBreakPlugin,
+    markdownShortcutPlugin,
+    toolbarPlugin,
+    UndoRedo,
+    BoldItalicUnderlineToggles,
+    BlockTypeSelect,
+    ListsToggle,
+    diffSourcePlugin,
+    DiffSourceToggleWrapper
+} from '@mdxeditor/editor';
+import '@mdxeditor/editor/style.css';
 
 const COLORS = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'];
 
@@ -113,6 +129,25 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
         onClose();
     };
 
+    const mdxPlugins = useMemo(() => [
+        headingsPlugin(),
+        listsPlugin(),
+        quotePlugin(),
+        thematicBreakPlugin(),
+        markdownShortcutPlugin(),
+        diffSourcePlugin({ viewMode: 'rich-text' }),
+        toolbarPlugin({
+            toolbarContents: () => (
+                <DiffSourceToggleWrapper>
+                    <UndoRedo />
+                    <BoldItalicUnderlineToggles />
+                    <BlockTypeSelect />
+                    <ListsToggle />
+                </DiffSourceToggleWrapper>
+            )
+        })
+    ], []);
+
     const handleDelete = async () => {
         if (feature) {
             await deleteFeature(feature.id);
@@ -167,14 +202,15 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
                     required
                 />
 
-                <TextField
-                    label={t('features.form.description', "Description")}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    fullWidth
-                    multiline
-                    minRows={3}
-                />
+                <Box sx={{ border: '1px solid #c4c4c4', borderRadius: 1, p: 1, minHeight: 250, '& .mdxeditor': { minHeight: 250 }, '& .mdxeditor-toolbar': { zIndex: 10 }, '& [data-radix-popper-content-wrapper]': { zIndex: 1300 } }}>
+                    <MDXEditor
+                        markdown={description}
+                        onChange={setDescription}
+                        placeholder={t('features.form.description', "Description")}
+                        plugins={mdxPlugins}
+                        contentEditableClassName="prose max-w-none"
+                    />
+                </Box>
 
                 {/* PERT Estimation Section */}
                 <Box sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>

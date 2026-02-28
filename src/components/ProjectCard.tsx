@@ -109,24 +109,7 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                     {project.title}
                 </Typography>
 
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{
-                        width: '100%',
-                        whiteSpace: 'pre-wrap',
-                        wordWrap: 'break-word',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: 'vertical',
-                        flexGrow: 1,
-                        zIndex: 1
-                    }}
-                >
-                    {project.description || t('projects.no_description')}
-                </Typography>
+                <Box sx={{ flexGrow: 1 }} />
 
                 {/* Factors List */}
                 {factors.length > 0 && (

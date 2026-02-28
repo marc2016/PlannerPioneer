@@ -114,24 +114,7 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                     {module.title}
                 </Typography>
 
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{
-                        width: '100%',
-                        whiteSpace: 'pre-wrap',
-                        wordWrap: 'break-word',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 3,
-                        WebkitBoxOrient: 'vertical',
-                        flexGrow: 1,
-                        zIndex: 1
-                    }}
-                >
-                    {module.description || t('modules.no_description', "No description")}
-                </Typography>
+                <Box sx={{ flexGrow: 1 }} />
                 <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end', mb: 1, zIndex: 1 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
                         {project && (

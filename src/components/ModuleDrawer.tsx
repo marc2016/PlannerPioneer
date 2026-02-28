@@ -11,11 +11,27 @@ import {
     MenuItem
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { Module, useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore"; // Import Project Store
 import { generateColorPalette } from "../lib/colorUtils";
 import { useTranslation } from "react-i18next";
+import {
+    MDXEditor,
+    headingsPlugin,
+    listsPlugin,
+    quotePlugin,
+    thematicBreakPlugin,
+    markdownShortcutPlugin,
+    toolbarPlugin,
+    UndoRedo,
+    BoldItalicUnderlineToggles,
+    BlockTypeSelect,
+    ListsToggle,
+    diffSourcePlugin,
+    DiffSourceToggleWrapper
+} from '@mdxeditor/editor';
+import '@mdxeditor/editor/style.css';
 
 const COLORS = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'];
 
@@ -84,6 +100,25 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
         onClose();
     };
 
+    const mdxPlugins = useMemo(() => [
+        headingsPlugin(),
+        listsPlugin(),
+        quotePlugin(),
+        thematicBreakPlugin(),
+        markdownShortcutPlugin(),
+        diffSourcePlugin({ viewMode: 'rich-text' }),
+        toolbarPlugin({
+            toolbarContents: () => (
+                <DiffSourceToggleWrapper>
+                    <UndoRedo />
+                    <BoldItalicUnderlineToggles />
+                    <BlockTypeSelect />
+                    <ListsToggle />
+                </DiffSourceToggleWrapper>
+            )
+        })
+    ], []);
+
     const handleDelete = async () => {
         if (module) {
             await deleteModule(module.id);
@@ -116,14 +151,15 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
                     required
                 />
 
-                <TextField
-                    label={t('modules.form.description', "Description")}
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    fullWidth
-                    multiline
-                    minRows={3}
-                />
+                <Box sx={{ border: '1px solid #c4c4c4', borderRadius: 1, p: 1, minHeight: 250, '& .mdxeditor': { minHeight: 250 }, '& .mdxeditor-toolbar': { zIndex: 10 }, '& [data-radix-popper-content-wrapper]': { zIndex: 1300 } }}>
+                    <MDXEditor
+                        markdown={description}
+                        onChange={setDescription}
+                        placeholder={t('modules.form.description', "Description")}
+                        plugins={mdxPlugins}
+                        contentEditableClassName="prose max-w-none"
+                    />
+                </Box>
 
                 {/* Project Selection */}
                 <FormControl fullWidth>
