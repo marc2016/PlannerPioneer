@@ -26,7 +26,7 @@ const CustomizedContent = (props: any) => {
     // We only render depth 1 (Modules) or depth 2 (Features)
     const isModule = depth === 1;
     const isFeature = depth === 2;
-    const bgColor = payload?.color || '#ccc';
+    const bgColor = payload?.color || payload?.root?.color || '#ccc';
 
     // Fallback simple colors if depth is 1
     const moduleColor = isModule ? (bgColor !== '#ccc' ? bgColor : '#1976d2') : 'transparent';
@@ -102,7 +102,7 @@ export default function ProjectStructure() {
                 name: feat.title,
                 size: feat.expected_duration ? Math.max(feat.expected_duration, 0.1) : 0.1, // Treemap needs size > 0
                 color: feat.color || theme.palette.primary.main,
-                duration: feat.expected_duration || 0
+                duration: feat.expected_duration || 0,
             }));
 
             // Calculate module total duration
