@@ -14,6 +14,9 @@ import {
     IconButton,
     CSSObject,
     Theme,
+    Badge,
+    Menu,
+    MenuItem,
     styled
 } from "@mui/material";
 import {
@@ -85,11 +88,25 @@ import { useProjectStore } from "../store/useProjectStore";
 //...
 export default function RootLayout() {
     const [open, setOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
     const location = useLocation();
-    const { appBackground, init, selectedProjectId } = useSettingsStore();
+    const { appBackground, init, selectedProjectId, setSelectedProjectId } = useSettingsStore();
     const { projects } = useProjectStore();
     const { t } = useTranslation();
+
+    const handleProjectClick = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleProjectClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleProjectSelect = (id: string) => {
+        setSelectedProjectId(id);
+        setAnchorEl(null);
+    };
 
     const selectedProject = useMemo(() => {
         if (!selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return null;
@@ -111,10 +128,14 @@ export default function RootLayout() {
     const menuItems = [
         { text: t('navigation.dashboard'), icon: <DashboardIcon />, path: "/" },
         { text: t('navigation.projects'), icon: <AccountTreeIcon />, path: "/projects" },
+        { isDivider: true, id: 'divider-1' },
         { text: t('navigation.modules'), icon: <ViewModuleIcon />, path: "/modules" },
         { text: t('navigation.features'), icon: <CalculateIcon />, path: "/features" },
         { text: t('navigation.structure'), icon: <HubIcon />, path: "/structure" },
         { text: t('navigation.table'), icon: <TableChartIcon />, path: "/table" },
+    ];
+
+    const bottomMenuItems = [
         { text: t('navigation.settings'), icon: <SettingsIcon />, path: "/settings" },
     ];
 
@@ -168,11 +189,83 @@ export default function RootLayout() {
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {menuItems.map((item) => (
+                    {menuItems.map((item) => {
+                        if (item.isDivider) {
+                            return <Divider key={item.id} sx={{ my: 1 }} />;
+                        }
+                        return (
+                            <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
+                                <ListItemButton
+                                    selected={location.pathname === item.path}
+                                    onClick={() => navigate(item.path!)}
+                                    sx={[
+                                        {
+                                            minHeight: 48,
+                                            px: 2.5,
+                                        },
+                                        open
+                                            ? {
+                                                justifyContent: "initial",
+                                            }
+                                            : {
+                                                justifyContent: "center",
+                                            },
+                                    ]}
+                                >
+                                    <ListItemIcon
+                                        sx={[
+                                            {
+                                                minWidth: 0,
+                                                justifyContent: "center",
+                                            },
+                                            open
+                                                ? {
+                                                    mr: 3,
+                                                }
+                                                : {
+                                                    mr: "auto",
+                                                },
+                                        ]}
+                                    >
+                                        {item.path === "/projects" && selectedProject ? (
+                                            <Badge
+                                                variant="dot"
+                                                sx={{
+                                                    '& .MuiBadge-badge': {
+                                                        backgroundColor: selectedProject.color || 'primary.main',
+                                                    }
+                                                }}
+                                            >
+                                                {item.icon}
+                                            </Badge>
+                                        ) : (
+                                            item.icon
+                                        )}
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={item.text!}
+                                        sx={[
+                                            open
+                                                ? {
+                                                    opacity: 1,
+                                                }
+                                                : {
+                                                    opacity: 0,
+                                                },
+                                        ]}
+                                    />
+                                </ListItemButton>
+                            </ListItem>
+                        );
+                    })}
+                </List>
+                <Box sx={{ flexGrow: 1 }} />
+                <List>
+                    {bottomMenuItems.map((item) => (
                         <ListItem key={item.text} disablePadding sx={{ display: "block" }}>
                             <ListItemButton
                                 selected={location.pathname === item.path}
-                                onClick={() => navigate(item.path)}
+                                onClick={() => navigate(item.path!)}
                                 sx={[
                                     {
                                         minHeight: 48,
@@ -220,13 +313,13 @@ export default function RootLayout() {
                         </ListItem>
                     ))}
                 </List>
-                <Box sx={{ flexGrow: 1 }} />
                 {selectedProject && (
                     <>
                         <Divider />
                         <List sx={{ mb: 1 }}>
                             <ListItem disablePadding sx={{ display: "block" }}>
                                 <ListItemButton
+                                    onClick={handleProjectClick}
                                     sx={[
                                         {
                                             minHeight: 48,
@@ -299,6 +392,42 @@ export default function RootLayout() {
                                 </ListItemButton>
                             </ListItem>
                         </List>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleProjectClose}
+                            anchorOrigin={{
+                                vertical: 'top',
+                                horizontal: open ? 'left' : 'center',
+                            }}
+                            transformOrigin={{
+                                vertical: 'bottom',
+                                horizontal: open ? 'left' : 'center',
+                            }}
+                        >
+                            <MenuItem
+                                selected={selectedProjectId === 'all'}
+                                onClick={() => handleProjectSelect('all')}
+                            >
+                                <ListItemIcon>
+                                    <AccountTreeIcon fontSize="small" />
+                                </ListItemIcon>
+                                Alle Projekte
+                            </MenuItem>
+                            <Divider />
+                            {projects.map((project) => (
+                                <MenuItem
+                                    key={project.id}
+                                    selected={selectedProjectId === project.id}
+                                    onClick={() => handleProjectSelect(project.id)}
+                                >
+                                    <ListItemIcon>
+                                        <Box sx={{ width: 16, height: 16, borderRadius: '50%', bgcolor: project.color || 'primary.main', display: 'inline-block' }} />
+                                    </ListItemIcon>
+                                    {project.title}
+                                </MenuItem>
+                            ))}
+                        </Menu>
                     </>
                 )}
             </MuiDrawer>
