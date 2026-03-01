@@ -49,12 +49,15 @@
         "form": {
             "title": "Projekttitel",
             "description": "Beschreibung",
-            "color": "Farbe"
+            "color": "Farbe",
+            "start_date": "Startdatum",
+            "end_date": "Enddatum"
         },
         "view_modules": "Module anzeigen",
         "view_features": "Items anzeigen",
         "module_count": "Module",
         "total_duration": "Gesamtzeit",
+        "time_period": "Zeitraum",
         "factors": {
             "title": "Faktoren",
             "add_factor": "Faktor hinzufügen",

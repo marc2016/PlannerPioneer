@@ -8,6 +8,8 @@ export interface ProjectsTable {
     description: string;
     color: string;
     completed: number;
+    start_date?: string;
+    end_date?: string;
     created_at: number;
     updated_at: number;
 }
@@ -70,6 +72,8 @@ export const initDb = async () => {
             .addColumn('description', 'text')
             .addColumn('color', 'text', (col) => col.notNull())
             .addColumn('completed', 'integer', (col) => col.notNull().defaultTo(0))
+            .addColumn('start_date', 'text')
+            .addColumn('end_date', 'text')
             .addColumn('created_at', 'integer', (col) => col.notNull())
             .addColumn('updated_at', 'integer', (col) => col.notNull())
             .execute();
@@ -128,6 +132,9 @@ export const initDb = async () => {
         await addColumnIfNotExists('features', 'pert_optimistic', 'real');
         await addColumnIfNotExists('features', 'pert_most_likely', 'real');
         await addColumnIfNotExists('features', 'pert_pessimistic', 'real');
+
+        await addColumnIfNotExists('projects', 'start_date', 'text');
+        await addColumnIfNotExists('projects', 'end_date', 'text');
 
         console.log('Database initialized successfully');
     } catch (error) {

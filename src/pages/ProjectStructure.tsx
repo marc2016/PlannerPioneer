@@ -12,7 +12,7 @@ import {
     Alert,
     Paper
 } from '@mui/material';
-import { Treemap, ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
+import { Treemap, ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, LabelList } from 'recharts';
 import { useTranslation } from 'react-i18next';
 import { useProjectStore } from '../store/useProjectStore';
 import { useModuleStore } from '../store/useModuleStore';
@@ -130,6 +130,32 @@ export default function ProjectStructure() {
 
     const totalDuration = selectedProject?.totalDuration || 0;
 
+    const riskData = useMemo(() => {
+        if (!selectedProject || !selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return [];
+
+        let projectVariance = 0;
+        const projectModules = modules.filter(m => m.project_id === selectedProjectId);
+        projectModules.forEach(mod => {
+            const moduleFeatures = features.filter(f => f.module_id === mod.id);
+            moduleFeatures.forEach(feat => {
+                projectVariance += (Number(feat.variance) || 0);
+            });
+        });
+
+        const stdDev = Math.sqrt(projectVariance);
+        const baseDuration = selectedProject.totalDuration || 0;
+        const factors = selectedProject.factors || [];
+        const factorDuration = factors.reduce((acc, factor) => acc + (baseDuration * (factor.value / 100)), 0);
+        const expectedD = baseDuration + factorDuration;
+
+        return [
+            { name: t('table.columns.expected', 'Erwartet'), value: Number(expectedD.toFixed(1)), fill: theme.palette.info.main },
+            { name: '1-Sigma (68%)', value: Number((expectedD + stdDev).toFixed(1)), fill: theme.palette.success.main },
+            { name: '2-Sigma (95%)', value: Number((expectedD + 2 * stdDev).toFixed(1)), fill: theme.palette.warning.main },
+            { name: '3-Sigma (99%)', value: Number((expectedD + 3 * stdDev).toFixed(1)), fill: theme.palette.error.main }
+        ];
+    }, [selectedProjectId, modules, features, selectedProject, t, theme]);
+
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -214,7 +240,7 @@ export default function ProjectStructure() {
                     </Grid>
 
                     {/* PieChart for Module comparison */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{ xs: 12, lg: 4 }}>
                         <Card elevation={3} sx={{ borderRadius: 3, height: '100%' }}>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
@@ -253,14 +279,54 @@ export default function ProjectStructure() {
                         </Card>
                     </Grid>
 
+                    {/* Deviation Risk Chart */}
+                    <Grid size={{ xs: 12, lg: 4 }}>
+                        <Card elevation={3} sx={{ borderRadius: 3, height: '100%' }}>
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
+                                    {t('structure.deviation_risk', 'Abweichungsrisiko')}
+                                </Typography>
+                                {riskData.length > 0 ? (
+                                    <Box sx={{ width: '100%', height: 300 }}>
+                                        <ResponsiveContainer>
+                                            <BarChart data={riskData} margin={{ top: 20, right: 10, left: 0, bottom: 5 }}>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11 }} />
+                                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} width={40} />
+                                                <Tooltip formatter={(value: any) => [`${Number(value || 0).toFixed(1)} h`, 'Dauer']} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+                                                <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                                    {riskData.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                    ))}
+                                                    <LabelList dataKey="value" position="top" formatter={(val: any) => `${Number(val || 0).toFixed(1)}h`} style={{ fill: '#666', fontSize: 11, fontWeight: 'bold' }} />
+                                                </Bar>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </Box>
+                                ) : (
+                                    <Box sx={{ display: 'flex', height: 300, alignItems: 'center', justifyContent: 'center' }}>
+                                        <Typography color="text.secondary">
+                                            {t('structure.no_durations', 'Keine Dauerschätzungen vorhanden')}
+                                        </Typography>
+                                    </Box>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
                     {/* Summary Info Box */}
-                    <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{ xs: 12, lg: 4 }}>
                         <Card elevation={3} sx={{ borderRadius: 3, height: '100%', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
                             <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', alignItems: 'center' }}>
                                 <Typography variant="h5" gutterBottom fontWeight="bold" color="primary.dark">
                                     {selectedProject.title}
                                 </Typography>
-                                <Typography variant="body1" sx={{ mt: 2, mb: 1 }}>
+                                {(selectedProject.startDate || selectedProject.endDate) && (
+                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                        {t('projects.time_period', 'Zeitraum')}: {selectedProject.startDate ? new Date(selectedProject.startDate).toLocaleDateString() : '...'} - {selectedProject.endDate ? new Date(selectedProject.endDate).toLocaleDateString() : '...'}
+                                    </Typography>
+                                )}
+                                <Typography variant="body1" sx={{ mt: 1, mb: 1 }}>
                                     {t('structure.total_modules', 'Anzahl Module')}: <strong>{data.length}</strong>
                                 </Typography>
                                 <Typography variant="body1" sx={{ mb: 3 }}>

@@ -151,6 +151,19 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                             sx={{ opacity: 0.8, fontWeight: 'bold' }}
                         />
                     </Tooltip>
+
+                    {/* Time Period */}
+                    {(project.startDate || project.endDate) && (
+                        <Tooltip title={t('projects.time_period', 'Zeitraum') as string}>
+                            <Chip
+                                icon={<AccessTimeIcon fontSize="small" />}
+                                label={`${project.startDate ? new Date(project.startDate).toLocaleDateString() : '...'} - ${project.endDate ? new Date(project.endDate).toLocaleDateString() : '...'}`}
+                                size="small"
+                                variant="outlined"
+                                sx={{ opacity: 0.8 }}
+                            />
+                        </Tooltip>
+                    )}
                 </Box>
 
             </CardActionArea>

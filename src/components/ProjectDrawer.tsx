@@ -43,6 +43,8 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [color, setColor] = useState(COLORS[5]);
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     // Local state for factors
@@ -58,6 +60,8 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
             setTitle(project.title);
             setDescription(project.description || "");
             setColor(project.color || COLORS[5]);
+            setStartDate(project.startDate || "");
+            setEndDate(project.endDate || "");
             setLocalFactors(project.factors || []);
             setDeletedFactorIds([]);
             setShowDeleteConfirm(false);
@@ -65,6 +69,8 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
             setTitle("");
             setDescription("");
             setColor(COLORS[5]); // Default blue
+            setStartDate("");
+            setEndDate("");
             setLocalFactors([]);
             setDeletedFactorIds([]);
             setShowDeleteConfirm(false);
@@ -100,9 +106,9 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
         const projectId = project?.id || crypto.randomUUID();
 
         if (project) {
-            await updateProject(project.id, { title, description, color });
+            await updateProject(project.id, { title, description, color, startDate: startDate || undefined, endDate: endDate || undefined });
         } else {
-            await addProject({ id: projectId, title, description, color });
+            await addProject({ id: projectId, title, description, color, startDate: startDate || undefined, endDate: endDate || undefined });
         }
 
         // Handle Factors
@@ -178,6 +184,25 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
                     fullWidth
                     required
                 />
+
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <TextField
+                        label={t('projects.form.start_date', 'Startdatum')}
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        fullWidth
+                        slotProps={{ inputLabel: { shrink: true } }}
+                    />
+                    <TextField
+                        label={t('projects.form.end_date', 'Enddatum')}
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        fullWidth
+                        slotProps={{ inputLabel: { shrink: true } }}
+                    />
+                </Box>
 
                 <Box sx={{ border: '1px solid #c4c4c4', borderRadius: 1, p: 1, minHeight: 250, '& .mdxeditor': { minHeight: 250 }, '& .mdxeditor-toolbar': { zIndex: 10 }, '& [data-radix-popper-content-wrapper]': { zIndex: 1300 } }}>
                     <MDXEditor

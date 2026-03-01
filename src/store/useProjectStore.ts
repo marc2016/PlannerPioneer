@@ -20,6 +20,8 @@ export interface Project {
     moduleCount?: number;
     totalDuration?: number;
     factors?: ProjectFactor[];
+    startDate?: string;
+    endDate?: string;
 }
 
 interface ProjectState {
@@ -77,10 +79,11 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
                     description: p.description,
                     completed: Boolean(p.completed),
                     color: p.color,
-                    createdAt: p.created_at,
                     updatedAt: p.updated_at,
                     moduleCount: Number(p.moduleCount || 0),
                     totalDuration: parseFloat(totalDuration.toFixed(1)),
+                    startDate: p.start_date,
+                    endDate: p.end_date,
                     factors: factors.filter(f => f.project_id === p.id).map(f => ({
                         id: f.id,
                         projectId: f.project_id,
@@ -98,6 +101,8 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             title: projectData.title,
             description: projectData.description || '',
             color: projectData.color || '#2196f3',
+            start_date: projectData.startDate,
+            end_date: projectData.endDate,
             completed: 0,
             created_at: Date.now(),
             updated_at: Date.now()
@@ -126,12 +131,14 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         await get().init();
     },
 
-    updateProject: async (id: string, projectData: Partial<Omit<Project, 'id' | 'createdAt' | 'completed'>>) => {
+    updateProject: async (id: string, projectData: Partial<Omit<Project, 'id' | 'createdAt' | 'completed' | 'moduleCount' | 'totalDuration' | 'factors'>>) => {
         await db.updateTable('projects')
             .set({
                 title: projectData.title,
                 description: projectData.description,
                 color: projectData.color,
+                start_date: projectData.startDate,
+                end_date: projectData.endDate,
                 updated_at: Date.now()
             })
             .where('id', '=', id)
