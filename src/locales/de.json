@@ -21,7 +21,16 @@
         "features": "Kalkulation",
         "table": "Gesamttabelle",
         "structure": "Projektstruktur",
-        "settings": "Einstellungen"
+        "settings": "Einstellungen",
+        "gantt": "Gantt-Diagramm",
+        "gantt_view": "Ansicht",
+        "view_modes": {
+            "day": "Tag",
+            "week": "Woche",
+            "month": "Monat",
+            "quarter": "Quartal",
+            "year": "Jahr"
+        }
     },
     "dashboard": {
         "welcome": "Willkommen zurück",

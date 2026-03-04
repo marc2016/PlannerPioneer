@@ -7,6 +7,7 @@ import Features from "./pages/Features";
 import MasterTable from "./pages/MasterTable";
 import ProjectStructure from "./pages/ProjectStructure";
 import Settings from "./pages/Settings";
+import ProjectGantt from "./pages/ProjectGantt";
 import "./App.css";
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <Route path="/" element={<RootLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="projects" element={<Projects />} />
+          <Route path="gantt" element={<ProjectGantt />} />
           <Route path="modules" element={<Modules />} />
           <Route path="features" element={<Features />} />
           <Route path="structure" element={<ProjectStructure />} />

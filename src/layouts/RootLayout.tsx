@@ -29,6 +29,7 @@ import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import HubIcon from '@mui/icons-material/Hub';
 import TableChartIcon from '@mui/icons-material/TableChart';
+import ViewTimelineIcon from '@mui/icons-material/ViewTimeline';
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useSettingsStore } from "../store/useSettingsStore";
 import TitleBar from "../components/TitleBar";
@@ -128,6 +129,7 @@ export default function RootLayout() {
     const menuItems = [
         { text: t('navigation.dashboard'), icon: <DashboardIcon />, path: "/" },
         { text: t('navigation.projects'), icon: <AccountTreeIcon />, path: "/projects" },
+        { text: t('navigation.gantt'), icon: <ViewTimelineIcon />, path: "/gantt" },
         { isDivider: true, id: 'divider-1' },
         { text: t('navigation.modules'), icon: <ViewModuleIcon />, path: "/modules" },
         { text: t('navigation.features'), icon: <CalculateIcon />, path: "/features" },

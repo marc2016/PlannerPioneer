@@ -21,7 +21,16 @@
         "features": "Features",
         "table": "Master Table",
         "structure": "Project Structure",
-        "settings": "Settings"
+        "settings": "Settings",
+        "gantt": "Gantt Chart",
+        "gantt_view": "View",
+        "view_modes": {
+            "day": "Day",
+            "week": "Week",
+            "month": "Month",
+            "quarter": "Quarter",
+            "year": "Year"
+        }
     },
     "dashboard": {
         "welcome": "Welcome back",

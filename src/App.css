@@ -152,3 +152,21 @@ input {
     background-color: #0f0f0f98;
   }
 }
+
+/* Fix text overlapping in frappe-gantt month/year view */
+.gantt .bar-label {
+  pointer-events: none;
+}
+
+.gantt-container .upper-text,
+.gantt-container .lower-text {
+  font-size: 11px !important;
+}
+
+.gantt .bar-wrapper .bar {
+  transition: none !important;
+}
+
+.gantt .bar-wrapper:hover .bar {
+  transition: transform 0.1s ease !important;
+}

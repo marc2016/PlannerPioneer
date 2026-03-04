@@ -21,6 +21,7 @@
     "@tauri-apps/plugin-opener": "^2",
     "@tauri-apps/plugin-sql": "^2.3.2",
     "framer-motion": "^12.33.0",
+    "gantt-task-react": "github:marc2016/gantt-task-react",
     "i18next": "^25.8.4",
     "i18next-browser-languagedetector": "^8.2.0",
     "kysely": "^0.28.11",
