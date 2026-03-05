@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Box, Typography, Paper, Alert, ToggleButton, ToggleButtonGroup, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useProjectStore } from '../store/useProjectStore';
+import { useSettingsStore } from '../store/useSettingsStore';
 import { motion } from 'framer-motion';
 import TodayIcon from '@mui/icons-material/Today';
 // @ts-ignore
@@ -11,8 +12,10 @@ import 'gantt-task-react/dist/index.css';
 export default function ProjectGantt() {
     const { t, i18n } = useTranslation();
     const { projects } = useProjectStore();
-    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.Month);
+    const { ganttViewMode, setGanttViewMode } = useSettingsStore();
     const [viewDate, setViewDate] = useState<Date>(new Date());
+
+    const viewMode = (ganttViewMode as ViewMode) || ViewMode.Month;
 
     const validProjects = useMemo(() => {
         return projects.filter(p => p.startDate && p.endDate);
@@ -55,7 +58,7 @@ export default function ProjectGantt() {
         newViewMode: ViewMode | null,
     ) => {
         if (newViewMode !== null) {
-            setViewMode(newViewMode);
+            setGanttViewMode(newViewMode);
         }
     };
 

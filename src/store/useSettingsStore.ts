@@ -4,14 +4,17 @@ import { BaseDirectory, exists, mkdir, readTextFile, writeTextFile } from '@taur
 interface SettingsState {
     appBackground: string;
     selectedProjectId: string;
+    ganttViewMode: string;
     setAppBackground: (path: string) => void;
     setSelectedProjectId: (id: string) => void;
+    setGanttViewMode: (mode: string) => void;
     init: () => Promise<void>;
 }
 
 export const useSettingsStore = create<SettingsState>((set, get) => ({
     appBackground: '', // Default to empty or a specific default path
     selectedProjectId: 'all',
+    ganttViewMode: 'Month', // Default view mode
     setAppBackground: async (path: string) => {
         set({ appBackground: path });
         // Auto-save on change
@@ -22,7 +25,8 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
                 await mkdir('', { baseDir: BaseDirectory.AppConfig });
             }
             const currentSelected = get().selectedProjectId;
-            await writeTextFile('settings.json', JSON.stringify({ appBackground: path, selectedProjectId: currentSelected }), {
+            const currentGanttViewMode = get().ganttViewMode;
+            await writeTextFile('settings.json', JSON.stringify({ appBackground: path, selectedProjectId: currentSelected, ganttViewMode: currentGanttViewMode }), {
                 baseDir: BaseDirectory.AppConfig,
                 create: true,
             });
@@ -39,13 +43,32 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
                 await mkdir('', { baseDir: BaseDirectory.AppConfig });
             }
             const currentBg = get().appBackground;
-            await writeTextFile('settings.json', JSON.stringify({ appBackground: currentBg, selectedProjectId: id }), {
+            const currentGanttViewMode = get().ganttViewMode;
+            await writeTextFile('settings.json', JSON.stringify({ appBackground: currentBg, selectedProjectId: id, ganttViewMode: currentGanttViewMode }), {
                 baseDir: BaseDirectory.AppConfig,
                 create: true,
             });
             console.log('Selected project saved successfully.');
         } catch (error) {
             console.error('Failed to save selected project:', error);
+        }
+    },
+    setGanttViewMode: async (mode: string) => {
+        set({ ganttViewMode: mode });
+        try {
+            console.log('Attempting to save gantt view mode...', mode);
+            if (!await exists('', { baseDir: BaseDirectory.AppConfig })) {
+                await mkdir('', { baseDir: BaseDirectory.AppConfig });
+            }
+            const currentBg = get().appBackground;
+            const currentSelected = get().selectedProjectId;
+            await writeTextFile('settings.json', JSON.stringify({ appBackground: currentBg, selectedProjectId: currentSelected, ganttViewMode: mode }), {
+                baseDir: BaseDirectory.AppConfig,
+                create: true,
+            });
+            console.log('Gantt view mode saved successfully.');
+        } catch (error) {
+            console.error('Failed to save gantt view mode:', error);
         }
     },
     init: async () => {
@@ -62,6 +85,9 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
                 }
                 if (settings.selectedProjectId) {
                     set({ selectedProjectId: settings.selectedProjectId });
+                }
+                if (settings.ganttViewMode) {
+                    set({ ganttViewMode: settings.ganttViewMode });
                 }
             } else {
                 console.log('No settings file found.');
