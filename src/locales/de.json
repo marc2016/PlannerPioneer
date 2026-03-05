@@ -12,7 +12,9 @@
         "status": "Status",
         "not_completed": "Nicht abgeschlossen",
         "completed": "Abgeschlossen",
-        "edit_description": "Beschreibung bearbeiten"
+        "edit_description": "Beschreibung bearbeiten",
+        "export": "Exportieren",
+        "refresh": "Aktualisieren"
     },
     "navigation": {
         "dashboard": "Dashboard",
@@ -30,7 +32,8 @@
             "month": "Monat",
             "quarter": "Quartal",
             "year": "Jahr"
-        }
+        },
+        "report": "Bericht"
     },
     "dashboard": {
         "welcome": "Willkommen zurück",
@@ -55,6 +58,8 @@
         "no_description": "Keine Beschreibung",
         "edit_project": "Projekt bearbeiten",
         "new_project": "Neues Projekt",
+        "import_project": "Projekt importieren",
+        "import_failed": "Import fehlgeschlagen. Ungültiges Format.",
         "form": {
             "title": "Projekttitel",
             "description": "Beschreibung",
@@ -92,7 +97,13 @@
             "color": "Farbe",
             "project": "Projekt",
             "feature_count": "Items",
-            "total_duration": "Gesamtdauer"
+            "total_duration": "Gesamtdauer",
+            "t_shirt_size": "T-Shirt Größe",
+            "size_none": "Keine Schätzung",
+            "size_s": "S (Klein)",
+            "size_m": "M (Mittel)",
+            "size_l": "L (Groß)",
+            "size_xl": "XL (Sehr groß)"
         }
     },
     "features": {
@@ -156,7 +167,18 @@
         "no_data": "Keine Daten zur Anzeige der Struktur vorhanden.",
         "composition_treemap": "Struktur (Module & Items)",
         "module_distribution": "Modulanteile (Dauer)",
+        "deviation_risk": "Abweichungsrisiko",
+        "t_shirt_distribution": "T-Shirt Größen (Module)",
         "no_durations": "Keine Dauerschätzungen vorhanden",
         "total_modules": "Anzahl Module"
+    },
+    "report": {
+        "title": "Projektbericht",
+        "description": "Automatisch generierter Markdown-Bericht des Projekts.",
+        "no_project": "Bitte wähle zuerst ein Projekt aus.",
+        "copy": "In Zwischenablage kopieren",
+        "download": "Markdown herunterladen",
+        "print": "Als PDF speichern / Drucken",
+        "copied_success": "In die Zwischenablage kopiert!"
     }
 }

@@ -12,7 +12,9 @@
         "status": "Status",
         "not_completed": "Not Completed",
         "completed": "Completed",
-        "edit_description": "Edit description"
+        "edit_description": "Edit description",
+        "export": "Export",
+        "refresh": "Refresh"
     },
     "navigation": {
         "dashboard": "Dashboard",
@@ -30,7 +32,8 @@
             "month": "Month",
             "quarter": "Quarter",
             "year": "Year"
-        }
+        },
+        "report": "Report"
     },
     "dashboard": {
         "welcome": "Welcome back",
@@ -55,6 +58,8 @@
         "no_description": "No description",
         "edit_project": "Edit Project",
         "new_project": "New Project",
+        "import_project": "Import Project",
+        "import_failed": "Import failed. Invalid format.",
         "form": {
             "title": "Project Title",
             "description": "Description",
@@ -92,7 +97,13 @@
             "color": "Color",
             "project": "Project",
             "feature_count": "Items",
-            "total_duration": "Total Duration"
+            "total_duration": "Total Duration",
+            "t_shirt_size": "T-Shirt Size",
+            "size_none": "No Estimation",
+            "size_s": "S (Small)",
+            "size_m": "M (Medium)",
+            "size_l": "L (Large)",
+            "size_xl": "XL (Extra Large)"
         }
     },
     "features": {
@@ -156,7 +167,18 @@
         "no_data": "No data available to display the structure.",
         "composition_treemap": "Structure (Modules & Items)",
         "module_distribution": "Module Distribution (Duration)",
+        "deviation_risk": "Deviation Risk",
+        "t_shirt_distribution": "T-Shirt Sizes (Modules)",
         "no_durations": "No duration estimations available",
         "total_modules": "Number of Modules"
+    },
+    "report": {
+        "title": "Project Report",
+        "description": "Auto-generated markdown report of the project.",
+        "no_project": "Please select a project first.",
+        "copy": "Copy to Clipboard",
+        "download": "Download Markdown",
+        "print": "Save as PDF / Print",
+        "copied_success": "Copied to clipboard!"
     }
 }
