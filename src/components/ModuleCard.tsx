@@ -185,17 +185,19 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
             <CardActions sx={{ bgcolor: 'white', justifyContent: 'flex-end', zIndex: 2, p: 1 }} onClick={(e) => e.stopPropagation()}>
                 {!isDeleting ? (
                     <>
-                        {/* Toggle Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onToggle(module.id);
-                            }}
-                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                        >
-                            {module.completed ? <Adjust /> : <CheckCircleOutline />}
-                        </IconButton>
+                        {/* View Features Button */}
+                        <Tooltip title={t('modules.view_features', "View Features")}>
+                            <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/features?moduleId=${module.id}`);
+                                }}
+                                sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            >
+                                <ViewList />
+                            </IconButton>
+                        </Tooltip>
 
                         {/* Edit Description Button */}
                         <IconButton
@@ -210,19 +212,17 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                             <Description />
                         </IconButton>
 
-                        {/* View Features Button */}
-                        <Tooltip title={t('modules.view_features', "View Features")}>
-                            <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/features?moduleId=${module.id}`);
-                                }}
-                                sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                            >
-                                <ViewList />
-                            </IconButton>
-                        </Tooltip>
+                        {/* Toggle Button */}
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onToggle(module.id);
+                            }}
+                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                        >
+                            {module.completed ? <Adjust /> : <CheckCircleOutline />}
+                        </IconButton>
 
                         {/* Delete Button */}
                         <IconButton

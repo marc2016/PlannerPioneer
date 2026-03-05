@@ -1,7 +1,11 @@
-import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, Divider, TextField, InputAdornment } from "@mui/material";
+import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, Divider, TextField, InputAdornment, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useEffect, useState, useMemo } from "react";
 import { useFeatureStore, Feature } from "../store/useFeatureStore";
 import { useModuleStore } from "../store/useModuleStore";
@@ -27,7 +31,8 @@ export default function Features() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
 
-    const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
+    const [showModuleRows, setShowModuleRows] = useState(true);
+    const [sortBy, setSortBy] = useState<'alpha' | 'duration'>('alpha');
     const [moduleFilter, setModuleFilter] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -39,9 +44,6 @@ export default function Features() {
     }, [modules, projectFilter]);
 
     const filteredFeatures = features.filter(f => {
-        // Status filter
-        if (statusFilter === 'active' && f.completed) return false;
-        if (statusFilter === 'completed' && !f.completed) return false;
 
         // Module filter
         if (moduleFilter !== 'all') {
@@ -80,11 +82,70 @@ export default function Features() {
         }
 
         return true;
+    }).sort((a, b) => {
+        if (sortBy === 'alpha') {
+            return a.title.localeCompare(b.title);
+        } else {
+            const durA = a.expected_duration || 0;
+            const durB = b.expected_duration || 0;
+            return durB - durA; // Descending duration (longer features first)
+        }
     });
 
     const activeFeatures = filteredFeatures.filter(f => !f.completed);
     const completedFeatures = filteredFeatures.filter(f => f.completed);
     const { t } = useTranslation();
+
+    const groupByModule = (featuresToGroup: Feature[]) => {
+        const groups: Record<string, Feature[]> = {};
+        featuresToGroup.forEach(f => {
+            const modId = f.module_id || 'unassigned';
+            if (!groups[modId]) groups[modId] = [];
+            groups[modId].push(f);
+        });
+        return groups;
+    };
+
+    const activeGroups = groupByModule(activeFeatures);
+    const completedGroups = groupByModule(completedFeatures);
+
+    const renderFeatureGroup = (moduleId: string, featuresInGroup: Feature[], isCompleted: boolean) => {
+        return (
+            <Box key={moduleId} sx={{ mb: 2 }}>
+                <MotionBox
+                    layout
+                    transition={spring}
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                        gap: 2
+                    }}
+                >
+                    <AnimatePresence mode="popLayout">
+                        {featuresInGroup.map((feature) => (
+                            <MotionBox
+                                key={feature.id}
+                                layoutId={feature.id}
+                                layout
+                                initial={isCompleted ? { opacity: 0 } : undefined}
+                                animate={isCompleted ? { opacity: 1 } : undefined}
+                                exit={{ opacity: 0, scale: 0.8 }}
+                                transition={spring}
+                                sx={{ maxWidth: 280, width: '100%', height: '100%', mx: 'auto' }}
+                            >
+                                <FeatureCard
+                                    feature={feature}
+                                    onClick={handleCardClick}
+                                    onDelete={deleteFeature}
+                                    onToggle={toggleFeature}
+                                />
+                            </MotionBox>
+                        ))}
+                    </AnimatePresence>
+                </MotionBox>
+            </Box>
+        );
+    };
 
     const location = useLocation();
 
@@ -103,10 +164,6 @@ export default function Features() {
 
         if (projectId) {
             setProjectFilter(projectId);
-            // If we filter by project, we should probably reset module filter unless it's also specified?
-            // Existing logic in Select onChange resets module filter when project changes.
-            // But here, if both are present (unlikely from ProjectCard, but possible), we might want to respect both if valid.
-            // For now, just setting project filter is enough as it filters the module dropdown options too.
         }
     }, [init, initModules, initProjects, location.search]);
 
@@ -240,27 +297,67 @@ export default function Features() {
                             </Select>
                         </FormControl>
 
-                        {/* Status Filter */}
-                        <FormControl size="small" sx={{ minWidth: 150 }}>
-                            <Select
-                                value={statusFilter}
-                                onChange={(e) => setStatusFilter(e.target.value as 'all' | 'active' | 'completed')}
-                                displayEmpty
-                                variant="outlined"
-                                sx={{
-                                    backgroundColor: 'rgba(255,255,255,0.5)',
-                                    borderRadius: 2,
-                                    '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                    '&:hover .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
-                                }}
-                            >
-                                <MenuItem value="all">{t('filters.all', "Alle")}</MenuItem>
-                                <MenuItem value="active">{t('filters.active', "Aktiv")}</MenuItem>
-                                <MenuItem value="completed">{t('filters.completed', "Abgeschlossen")}</MenuItem>
-                            </Select>
-                        </FormControl>
+                        {/* View Toggle */}
+                        <ToggleButtonGroup
+                            value={showModuleRows}
+                            exclusive
+                            onChange={(_, newValue) => newValue !== null && setShowModuleRows(newValue)}
+                            size="small"
+                            sx={{
+                                backgroundColor: 'rgba(255,255,255,0.5)',
+                                borderRadius: 2,
+                                '& .MuiToggleButton-root': {
+                                    border: 'none',
+                                    px: 2,
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'primary.main',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: 'primary.dark',
+                                        }
+                                    }
+                                },
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                            }}
+                        >
+                            <ToggleButton value={true}>
+                                <TableRowsIcon fontSize="small" />
+                            </ToggleButton>
+                            <ToggleButton value={false}>
+                                <ViewModuleIcon fontSize="small" />
+                            </ToggleButton>
+                        </ToggleButtonGroup>
+
+                        {/* Sort Toggle */}
+                        <ToggleButtonGroup
+                            value={sortBy}
+                            exclusive
+                            onChange={(_, newValue) => newValue !== null && setSortBy(newValue)}
+                            size="small"
+                            sx={{
+                                backgroundColor: 'rgba(255,255,255,0.5)',
+                                borderRadius: 2,
+                                '& .MuiToggleButton-root': {
+                                    border: 'none',
+                                    px: 2,
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'primary.main',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: 'primary.dark',
+                                        }
+                                    }
+                                },
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                            }}
+                        >
+                            <ToggleButton value="alpha" title={t('sort.alphabetical', 'Alphabetisch')}>
+                                <SortByAlphaIcon fontSize="small" />
+                            </ToggleButton>
+                            <ToggleButton value="duration" title={t('sort.duration', 'Dauer')}>
+                                <AccessTimeIcon fontSize="small" />
+                            </ToggleButton>
+                        </ToggleButtonGroup>
                     </Box>
 
                     <Box sx={{ flexGrow: 1 }} />
@@ -280,87 +377,123 @@ export default function Features() {
             </Paper>
 
             <LayoutGroup>
+                {showModuleRows ? (
+                    <>
+                        {Object.entries(activeGroups).sort(([aId], [bId]) => {
+                            if (aId === 'unassigned') return 1;
+                            if (bId === 'unassigned') return -1;
+                            return 0;
+                        }).map(([modId, groupFeatures]) => renderFeatureGroup(modId, groupFeatures, false))}
 
-                <MotionBox
-                    layout
-                    transition={spring}
-                    sx={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                        gap: 2
-                    }}
-                >
-                    <AnimatePresence mode="popLayout">
-                        {activeFeatures.map((feature) => (
-                            <MotionBox
-                                key={feature.id}
-                                layoutId={feature.id}
+                        {completedFeatures.length > 0 && (
+                            <MotionPaper
                                 layout
-                                exit={{ opacity: 0, scale: 0.8 }}
                                 transition={spring}
-                                sx={{ maxWidth: 280, width: '100%', height: '100%', mx: 'auto' }}
+                                elevation={0}
+                                className="glass-paper"
+                                sx={{
+                                    my: 4,
+                                    p: 2
+                                }}
                             >
-                                <FeatureCard
-                                    feature={feature}
-                                    onClick={handleCardClick}
-                                    onDelete={deleteFeature}
-                                    onToggle={toggleFeature}
-                                />
-                            </MotionBox>
-                        ))}
-                    </AnimatePresence>
-                </MotionBox>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary' }}>
+                                        {t('features.completed_title', "Completed Features")}
+                                    </Typography>
+                                </Box>
+                            </MotionPaper>
+                        )}
 
-                <MotionPaper
-                    layout
-                    transition={spring}
-                    elevation={0}
-                    className="glass-paper"
-                    sx={{
-                        my: 4,
-                        p: 2
-                    }}
-                >
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary' }}>
-                            {t('features.completed_title', "Completed Features")}
-                        </Typography>
-                    </Box>
-                </MotionPaper>
+                        {Object.entries(completedGroups).sort(([aId], [bId]) => {
+                            if (aId === 'unassigned') return 1;
+                            if (bId === 'unassigned') return -1;
+                            return 0;
+                        }).map(([modId, groupFeatures]) => renderFeatureGroup(modId, groupFeatures, true))}
+                    </>
+                ) : (
+                    <>
+                        <MotionBox
+                            layout
+                            transition={spring}
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                                gap: 2
+                            }}
+                        >
+                            <AnimatePresence mode="popLayout">
+                                {activeFeatures.map((feature) => (
+                                    <MotionBox
+                                        key={feature.id}
+                                        layoutId={feature.id}
+                                        layout
+                                        exit={{ opacity: 0, scale: 0.8 }}
+                                        transition={spring}
+                                        sx={{ maxWidth: 280, width: '100%', height: '100%', mx: 'auto' }}
+                                    >
+                                        <FeatureCard
+                                            feature={feature}
+                                            onClick={handleCardClick}
+                                            onDelete={deleteFeature}
+                                            onToggle={toggleFeature}
+                                        />
+                                    </MotionBox>
+                                ))}
+                            </AnimatePresence>
+                        </MotionBox>
 
-                <MotionBox
-                    layout
-                    transition={spring}
-                    sx={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-                        gap: 2
-                    }}
-                >
-                    <AnimatePresence mode="popLayout">
-                        {completedFeatures.map((feature) => (
-                            <MotionBox
-                                key={feature.id}
-                                layoutId={feature.id}
+                        {completedFeatures.length > 0 && (
+                            <MotionPaper
                                 layout
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
                                 transition={spring}
-                                sx={{ maxWidth: 280, width: '100%', height: '100%', mx: 'auto' }}
+                                elevation={0}
+                                className="glass-paper"
+                                sx={{
+                                    my: 4,
+                                    p: 2
+                                }}
                             >
-                                <FeatureCard
-                                    feature={feature}
-                                    onClick={handleCardClick}
-                                    onDelete={deleteFeature}
-                                    onToggle={toggleFeature}
-                                />
-                            </MotionBox>
-                        ))}
-                    </AnimatePresence>
-                </MotionBox>
+                                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <Typography variant="h4" sx={{ fontWeight: 100, color: 'text.secondary' }}>
+                                        {t('features.completed_title', "Completed Features")}
+                                    </Typography>
+                                </Box>
+                            </MotionPaper>
+                        )}
 
-
+                        <MotionBox
+                            layout
+                            transition={spring}
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                                gap: 2
+                            }}
+                        >
+                            <AnimatePresence mode="popLayout">
+                                {completedFeatures.map((feature) => (
+                                    <MotionBox
+                                        key={feature.id}
+                                        layoutId={feature.id}
+                                        layout
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={spring}
+                                        sx={{ maxWidth: 280, width: '100%', height: '100%', mx: 'auto' }}
+                                    >
+                                        <FeatureCard
+                                            feature={feature}
+                                            onClick={handleCardClick}
+                                            onDelete={deleteFeature}
+                                            onToggle={toggleFeature}
+                                        />
+                                    </MotionBox>
+                                ))}
+                            </AnimatePresence>
+                        </MotionBox>
+                    </>
+                )}
             </LayoutGroup>
             <Fab
                 aria-label="add"
@@ -383,6 +516,6 @@ export default function Features() {
                 initialModuleId={moduleFilter}
                 filterProjectId={projectFilter}
             />
-        </Box>
+        </Box >
     );
 }

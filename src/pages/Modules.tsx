@@ -1,6 +1,9 @@
-import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, Divider, TextField, InputAdornment } from "@mui/material";
+import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, Divider, TextField, InputAdornment, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
+import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CheckroomIcon from '@mui/icons-material/Checkroom';
 import { useEffect, useState } from "react";
 import { useModuleStore, Module } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
@@ -25,6 +28,7 @@ export default function Modules() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedModule, setSelectedModule] = useState<Module | null>(null);
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
+    const [sortBy, setSortBy] = useState<'alpha' | 'duration' | 'tshirt'>('alpha');
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredModules = modules.filter(m => {
@@ -50,6 +54,21 @@ export default function Modules() {
         }
 
         return true;
+    }).sort((a, b) => {
+        if (sortBy === 'alpha') {
+            return a.title.localeCompare(b.title);
+        } else if (sortBy === 'duration') {
+            const durA = a.totalDuration || 0;
+            const durB = b.totalDuration || 0;
+            return durB - durA;
+        } else {
+            // T-shirt size sorting
+            const sizeOrder = { 'XL': 4, 'L': 3, 'M': 2, 'S': 1, undefined: 0 };
+            const orderA = sizeOrder[a.tShirtSize as keyof typeof sizeOrder] || 0;
+            const orderB = sizeOrder[b.tShirtSize as keyof typeof sizeOrder] || 0;
+            if (orderA !== orderB) return orderB - orderA; // Larger first
+            return a.title.localeCompare(b.title); // Secondary: Alpha
+        }
     });
 
     const activeModules = filteredModules.filter(m => !m.completed);
@@ -173,6 +192,40 @@ export default function Modules() {
                                 <MenuItem value="completed">{t('filters.completed', "Abgeschlossen")}</MenuItem>
                             </Select>
                         </FormControl>
+
+                        {/* Sort Toggle */}
+                        <ToggleButtonGroup
+                            value={sortBy}
+                            exclusive
+                            onChange={(_, newValue) => newValue !== null && setSortBy(newValue)}
+                            size="small"
+                            sx={{
+                                backgroundColor: 'rgba(255,255,255,0.5)',
+                                borderRadius: 2,
+                                '& .MuiToggleButton-root': {
+                                    border: 'none',
+                                    px: 2,
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'primary.main',
+                                        color: 'white',
+                                        '&:hover': {
+                                            backgroundColor: 'primary.dark',
+                                        }
+                                    }
+                                },
+                                boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                            }}
+                        >
+                            <ToggleButton value="alpha" title={t('sort.alphabetical', 'Alphabetisch')}>
+                                <SortByAlphaIcon fontSize="small" />
+                            </ToggleButton>
+                            <ToggleButton value="duration" title={t('sort.duration', 'Dauer')}>
+                                <AccessTimeIcon fontSize="small" />
+                            </ToggleButton>
+                            <ToggleButton value="tshirt" title={t('sort.tshirt', 'T-Shirt Größe')}>
+                                <CheckroomIcon fontSize="small" />
+                            </ToggleButton>
+                        </ToggleButtonGroup>
                     </Box>
 
                     <Box sx={{ flexGrow: 1 }} />
@@ -188,8 +241,8 @@ export default function Modules() {
                             {t('modules.completed', "Completed:")} <Box component="span" sx={{ fontWeight: 500, color: 'success.main' }}>{modules.filter(m => m.completed).length}</Box>
                         </Typography>
                     </Box>
-                </Box>
-            </Paper>
+                </Box >
+            </Paper >
 
             <LayoutGroup>
 
@@ -294,6 +347,6 @@ export default function Modules() {
                 module={selectedModule}
                 initialProjectId={projectFilter}
             />
-        </Box>
+        </Box >
     );
 }

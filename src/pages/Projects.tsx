@@ -1,7 +1,9 @@
-import { Box, Typography, Paper, FormControl, Select, MenuItem, TextField, InputAdornment, SpeedDial, SpeedDialIcon, SpeedDialAction } from "@mui/material";
+import { Box, Typography, Paper, FormControl, Select, MenuItem, TextField, InputAdornment, SpeedDial, SpeedDialIcon, SpeedDialAction, ToggleButton, ToggleButtonGroup } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import SortByAlphaIcon from '@mui/icons-material/SortByAlpha';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useEffect, useState, useRef } from "react";
 import { useProjectStore, Project } from "../store/useProjectStore";
 import ProjectCard from "../components/ProjectCard";
@@ -21,6 +23,7 @@ export default function Projects() {
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
+    const [sortBy, setSortBy] = useState<'alpha' | 'duration'>('alpha');
     const [searchQuery, setSearchQuery] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -37,6 +40,14 @@ export default function Projects() {
         }
 
         return true;
+    }).sort((a, b) => {
+        if (sortBy === 'alpha') {
+            return a.title.localeCompare(b.title);
+        } else {
+            const durA = a.totalDuration || 0;
+            const durB = b.totalDuration || 0;
+            return durB - durA;
+        }
     });
 
     const activeProjects = filteredProjects.filter(p => !p.completed);
@@ -143,6 +154,37 @@ export default function Projects() {
                             <MenuItem value="completed">{t('filters.completed', "Abgeschlossen")}</MenuItem>
                         </Select>
                     </FormControl>
+
+                    {/* Sort Toggle */}
+                    <ToggleButtonGroup
+                        value={sortBy}
+                        exclusive
+                        onChange={(_, newValue) => newValue !== null && setSortBy(newValue)}
+                        size="small"
+                        sx={{
+                            backgroundColor: 'rgba(255,255,255,0.5)',
+                            borderRadius: 2,
+                            '& .MuiToggleButton-root': {
+                                border: 'none',
+                                px: 2,
+                                '&.Mui-selected': {
+                                    backgroundColor: 'primary.main',
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: 'primary.dark',
+                                    }
+                                }
+                            },
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                        }}
+                    >
+                        <ToggleButton value="alpha" title={t('sort.alphabetical', 'Alphabetisch')}>
+                            <SortByAlphaIcon fontSize="small" />
+                        </ToggleButton>
+                        <ToggleButton value="duration" title={t('sort.duration', 'Dauer')}>
+                            <AccessTimeIcon fontSize="small" />
+                        </ToggleButton>
+                    </ToggleButtonGroup>
 
                     <Box sx={{ flexGrow: 1 }} />
 

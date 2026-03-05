@@ -11,13 +11,14 @@ export interface Module {
     tShirtSize?: 'S' | 'M' | 'L' | 'XL';
     createdAt?: number;
     updatedAt?: number;
+    totalDuration?: number;
 }
 
 interface ModuleState {
     modules: Module[];
     init: () => Promise<void>;
-    addModule: (module: Omit<Module, 'id' | 'createdAt' | 'completed'> & { id?: string }) => Promise<void>;
-    updateModule: (id: string, module: Partial<Omit<Module, 'id' | 'createdAt' | 'completed'>>) => Promise<void>;
+    addModule: (module: Omit<Module, 'id' | 'createdAt' | 'completed' | 'totalDuration'> & { id?: string }) => Promise<void>;
+    updateModule: (id: string, module: Partial<Omit<Module, 'id' | 'createdAt' | 'completed' | 'totalDuration'>>) => Promise<void>;
     toggleModule: (id: string) => Promise<void>;
     deleteModule: (id: string) => Promise<void>;
 }
@@ -32,18 +33,35 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
             .orderBy('created_at', 'desc')
             .execute();
 
+        const features = await db.selectFrom('features')
+            .select(['module_id', 'pert_optimistic', 'pert_most_likely', 'pert_pessimistic'])
+            .execute();
+
+        const { calculatePert } = await import('../lib/timeUtils');
+
         set({
-            modules: modules.map(m => ({
-                id: m.id,
-                project_id: m.project_id || undefined,
-                title: m.title,
-                description: m.description || undefined,
-                completed: Boolean(m.completed),
-                color: m.color,
-                tShirtSize: m.t_shirt_size as 'S' | 'M' | 'L' | 'XL' | undefined,
-                createdAt: m.created_at,
-                updatedAt: m.updated_at
-            }))
+            modules: modules.map(m => {
+                const moduleFeatures = features.filter(f => f.module_id === m.id);
+                const totalDuration = moduleFeatures.reduce((sum, f) => {
+                    if (f.pert_most_likely !== null && f.pert_most_likely !== undefined) {
+                        return sum + calculatePert(f.pert_optimistic ?? undefined, f.pert_most_likely, f.pert_pessimistic ?? undefined);
+                    }
+                    return sum;
+                }, 0);
+
+                return {
+                    id: m.id,
+                    project_id: m.project_id || undefined,
+                    title: m.title,
+                    description: m.description || undefined,
+                    completed: Boolean(m.completed),
+                    color: m.color,
+                    tShirtSize: m.t_shirt_size as 'S' | 'M' | 'L' | 'XL' | undefined,
+                    createdAt: m.created_at,
+                    updatedAt: m.updated_at,
+                    totalDuration: parseFloat(totalDuration.toFixed(1))
+                };
+            })
         });
     },
 

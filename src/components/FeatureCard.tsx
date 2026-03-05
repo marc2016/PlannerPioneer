@@ -174,17 +174,7 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
             <CardActions sx={{ bgcolor: 'white', justifyContent: 'flex-end', zIndex: 2, p: 1 }} onClick={(e) => e.stopPropagation()}>
                 {!isDeleting ? (
                     <>
-                        {/* Toggle Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onToggle(feature.id);
-                            }}
-                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                        >
-                            {feature.completed ? <Adjust /> : <CheckCircleOutline />}
-                        </IconButton>
+
 
                         {/* Edit Description Button */}
                         <IconButton
@@ -197,6 +187,18 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                             title={t('common.edit_description', 'Beschreibung bearbeiten')}
                         >
                             <Description />
+                        </IconButton>
+
+                        {/* Toggle Button */}
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                onToggle(feature.id);
+                            }}
+                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                        >
+                            {feature.completed ? <Adjust /> : <CheckCircleOutline />}
                         </IconButton>
 
                         {/* Delete Button */}
