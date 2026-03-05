@@ -8,6 +8,7 @@ export interface Module {
     description?: string;
     completed: boolean;
     color?: string; // Hex color code
+    tShirtSize?: 'S' | 'M' | 'L' | 'XL';
     createdAt?: number;
     updatedAt?: number;
 }
@@ -39,6 +40,7 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
                 description: m.description || undefined,
                 completed: Boolean(m.completed),
                 color: m.color,
+                tShirtSize: m.t_shirt_size as 'S' | 'M' | 'L' | 'XL' | undefined,
                 createdAt: m.created_at,
                 updatedAt: m.updated_at
             }))
@@ -52,6 +54,7 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
             title: moduleData.title,
             description: moduleData.description || '',
             color: moduleData.color || '#F44336', // Default red-ish
+            t_shirt_size: moduleData.tShirtSize || undefined,
             completed: 0,
             created_at: Date.now(),
             updated_at: Date.now()
@@ -87,6 +90,7 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
                 title: moduleData.title,
                 description: moduleData.description,
                 color: moduleData.color,
+                t_shirt_size: moduleData.tShirtSize,
                 updated_at: Date.now()
             })
             .where('id', '=', id)

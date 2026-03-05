@@ -18,7 +18,8 @@ import {
     ViewList,
     Adjust,
     AccessTime,
-    Description
+    Description,
+    Checkroom
 } from "@mui/icons-material";
 import { Module, useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
@@ -142,7 +143,21 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                                 }}
                             />
                         )}
-                        <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                            {module.tShirtSize && (
+                                <Chip
+                                    icon={<Checkroom fontSize="small" />}
+                                    label={module.tShirtSize}
+                                    size="small"
+                                    color={
+                                        module.tShirtSize === 'S' ? 'success' :
+                                            module.tShirtSize === 'M' ? 'info' :
+                                                module.tShirtSize === 'L' ? 'warning' :
+                                                    module.tShirtSize === 'XL' ? 'error' : 'default'
+                                    }
+                                    sx={{ opacity: 0.9, fontWeight: 'bold' }}
+                                />
+                            )}
                             <Chip
                                 icon={<ViewList fontSize="small" />}
                                 label={`${featureCount} ${t('modules.form.feature_count', "Items")}`}

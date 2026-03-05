@@ -8,7 +8,8 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
+    Slider
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { useEffect, useState, useMemo } from "react";
@@ -51,6 +52,7 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
     const [description, setDescription] = useState("");
     const [color, setColor] = useState(COLORS[5]);
     const [projectId, setProjectId] = useState<string>("");
+    const [tShirtSize, setTShirtSize] = useState<'S' | 'M' | 'L' | 'XL' | ''>("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     useEffect(() => {
@@ -59,6 +61,7 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
             setDescription(module.description || "");
             setColor(module.color || COLORS[5]);
             setProjectId(module.project_id || "");
+            setTShirtSize(module.tShirtSize || "");
             setShowDeleteConfirm(false);
         } else {
             setTitle("");
@@ -85,6 +88,7 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
             } else {
                 setProjectId("");
             }
+            setTShirtSize("");
             setShowDeleteConfirm(false);
         }
     }, [module, open, initialProjectId, projects]);
@@ -93,9 +97,9 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
         if (!title.trim()) return;
 
         if (module) {
-            await updateModule(module.id, { title, description, color, project_id: projectId || undefined });
+            await updateModule(module.id, { title, description, color, project_id: projectId || undefined, tShirtSize: (tShirtSize as 'S' | 'M' | 'L' | 'XL') || undefined });
         } else {
-            await addModule({ title, description, color, project_id: projectId || undefined });
+            await addModule({ title, description, color, project_id: projectId || undefined, tShirtSize: (tShirtSize as 'S' | 'M' | 'L' | 'XL') || undefined });
         }
         onClose();
     };
@@ -131,7 +135,7 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
             anchor="right"
             open={open}
             onClose={onClose}
-            PaperProps={{ sx: { width: 400, p: 3, pt: 8 } }}
+            PaperProps={{ sx: { width: '50vw', minWidth: 400, p: 3, pt: 8 } }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
@@ -180,6 +184,41 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
                         ))}
                     </Select>
                 </FormControl>
+
+                {/* T-Shirt Size Selection */}
+                <Box sx={{ pt: 1, pb: 2, px: 2, border: '1px solid rgba(0, 0, 0, 0.23)', borderRadius: 1 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                        <Typography variant="caption" color="text.secondary">
+                            {t('modules.form.t_shirt_size', "T-Shirt Size")}
+                        </Typography>
+                        <Typography variant="caption" fontWeight="bold" color={tShirtSize ? 'primary' : 'text.secondary'}>
+                            {[
+                                t('modules.form.size_none', "None"),
+                                t('modules.form.size_s', "S (Small)"),
+                                t('modules.form.size_m', "M (Medium)"),
+                                t('modules.form.size_l', "L (Large)"),
+                                t('modules.form.size_xl', "XL (Extra Large)")
+                            ][['', 'S', 'M', 'L', 'XL'].indexOf(tShirtSize) !== -1 ? ['', 'S', 'M', 'L', 'XL'].indexOf(tShirtSize) : 0]}
+                        </Typography>
+                    </Box>
+                    <Box sx={{ px: 2 }}>
+                        <Slider
+                            value={['', 'S', 'M', 'L', 'XL'].indexOf(tShirtSize) !== -1 ? ['', 'S', 'M', 'L', 'XL'].indexOf(tShirtSize) : 0}
+                            onChange={(_, newValue) => setTShirtSize(['', 'S', 'M', 'L', 'XL'][newValue as number] as any)}
+                            step={1}
+                            marks={[
+                                { value: 0, label: '-' },
+                                { value: 1, label: 'S' },
+                                { value: 2, label: 'M' },
+                                { value: 3, label: 'L' },
+                                { value: 4, label: 'XL' },
+                            ]}
+                            min={0}
+                            max={4}
+                            valueLabelDisplay="off"
+                        />
+                    </Box>
+                </Box>
 
                 <Box>
                     <Typography variant="subtitle2" sx={{ mb: 1 }}>{t('modules.form.color', "Color")}</Typography>
