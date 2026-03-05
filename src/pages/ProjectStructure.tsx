@@ -22,7 +22,7 @@ import { motion } from 'framer-motion';
 
 // Customized Treemap Content
 const CustomizedContent = (props: any) => {
-    const { depth, x, y, width, height, name, featureColor, color, fill } = props;
+    const { depth, x, y, width, height, name, featureColor, color, fill, tShirtSize } = props;
 
     // We only render depth 1 (Modules) or depth 2 (Features)
     const isModule = depth === 1;
@@ -72,7 +72,7 @@ const CustomizedContent = (props: any) => {
                         fontSize={16}
                         style={{ pointerEvents: 'none' }}
                     >
-                        {name}
+                        {name} {tShirtSize ? `(${tShirtSize})` : ''}
                     </text>
 
                 ) : null
@@ -114,6 +114,7 @@ export default function ProjectStructure() {
                 name: mod.title,
                 featureColor: mod.color || theme.palette.secondary.main,
                 color: mod.color || theme.palette.secondary.main,
+                tShirtSize: mod.tShirtSize,
                 children: children.length > 0 ? children : [{ name: t('common.no_features', 'Keine Items'), size: 0.1, featureColor: '#e0e0e0', color: '#e0e0e0', duration: 0 }],
                 duration: moduleDuration
             };
@@ -155,6 +156,36 @@ export default function ProjectStructure() {
             { name: '3-Sigma (99%)', value: Number((expectedD + 3 * stdDev).toFixed(1)), fill: theme.palette.error.main }
         ];
     }, [selectedProjectId, modules, features, selectedProject, t, theme]);
+
+    const tShirtData = useMemo(() => {
+        if (!selectedProject || !selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return [];
+
+        const projectModules = modules.filter(m => m.project_id === selectedProjectId);
+        const counts = {
+            'None': 0,
+            'S': 0,
+            'M': 0,
+            'L': 0,
+            'XL': 0
+        };
+
+        projectModules.forEach(mod => {
+            const size = mod.tShirtSize || 'None';
+            if (counts[size as keyof typeof counts] !== undefined) {
+                counts[size as keyof typeof counts]++;
+            }
+        });
+
+        // Only include sizes that have at least one module (or keep all so the axis is consistent?)
+        // Let's keep all for scale consistency.
+        return [
+            { name: '-', value: counts['None'], fill: theme.palette.grey[400] },
+            { name: 'S', value: counts['S'], fill: theme.palette.success.light },
+            { name: 'M', value: counts['M'], fill: theme.palette.info.light },
+            { name: 'L', value: counts['L'], fill: theme.palette.warning.light },
+            { name: 'XL', value: counts['XL'], fill: theme.palette.error.light }
+        ];
+    }, [selectedProjectId, modules, selectedProject, theme]);
 
     return (
         <motion.div
@@ -310,6 +341,33 @@ export default function ProjectStructure() {
                                         </Typography>
                                     </Box>
                                 )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* T-Shirt Size Distribution Chart */}
+                    <Grid size={{ xs: 12, lg: 4 }}>
+                        <Card elevation={3} sx={{ borderRadius: 3, height: '100%' }}>
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
+                                    {t('structure.t_shirt_distribution', 'T-Shirt Größen (Module)')}
+                                </Typography>
+                                <Box sx={{ width: '100%', height: 300 }}>
+                                    <ResponsiveContainer>
+                                        <BarChart data={tShirtData} margin={{ top: 20, right: 10, left: -20, bottom: 5 }}>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 13, fontWeight: 'bold' }} />
+                                            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} width={40} allowDecimals={false} />
+                                            <Tooltip formatter={(value: any) => [`${value} Module`, 'Anzahl']} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+                                            <Bar dataKey="value" radius={[4, 4, 0, 0]}>
+                                                {tShirtData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.fill} />
+                                                ))}
+                                                <LabelList dataKey="value" position="top" formatter={(val: any) => val > 0 ? val : ''} style={{ fill: '#666', fontSize: 11, fontWeight: 'bold' }} />
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </Box>
                             </CardContent>
                         </Card>
                     </Grid>
