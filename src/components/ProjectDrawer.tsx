@@ -7,10 +7,13 @@ import {
     IconButton,
     InputAdornment
 } from "@mui/material";
-import { Close, Delete } from "@mui/icons-material";
+import { Close, Delete, Download } from "@mui/icons-material";
 import { useEffect, useState, useMemo } from "react";
 import { Project, ProjectFactor, useProjectStore } from "../store/useProjectStore";
 import { useTranslation } from "react-i18next";
+import { exportProjectData } from '../lib/projectExportImport';
+import { save } from '@tauri-apps/plugin-dialog';
+import { writeTextFile } from '@tauri-apps/plugin-fs';
 import {
     MDXEditor,
     headingsPlugin,
@@ -100,6 +103,24 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
         ));
     };
 
+    const handleExport = async () => {
+        if (!project) return;
+        try {
+            const data = await exportProjectData(project.id);
+            const defaultName = `${project.title || 'project'}_export.json`;
+            const filePath = await save({
+                defaultPath: defaultName,
+                filters: [{ name: 'JSON', extensions: ['json'] }]
+            });
+
+            if (filePath) {
+                await writeTextFile(filePath, data);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     const handleSave = async () => {
         if (!title.trim()) return;
 
@@ -165,7 +186,7 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
             anchor="right"
             open={open}
             onClose={onClose}
-            PaperProps={{ sx: { width: 600, p: 3, pt: 8 } }}
+            PaperProps={{ sx: { width: '50vw', minWidth: 600, p: 3, pt: 8 } }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
@@ -310,9 +331,14 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
                     {project && (
                         !showDeleteConfirm ? (
-                            <Button color="error" onClick={() => setShowDeleteConfirm(true)}>
-                                {t('common.delete')}
-                            </Button>
+                            <>
+                                <Button color="inherit" onClick={handleExport} startIcon={<Download />}>
+                                    {t('common.export', 'Export')}
+                                </Button>
+                                <Button color="error" onClick={() => setShowDeleteConfirm(true)}>
+                                    {t('common.delete')}
+                                </Button>
+                            </>
                         ) : (
                             <Box sx={{ display: 'flex', gap: 1 }}>
                                 <Button color="inherit" onClick={() => setShowDeleteConfirm(false)}>

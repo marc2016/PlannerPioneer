@@ -1,7 +1,8 @@
-import { Box, Typography, Fab, Paper, FormControl, Select, MenuItem, TextField, InputAdornment } from "@mui/material";
+import { Box, Typography, Paper, FormControl, Select, MenuItem, TextField, InputAdornment, SpeedDial, SpeedDialIcon, SpeedDialAction } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
-import { useEffect, useState } from "react";
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import { useEffect, useState, useRef } from "react";
 import { useProjectStore, Project } from "../store/useProjectStore";
 import ProjectCard from "../components/ProjectCard";
 import ProjectDrawer from "../components/ProjectDrawer";
@@ -12,15 +13,16 @@ import { spring } from "../constants";
 const MotionBox = motion(Box);
 const MotionPaper = motion(Paper);
 
-
 import { useTranslation } from "react-i18next";
-//...
+import { importProjectData } from '../lib/projectExportImport';
+
 export default function Projects() {
     const { projects, init, deleteProject, toggleProject } = useProjectStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedProject, setSelectedProject] = useState<Project | null>(null);
     const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'completed'>('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Filter projects based on status and search query
     const filteredProjects = projects.filter(p => {
@@ -49,6 +51,27 @@ export default function Projects() {
     const handleAddClick = () => {
         setSelectedProject(null);
         setDrawerOpen(true);
+    };
+
+    const handleImportClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        try {
+            const text = await file.text();
+            const data = JSON.parse(text);
+            await importProjectData(data);
+            await init();
+        } catch (e) {
+            console.error('Import failed', e);
+            alert(t('projects.import_failed', 'Import failed. Missing or invalid PlannerPioneer JSON format.'));
+        } finally {
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
     };
 
     const handleCardClick = (project: Project) => {
@@ -144,7 +167,7 @@ export default function Projects() {
                     transition={spring}
                     sx={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
                         gap: 2
                     }}
                 >
@@ -158,7 +181,7 @@ export default function Projects() {
                                 //animate={{ opacity: 1 }}
                                 exit={{ opacity: 0, scale: 0.8 }}
                                 transition={spring}
-                                sx={{ maxWidth: 280, width: '100%', height: '100%', mx: 'auto' }}
+                                sx={{ maxWidth: 380, width: '100%', height: '100%' }}
                             >
                                 <ProjectCard
                                     project={project}
@@ -193,7 +216,7 @@ export default function Projects() {
                     transition={spring}
                     sx={{
                         display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))',
                         gap: 2
                     }}
                 >
@@ -207,7 +230,7 @@ export default function Projects() {
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
                                 transition={spring}
-                                sx={{ maxWidth: 280, width: '100%', height: '100%', mx: 'auto' }}
+                                sx={{ maxWidth: 380, width: '100%', height: '100%' }}
                             >
                                 <ProjectCard
                                     project={project}
@@ -222,19 +245,43 @@ export default function Projects() {
 
 
             </LayoutGroup>
-            <Fab
-                aria-label="add"
+
+            <SpeedDial
+                ariaLabel="Project actions"
                 sx={{
-                    position: 'fixed', bottom: 32, right: 32, bgcolor: 'white',
-                    color: 'black',
-                    '&:hover': {
-                        bgcolor: '#f5f5f5' // slightly grey on hover
+                    position: 'fixed', bottom: 32, right: 32,
+                    '& .MuiSpeedDial-fab': {
+                        bgcolor: 'white',
+                        color: 'black',
+                        '&:hover': {
+                            bgcolor: '#f5f5f5'
+                        }
                     }
                 }}
-                onClick={handleAddClick}
+                icon={<SpeedDialIcon />}
+                direction="up"
             >
-                <AddIcon />
-            </Fab>
+                <SpeedDialAction
+                    key="Create"
+                    icon={<AddIcon />}
+                    tooltipTitle={t('projects.new_project')}
+                    onClick={handleAddClick}
+                />
+                <SpeedDialAction
+                    key="Import"
+                    icon={<FileUploadIcon />}
+                    tooltipTitle={t('projects.import_project', 'Import Project')}
+                    onClick={handleImportClick}
+                />
+            </SpeedDial>
+
+            <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                accept=".json"
+                onChange={handleFileChange}
+            />
 
             <ProjectDrawer
                 open={drawerOpen}
