@@ -7,7 +7,8 @@ import {
     Divider,
     CardActionArea,
     Chip,
-    Tooltip
+    Tooltip,
+    Radio
 } from "@mui/material";
 import {
     CheckCircleOutline,
@@ -25,6 +26,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DescriptionModal from "./DescriptionModal";
+import { useSettingsStore } from "../store/useSettingsStore";
 
 interface ProjectCardProps {
     project: Project;
@@ -35,6 +37,7 @@ interface ProjectCardProps {
 
 export default function ProjectCard({ project, onToggle, onDelete, onClick }: ProjectCardProps) {
     const { updateProject } = useProjectStore();
+    const { selectedProjectId, setSelectedProjectId } = useSettingsStore();
     const [isDeleting, setIsDeleting] = useState(false);
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
     const { t } = useTranslation();
@@ -82,6 +85,34 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                     // Use project color/opacity for the folder icon
                     <Folder sx={{ fontSize: 200, color: project.color ? project.color : '#FFE0B2', opacity: 0.2 }} />
                 )}
+            </Box>
+
+            {/* Selection Radio Button */}
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                    zIndex: 2,
+                }}
+            >
+                <Tooltip title={t('projects.select_project', 'Projekt auswählen')}>
+                    <Radio
+                        checked={selectedProjectId === project.id}
+                        onChange={(e) => {
+                            e.stopPropagation();
+                            setSelectedProjectId(project.id);
+                        }}
+                        onClick={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        sx={{
+                            color: project.color || 'primary.main',
+                            '&.Mui-checked': {
+                                color: project.color || 'primary.main',
+                            }
+                        }}
+                    />
+                </Tooltip>
             </Box>
 
             <CardActionArea
@@ -186,19 +217,6 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                             <ViewModuleIcon />
                         </IconButton>
 
-                        {/* Edit Description Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsDescriptionModalOpen(true);
-                            }}
-                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                            title={t('common.edit_description', 'Beschreibung bearbeiten')}
-                        >
-                            <Description />
-                        </IconButton>
-
                         {/* View Features Button */}
                         <IconButton
                             size="small"
@@ -210,6 +228,19 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                             title={t('projects.view_features')}
                         >
                             <ViewList />
+                        </IconButton>
+
+                        {/* Edit Description Button */}
+                        <IconButton
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setIsDescriptionModalOpen(true);
+                            }}
+                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                            title={t('common.edit_description', 'Beschreibung bearbeiten')}
+                        >
+                            <Description />
                         </IconButton>
 
                         {/* Toggle Button */}
