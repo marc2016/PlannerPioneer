@@ -21,6 +21,7 @@ export interface ModulesTable {
     description: string;
     color: string;
     completed: number;
+    t_shirt_size?: string;
     created_at: number;
     updated_at: number;
 }
@@ -99,6 +100,7 @@ export const initDb = async () => {
             .addColumn('description', 'text')
             .addColumn('color', 'text', (col) => col.notNull())
             .addColumn('completed', 'integer', (col) => col.notNull().defaultTo(0))
+            .addColumn('t_shirt_size', 'text')
             .addColumn('created_at', 'integer', (col) => col.notNull())
             .addColumn('updated_at', 'integer', (col) => col.notNull())
             .execute();
@@ -135,6 +137,8 @@ export const initDb = async () => {
 
         await addColumnIfNotExists('projects', 'start_date', 'text');
         await addColumnIfNotExists('projects', 'end_date', 'text');
+
+        await addColumnIfNotExists('modules', 't_shirt_size', 'text');
 
         console.log('Database initialized successfully');
     } catch (error) {
