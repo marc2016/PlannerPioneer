@@ -170,3 +170,70 @@ input {
 .gantt .bar-wrapper:hover .bar {
   transition: transform 0.1s ease !important;
 }
+
+/* Print Styles for Report PDF Export */
+@media print {
+
+  /* Hide UI elements */
+  .MuiDrawer-root,
+  .titlebar,
+  .glass-paper,
+  button,
+  .MuiSpeedDial-root,
+  .MuiSnackbar-root {
+    display: none !important;
+  }
+
+  /* Reset layout for full page */
+  :root,
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+
+  main {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .MuiContainer-root {
+    max-width: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Expand Report Content */
+  .mdxeditor-root {
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .mdxeditor {
+    padding: 0 !important;
+  }
+
+  /* Remove fixed height from report container during print */
+  [class*="MuiPaper-root"] {
+    height: auto !important;
+    overflow: visible !important;
+    box-shadow: none !important;
+    border: none !important;
+    background: transparent !important;
+  }
+
+  /* Ensure diagrams don't break across pages if possible */
+  .mermaid {
+    page-break-inside: avoid;
+    margin-bottom: 2rem;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    page-break-after: avoid;
+  }
+}

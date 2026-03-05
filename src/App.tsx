@@ -8,6 +8,7 @@ import MasterTable from "./pages/MasterTable";
 import ProjectStructure from "./pages/ProjectStructure";
 import Settings from "./pages/Settings";
 import ProjectGantt from "./pages/ProjectGantt";
+import ProjectReport from "./pages/ProjectReport";
 import "./App.css";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Route path="features" element={<Features />} />
           <Route path="structure" element={<ProjectStructure />} />
           <Route path="table" element={<MasterTable />} />
+          <Route path="report" element={<ProjectReport />} />
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>

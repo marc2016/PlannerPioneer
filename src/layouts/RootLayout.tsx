@@ -30,6 +30,7 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 import HubIcon from '@mui/icons-material/Hub';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import ViewTimelineIcon from '@mui/icons-material/ViewTimeline';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import { useNavigate, useLocation, Outlet } from "react-router-dom";
 import { useSettingsStore } from "../store/useSettingsStore";
 import TitleBar from "../components/TitleBar";
@@ -135,6 +136,7 @@ export default function RootLayout() {
         { text: t('navigation.features'), icon: <CalculateIcon />, path: "/features" },
         { text: t('navigation.structure'), icon: <HubIcon />, path: "/structure" },
         { text: t('navigation.table'), icon: <TableChartIcon />, path: "/table" },
+        { text: t('navigation.report'), icon: <AssessmentIcon />, path: "/report" },
     ];
 
     const bottomMenuItems = [

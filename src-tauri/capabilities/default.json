@@ -55,6 +55,8 @@
       ]
     },
     "sql:default",
-    "sql:allow-execute"
+    "sql:allow-execute",
+    "dialog:default",
+    "core:webview:allow-print"
   ]
 }
