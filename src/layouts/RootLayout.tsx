@@ -87,14 +87,18 @@ const MuiDrawer = styled(Drawer, { shouldForwardProp: (prop) => prop !== "open" 
 
 import { useTranslation } from "react-i18next";
 import { useProjectStore } from "../store/useProjectStore";
-//...
+import { useModuleStore } from "../store/useModuleStore";
+import { useFeatureStore } from "../store/useFeatureStore";
+
 export default function RootLayout() {
     const [open, setOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const navigate = useNavigate();
     const location = useLocation();
     const { appBackground, init, selectedProjectId, setSelectedProjectId } = useSettingsStore();
-    const { projects } = useProjectStore();
+    const { init: initProjects, projects } = useProjectStore();
+    const { init: initModules } = useModuleStore();
+    const { init: initFeatures } = useFeatureStore();
     const { t } = useTranslation();
 
     const handleProjectClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -117,7 +121,10 @@ export default function RootLayout() {
 
     useEffect(() => {
         init();
-    }, [init]);
+        initProjects();
+        initModules();
+        initFeatures();
+    }, [init, initProjects, initModules, initFeatures]);
 
     const handleDrawerOpen = () => {
         setOpen(true);

@@ -44,7 +44,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
             .selectAll()
             .select((eb) => [
                 eb.selectFrom('modules')
-                    .select(db.fn.count<number>('id').as('count'))
+                    .select([db.fn.count<number>('id').as('count')])
                     .whereRef('modules.project_id', '=', 'projects.id')
                     .as('moduleCount')
             ])

@@ -22,8 +22,8 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 export default function Modules() {
-    const { modules, init, deleteModule, toggleModule } = useModuleStore();
-    const { projects, init: initProjects } = useProjectStore();
+    const { modules, deleteModule, toggleModule } = useModuleStore();
+    const { projects } = useProjectStore();
     const { selectedProjectId: projectFilter, setSelectedProjectId: setProjectFilter } = useSettingsStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [selectedModule, setSelectedModule] = useState<Module | null>(null);
@@ -77,8 +77,7 @@ export default function Modules() {
     const location = useLocation();
 
     useEffect(() => {
-        init();
-        initProjects();
+        // initialization now handled globally in RootLayout
 
         // Check for projectId in query params
         const params = new URLSearchParams(location.search);
@@ -86,7 +85,7 @@ export default function Modules() {
         if (projectId) {
             setProjectFilter(projectId);
         }
-    }, [init, initProjects, location.search]);
+    }, [location.search]);
 
     const handleAddClick = () => {
         setSelectedModule(null);

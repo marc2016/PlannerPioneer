@@ -56,8 +56,8 @@ export default function Projects() {
     const { t } = useTranslation();
 
     useEffect(() => {
-        init();
-    }, [init]);
+        // initialization handled globally in RootLayout
+    }, []);
 
     const handleAddClick = () => {
         setSelectedProject(null);
