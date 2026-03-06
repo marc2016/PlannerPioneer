@@ -30,7 +30,7 @@ interface ProjectState {
     addProject: (project: Omit<Project, 'id' | 'createdAt' | 'completed' | 'moduleCount' | 'totalDuration' | 'factors'> & { id?: string }) => Promise<void>;
     updateProject: (id: string, project: Partial<Omit<Project, 'id' | 'createdAt' | 'completed' | 'moduleCount' | 'totalDuration' | 'factors'>>) => Promise<void>;
     toggleProject: (id: string) => Promise<void>;
-    deleteProject: (id: string) => Promise<void>;
+    deleteProject: (id: string, deleteChildren?: boolean) => Promise<void>;
     addFactor: (projectId: string, label: string, value: number) => Promise<void>;
     removeFactor: (factorId: string) => Promise<void>;
 }
@@ -147,11 +147,28 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
         await get().init();
     },
 
-    deleteProject: async (id: string) => {
+    deleteProject: async (id: string, deleteChildren?: boolean) => {
+        if (deleteChildren) {
+            // Delete features related to modules of this project
+            await db.deleteFrom('features')
+                .where('module_id', 'in', (eb) =>
+                    eb.selectFrom('modules')
+                        .select('id')
+                        .where('project_id', '=', id)
+                )
+                .execute();
+            // Delete modules related to this project
+            await db.deleteFrom('modules')
+                .where('project_id', '=', id)
+                .execute();
+        }
+
         await db.deleteFrom('projects')
             .where('id', '=', id)
             .execute();
 
+        // Also trigger stores re-initialization if any listeners rely on them.
+        // Actually here we just wait for `init()` of project. 
         await get().init();
     },
 
