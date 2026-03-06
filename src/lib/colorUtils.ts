@@ -79,7 +79,7 @@ export function hslToHex(h: number, s: number, l: number): string {
     return "#" + rStr + gStr + bStr;
 }
 
-export function generateColorPalette(baseColor: string, count: number = 5): string[] {
+export function generateColorPalette(baseColor: string, count: number = 5, lightnessStep: number = 20): string[] {
     const hsl = hexToHsl(baseColor);
     const colors: string[] = [];
 
@@ -93,13 +93,13 @@ export function generateColorPalette(baseColor: string, count: number = 5): stri
     // Generate Lighter
     let l = hsl.l;
     for (let i = 1; i <= lighterCount; i++) {
-        let newL = Math.min(95, l + (i * 10));
+        let newL = Math.min(95, l + (i * lightnessStep));
         colors.push(hslToHex(hsl.h, hsl.s, newL));
     }
 
     // Generate Darker
     for (let i = 1; i <= darkerCount; i++) {
-        let newL = Math.max(10, l - (i * 10));
+        let newL = Math.max(10, l - (i * lightnessStep));
         colors.push(hslToHex(hsl.h, hsl.s, newL));
     }
 

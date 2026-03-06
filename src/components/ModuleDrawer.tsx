@@ -226,7 +226,7 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
                         {(projectId ?
                             (() => {
                                 const selectedProject = projects.find(p => p.id === projectId);
-                                return selectedProject ? generateColorPalette(selectedProject.color || COLORS[5], 5) : COLORS;
+                                return selectedProject ? generateColorPalette(selectedProject.color || COLORS[5], 5, 30) : COLORS;
                             })()
                             : COLORS
                         ).map((c) => (
