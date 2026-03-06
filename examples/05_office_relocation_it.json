@@ -1,0 +1,172 @@
+{
+    "version": 1,
+    "plannerPioneerExport": true,
+    "data": {
+        "project": {
+            "id": "p5",
+            "title": "IT Struktur Neues Büro Headquarters",
+            "description": "Gesamte Umzugs-Planung und Durchführung der IT-Infrastruktur für den neuen Hauptsitz für 250 Mitarbeiter.\n\n**Umfang:**\n- Netzwerkausbau (Core, Edge, Wi-Fi)\n- Ausstattung aller Arbeitsplätze mit Dockingstations\n- State-of-the-Art Videokonferenz in 15 Meetingräumen",
+            "color": "#34495e",
+            "completed": 0,
+            "start_date": "2026-10-01",
+            "end_date": "2026-11-15",
+            "created_at": 1709710000000,
+            "updated_at": 1709710000000
+        },
+        "factors": [
+            {
+                "id": "f5_1",
+                "project_id": "p5",
+                "label": "Materialverzögerung Puffer",
+                "value": 1.25,
+                "created_at": 1709710000000
+            },
+            {
+                "id": "f5_2",
+                "project_id": "p5",
+                "label": "Externe Dienstleister",
+                "value": 1.1,
+                "created_at": 1709710000000
+            }
+        ],
+        "modules": [
+            {
+                "id": "m5_1",
+                "project_id": "p5",
+                "title": "Netzwerkinfrastruktur",
+                "description": "Physische Verkabelung und aktives Netzwerk-Equipment.\n\n- Definition der VLANs (Gäste, Intern, Voice)\n- Setup von redundanten Core-Switches\n- Ausrollen von Access Points für volle Abdeckung",
+                "color": "#34495e",
+                "completed": 0,
+                "t_shirt_size": "L",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m5_2",
+                "project_id": "p5",
+                "title": "Arbeitsplatzausstattung",
+                "description": "Standardisierung des Schreibtisch Setups.\n\n- Ergonomische Monitore\n- USB-C Hubs & Dockingstations\n- Kabelmanagement an den Tischen",
+                "color": "#46627f",
+                "completed": 0,
+                "t_shirt_size": "M",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m5_3",
+                "project_id": "p5",
+                "title": "Konferenztechnik",
+                "description": "Integration von Microsoft Teams Rooms.\n\n- Deckenmikrofone und Kameras installieren\n- Touch-Displays für One-Click Joins\n- Digitale Raumschilder zur Buchung",
+                "color": "#587ca0",
+                "completed": 0,
+                "t_shirt_size": "L",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m5_4",
+                "project_id": "p5",
+                "title": "Serverraum (MDF)",
+                "description": "Einrichtung des zentralen Serverraums (Main Distribution Frame).\n\n- Rack-Aufbau und USV Versorgung (Unterbrechungsfreie Stromversorgung)\n- Klimatisierung prüfen\n- Neuaufbau des NAS Backup-Servers",
+                "color": "#222f3d",
+                "completed": 0,
+                "t_shirt_size": "S",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ],
+        "features": [
+            {
+                "id": "fe5_1",
+                "module_id": "m5_1",
+                "title": "Firewall & Routing Setup",
+                "description": "Konfiguration der neuen Palo Alto Firewall am Standort.\n\n- Site-to-Site VPN ins Rechenzentrum\n- AnyConnect Client Setup für Mitarbeiter\n- IPSec Tunnel testen",
+                "color": "#34495e",
+                "completed": 0,
+                "pert_optimistic": 12,
+                "pert_most_likely": 24,
+                "pert_pessimistic": 40,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe5_2",
+                "module_id": "m5_1",
+                "title": "WLAN Access Points Montage",
+                "description": "Montage von 45 Ubiquiti APs an den Decken.\n\n- PoE-Verkabelung sicherstellen\n- Controller adoptieren\n- Radiomapping durchführen",
+                "color": "#34495e",
+                "completed": 0,
+                "pert_optimistic": 24,
+                "pert_most_likely": 32,
+                "pert_pessimistic": 50,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe5_3",
+                "module_id": "m5_2",
+                "title": "Hardware Beschaffung",
+                "description": "Einholen von Angeboten und Bestellung von Monitoren. Vergleichen von Lieferzeiten.",
+                "color": "#46627f",
+                "completed": 0,
+                "pert_optimistic": 4,
+                "pert_most_likely": 8,
+                "pert_pessimistic": 16,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe5_4",
+                "module_id": "m5_2",
+                "title": "Rollout 250 Arbeitsplätze",
+                "description": "Physischer Aufbau aller Monitore und Verkabelung unterm Tisch.\n\n- Laptops testen mit Docking Station\n- Beschriftung von Plätzen\n- Ausgabe von Zubehör (Maus/Tastatur)",
+                "color": "#46627f",
+                "completed": 0,
+                "pert_optimistic": 40,
+                "pert_most_likely": 80,
+                "pert_pessimistic": 120,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe5_5",
+                "module_id": "m5_3",
+                "title": "Boardroom Konferenz System",
+                "description": "Komplexes Setup für den großen Vorstandssaal.\n\n- Logitech Rally Plus System installieren\n- Akustik-Einmessung\n- Schulung für Projektor und Beamer",
+                "color": "#587ca0",
+                "completed": 0,
+                "pert_optimistic": 16,
+                "pert_most_likely": 24,
+                "pert_pessimistic": 40,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe5_6",
+                "module_id": "m5_3",
+                "title": "Huddle Rooms (Kleine Räume)",
+                "description": "Standardisiertes Setup für kleine Besprechungen.\n\n- Soundbar mit Kamera (z.B. Poly Studio)\n- Wandmontage des Bildschirms",
+                "color": "#587ca0",
+                "completed": 0,
+                "pert_optimistic": 24,
+                "pert_most_likely": 36,
+                "pert_pessimistic": 60,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe5_7",
+                "module_id": "m5_4",
+                "title": "USV und PDU Integration",
+                "description": "Absicherung bei Stromausfall.\n\n- Anschließen der Batteriepacks\n- Notstrom Aggregat Testlauf\n- Überwachungssoftware Alarmierung einrichten",
+                "color": "#222f3d",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 16,
+                "pert_pessimistic": 24,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ]
+    }
+}

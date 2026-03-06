@@ -1,0 +1,172 @@
+{
+    "version": 1,
+    "plannerPioneerExport": true,
+    "data": {
+        "project": {
+            "id": "p3",
+            "title": "Datenmigration auf Salesforce",
+            "description": "Strategischer Umzug aller Kunden- und Vertriebsdaten vom alten On-Premise CRM Cloud-basierten Salesforce System.\n\n**Phasen:**\n1. Extraktion\n2. Transformation (ETL)\n3. Load & Validation\n4. Archivierung des Altsystems",
+            "color": "#8e44ad",
+            "completed": 0,
+            "start_date": "2026-03-15",
+            "end_date": "2026-05-15",
+            "created_at": 1709710000000,
+            "updated_at": 1709710000000
+        },
+        "factors": [
+            {
+                "id": "f3_1",
+                "project_id": "p3",
+                "label": "Komplexitäts Puffer",
+                "value": 1.3,
+                "created_at": 1709710000000
+            },
+            {
+                "id": "f3_2",
+                "project_id": "p3",
+                "label": "Datenqualität Overhead",
+                "value": 1.25,
+                "created_at": 1709710000000
+            }
+        ],
+        "modules": [
+            {
+                "id": "m3_1",
+                "project_id": "p3",
+                "title": "Datenextraktion",
+                "description": "Sicherer Export aller Entitäten aus dem alten SQL Server.\n\n- Sicherstellen von Datenkonsistenz während des Exports\n- Export-Scripte schreiben\n- Inkrementelle Deltas vorbereiten",
+                "color": "#8e44ad",
+                "completed": 0,
+                "t_shirt_size": "M",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m3_2",
+                "project_id": "p3",
+                "title": "Transformation & Bereinigung",
+                "description": "Das Herzstück des ETL-Prozesses. Rohdaten werden gesäubert.\n\n- Dubletten Abgleich (Fuzzy Matching)\n- Normalisierung von Adressen (Postleitzahlen)\n- Generierung von Dummy-Daten für leere Pflichtfelder in Salesforce",
+                "color": "#a563c2",
+                "completed": 0,
+                "t_shirt_size": "XL",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m3_3",
+                "project_id": "p3",
+                "title": "Import in Salesforce",
+                "description": "Nutzung der Salesforce REST und Bulk APIs zum Import der Daten.\n\n- Mapping der Datentypen (z.B. Picklists)\n- Beibehaltung von Relationen (Accounts zu Contacts)\n- Error-Handling bei fehlerhaften Records",
+                "color": "#ba87d0",
+                "completed": 0,
+                "t_shirt_size": "L",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m3_4",
+                "project_id": "p3",
+                "title": "QA & Validierung",
+                "description": "Stichprobenartige und automatisierte Checks nach dem initialen Import.\n\n- Datensatz-Zähler abgleichen\n- Testfälle für kritische Kunden erstellen",
+                "color": "#703689",
+                "completed": 0,
+                "t_shirt_size": "S",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ],
+        "features": [
+            {
+                "id": "fe3_1",
+                "module_id": "m3_1",
+                "title": "SQL Export Skripte",
+                "description": "Entwicklung von performanten SQL-Queries, um alle relevanten Tabellen als CSV zu exportieren.\n\n- Account Tabelle\n- Contact Tabelle\n- Opportunity Historie",
+                "color": "#8e44ad",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 16,
+                "pert_pessimistic": 24,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe3_2",
+                "module_id": "m3_1",
+                "title": "Sicherer File-Transfer",
+                "description": "Aufbau eines SFTP Servers für den sicheren Austausch der CSV Dumps, da PII-Daten (Personenbezogen) enthalten sind.",
+                "color": "#8e44ad",
+                "completed": 0,
+                "pert_optimistic": 4,
+                "pert_most_likely": 8,
+                "pert_pessimistic": 12,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe3_3",
+                "module_id": "m3_2",
+                "title": "Python ETL Pipeline",
+                "description": "Ein Pandas-basiertes Skript zur Datenmanipulation.\n\n- Entfernen fehlerhafter Telefonnummern\n- Landeskodes in ISO 3166-1 alpha-2 Format wandeln",
+                "color": "#a563c2",
+                "completed": 0,
+                "pert_optimistic": 24,
+                "pert_most_likely": 40,
+                "pert_pessimistic": 60,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe3_4",
+                "module_id": "m3_2",
+                "title": "Dubletten Prüfung",
+                "description": "Implementierung eines Algorithmus zur Erkennung identischer Firmen (z.B. 'GmbH' vs 'Gesellschaft mbH').",
+                "color": "#a563c2",
+                "completed": 0,
+                "pert_optimistic": 16,
+                "pert_most_likely": 24,
+                "pert_pessimistic": 40,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe3_5",
+                "module_id": "m3_3",
+                "title": "Salesforce Data Loader Setup",
+                "description": "Konfiguration der Mappings für den Bulk-Import von Accounts.\n\n- Feldzuordnungen dokumentieren\n- Batch-Sizes anpassen für optimale Performance",
+                "color": "#ba87d0",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 16,
+                "pert_pessimistic": 32,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe3_6",
+                "module_id": "m3_3",
+                "title": "Import von Opportunities",
+                "description": "Besondere Behandlung von Opportunities, da Relationen zu Accounts und Contacts bestehen müssen.",
+                "color": "#ba87d0",
+                "completed": 0,
+                "pert_optimistic": 16,
+                "pert_most_likely": 24,
+                "pert_pessimistic": 48,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe3_7",
+                "module_id": "m3_4",
+                "title": "User Acceptance Testing (UAT)",
+                "description": "Zusammen mit dem Sales-Team prüfen, ob alle Accounts korrekt dargestellt werden.",
+                "color": "#703689",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 12,
+                "pert_pessimistic": 24,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ]
+    }
+}

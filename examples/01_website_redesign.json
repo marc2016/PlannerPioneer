@@ -1,0 +1,211 @@
+{
+    "version": 1,
+    "plannerPioneerExport": true,
+    "data": {
+        "project": {
+            "id": "p1",
+            "title": "Corporate Website Relaunch",
+            "description": "Projekt zur kompletten Neugestaltung der Unternehmenswebsite mit Fokus auf B2B Leads.\n\n**Ziele des Projekts:**\n- Moderne User Experience (UX) schaffen\n- Vollständig responsives Design für alle Endgeräte\n- Stark verbesserte Ladezeiten (Performance)\n- Überarbeitung der SEO-Strategie",
+            "color": "#3498db",
+            "completed": 0,
+            "start_date": "2026-04-01",
+            "end_date": "2026-06-30",
+            "created_at": 1709710000000,
+            "updated_at": 1709710000000
+        },
+        "factors": [
+            {
+                "id": "f1_1",
+                "project_id": "p1",
+                "label": "Risiko Aufschlag",
+                "value": 1.2,
+                "created_at": 1709710000000
+            },
+            {
+                "id": "f1_2",
+                "project_id": "p1",
+                "label": "Stundensatz (Intern)",
+                "value": 85,
+                "created_at": 1709710000000
+            }
+        ],
+        "modules": [
+            {
+                "id": "m1_1",
+                "project_id": "p1",
+                "title": "Design & Konzeption",
+                "description": "Entwicklung der neuen visuellen Sprache und der User Journeys.\n\n**Phasen:**\n- Wireframing\n- High-Fidelity Design\n- Interaktive Prototypen",
+                "color": "#3498db",
+                "completed": 0,
+                "t_shirt_size": "L",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m1_2",
+                "project_id": "p1",
+                "title": "Frontend Entwicklung",
+                "description": "Technische Umsetzung der gestalteten Layouts in React/Next.js.\n\n**Anforderungen:**\n- Barrierefreiheit (a11y) nach WCAG 2.1\n- Server-Side Rendering (SSR) für SEO\n- Component-Driven Development",
+                "color": "#5faee3",
+                "completed": 0,
+                "t_shirt_size": "XL",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m1_3",
+                "project_id": "p1",
+                "title": "Backend & CMS Integration",
+                "description": "Anbindung eines Headless CMS (z.B. Sanity oder Strapi), um den Redakteuren volle Kontrolle zu geben.\n\n- Definition der Content-Modelle\n- Bereitstellung der GraphQL Schnittstellen\n- Migration der alten Blogbeiträge",
+                "color": "#8ac4ea",
+                "completed": 0,
+                "t_shirt_size": "M",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m1_4",
+                "project_id": "p1",
+                "title": "Testing & QA",
+                "description": "Qualitätssicherung vor dem finalen Go-Live.\n\nUmfasst automatisierte Tests und manuelles Abklopfen aller kritischen Pfade.",
+                "color": "#217dbb",
+                "completed": 0,
+                "t_shirt_size": "S",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ],
+        "features": [
+            {
+                "id": "fe1_1",
+                "module_id": "m1_1",
+                "title": "Corporate Identity Update",
+                "description": "Leichtes Aufpolieren des Logos und Definition der neuen Farbpalette.\n\n**Deliverables:**\n- Styleguide PDF\n- Logo Dateien (SVG, PNG)",
+                "color": "#3498db",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 12,
+                "pert_pessimistic": 20,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe1_2",
+                "module_id": "m1_1",
+                "title": "UI Kit Erstellung",
+                "description": "Aufbau einer Komponenten-Bibliothek in Figma.\n\n- Buttons, Inputs, Modals\n- Typografie Hierarchien\n- Abstände und Grids",
+                "color": "#3498db",
+                "completed": 0,
+                "pert_optimistic": 16,
+                "pert_most_likely": 24,
+                "pert_pessimistic": 40,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe1_3",
+                "module_id": "m1_1",
+                "title": "Prototyping Startseite",
+                "description": "Klickbarer Prototyp der wichtigsten Landingpage für Stakeholder-Freigaben.",
+                "color": "#3498db",
+                "completed": 0,
+                "pert_optimistic": 4,
+                "pert_most_likely": 8,
+                "pert_pessimistic": 16,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe1_4",
+                "module_id": "m1_2",
+                "title": "Setup Next.js & Tailwind",
+                "description": "Initialisierung des Repositories und Konfiguration der Basis-Tools.\n\n- ESLint & Prettier\n- Storybook Setup\n- CI/CD Pipelines für Staging",
+                "color": "#5faee3",
+                "completed": 0,
+                "pert_optimistic": 4,
+                "pert_most_likely": 6,
+                "pert_pessimistic": 10,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe1_5",
+                "module_id": "m1_2",
+                "title": "Komponentenbau: Formulare",
+                "description": "Implementierung der Kontaktformulare mit Validierung.\n\n- React Hook Form Integration\n- Zod Validierungsschema\n- Fehlerzustände stylen",
+                "color": "#5faee3",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 12,
+                "pert_pessimistic": 20,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe1_6",
+                "module_id": "m1_2",
+                "title": "Umsetzung Startseite",
+                "description": "Zusammenbauen der Hero-Section, Feature-Liste und des Footers laut Figma-Vorlage.",
+                "color": "#5faee3",
+                "completed": 0,
+                "pert_optimistic": 16,
+                "pert_most_likely": 24,
+                "pert_pessimistic": 32,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe1_7",
+                "module_id": "m1_3",
+                "title": "CMS Content Modeling",
+                "description": "Anlegen der Datenschemata im Headless CMS.\n\n- Entity: Seiten\n- Entity: Blog Posts\n- Entity: Autoren",
+                "color": "#8ac4ea",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 16,
+                "pert_pessimistic": 24,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe1_8",
+                "module_id": "m1_3",
+                "title": "GraphQL Anbindung",
+                "description": "Abfragen der Daten im Frontend und Mappen auf die React Komponenten.",
+                "color": "#8ac4ea",
+                "completed": 0,
+                "pert_optimistic": 12,
+                "pert_most_likely": 16,
+                "pert_pessimistic": 30,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe1_9",
+                "module_id": "m1_4",
+                "title": "Cross-Browser Testing",
+                "description": "Prüfen der Seite in Chrome, Firefox, Safari (Mobile & Desktop).",
+                "color": "#217dbb",
+                "completed": 0,
+                "pert_optimistic": 4,
+                "pert_most_likely": 8,
+                "pert_pessimistic": 16,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe1_10",
+                "module_id": "m1_4",
+                "title": "Performance Tuning",
+                "description": "Lighthouse Score auf >90 verbessern.\n\n- Bilder optimieren\n- Caching Header anpassen\n- Unnötiges JS entfernen",
+                "color": "#217dbb",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 16,
+                "pert_pessimistic": 24,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ]
+    }
+}

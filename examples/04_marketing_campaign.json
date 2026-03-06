@@ -1,0 +1,172 @@
+{
+    "version": 1,
+    "plannerPioneerExport": true,
+    "data": {
+        "project": {
+            "id": "p4",
+            "title": "Q4 Marketing Kampagne",
+            "description": "Umfassende Marketing-Kampagne zur Einführung des neuen Flaggschiff-Produktes zum Weihnachtsgeschäft.\n\n**Zentrale Säulen:**\n- Organischer Social Media Content\n- Paid Advertising (Meta, Google)\n- Influencer Kooperationen\n- PR & Out-of-Home (OOH)",
+            "color": "#e74c3c",
+            "completed": 0,
+            "start_date": "2026-09-01",
+            "end_date": "2026-12-24",
+            "created_at": 1709710000000,
+            "updated_at": 1709710000000
+        },
+        "factors": [
+            {
+                "id": "f4_1",
+                "project_id": "p4",
+                "label": "Agentur Fee Multiplikator",
+                "value": 1.5,
+                "created_at": 1709710000000
+            },
+            {
+                "id": "f4_2",
+                "project_id": "p4",
+                "label": "Puffer Urlaubszeit",
+                "value": 1.2,
+                "created_at": 1709710000000
+            }
+        ],
+        "modules": [
+            {
+                "id": "m4_1",
+                "project_id": "p4",
+                "title": "Strategie & Konzeption",
+                "description": "Die kreative Leitidee für die gesamte Kampagne.\n\n- Markenbotschaft definieren\n- Zielgruppen Personas schärfen\n- Kampagnen-Slogan entwickeln",
+                "color": "#e74c3c",
+                "completed": 0,
+                "t_shirt_size": "M",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m4_2",
+                "project_id": "p4",
+                "title": "Content Produktion",
+                "description": "Erstellung aller Assets für die verschiedenen Kanäle.\n\n- Video Shootings\n- Fotografie\n- Copywriting für Landing Pages und Skripte",
+                "color": "#ed776a",
+                "completed": 0,
+                "t_shirt_size": "XL",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m4_3",
+                "project_id": "p4",
+                "title": "Media Placement & Paid Ads",
+                "description": "Budgetverteilung und Buchung von Werbeflächen.\n\n- Setup von Google Ads Kampagnen\n- Meta Business Manager Setup für Instagram/Facebook\n- Buchung von OOH Flächen in Großstädten",
+                "color": "#f2a097",
+                "completed": 0,
+                "t_shirt_size": "L",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m4_4",
+                "project_id": "p4",
+                "title": "PR & Influencer",
+                "description": "Verwaltung der Earned Media Reichweite.\n\n- Pressemitteilungen schreiben\n- Verträge mit Macro-Influencern verhandeln\n- Versenden von PR-Boxen zur Produkteinführung",
+                "color": "#d62d1a",
+                "completed": 0,
+                "t_shirt_size": "M",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ],
+        "features": [
+            {
+                "id": "fe4_1",
+                "module_id": "m4_1",
+                "title": "Kampagnendesign & Slogan",
+                "description": "Pitch der Leitidee an den Vorstand.\n\n- Entwicklung von 3 Konzept-Routen\n- Iteration des Gewinner-Konzepts\n- Festlegen der Tonalität",
+                "color": "#e74c3c",
+                "completed": 0,
+                "pert_optimistic": 16,
+                "pert_most_likely": 32,
+                "pert_pessimistic": 60,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe4_2",
+                "module_id": "m4_2",
+                "title": "Promo Video: Hauptspot",
+                "description": "Produktion eines 60-sekündigen Hero-Videos.\n\n- Location Scouting\n- Dreh (2 Tage)\n- Post-Produktion (Schnitt, Color Grading, Sound Design)",
+                "color": "#ed776a",
+                "completed": 0,
+                "pert_optimistic": 40,
+                "pert_most_likely": 60,
+                "pert_pessimistic": 100,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe4_3",
+                "module_id": "m4_2",
+                "title": "Social Media Snack Content",
+                "description": "Herunterschneiden des Hauptvideos in kurze 10-15s Clips für Reels und TikTok.\n\n- Adaption in 9:16 und 1:1 Formate\n- Hinzufügen von Captions (Untertiteln)",
+                "color": "#ed776a",
+                "completed": 0,
+                "pert_optimistic": 12,
+                "pert_most_likely": 16,
+                "pert_pessimistic": 32,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe4_4",
+                "module_id": "m4_3",
+                "title": "Google Search & Display Setup",
+                "description": "Keywords definieren (Brand & Generic).\n\n- Aufsetzen der Conversion-Tracking Pixel\n- Retargeting Listen aufbauen\n- Anzeigen-Texte optimieren",
+                "color": "#f2a097",
+                "completed": 0,
+                "pert_optimistic": 12,
+                "pert_most_likely": 20,
+                "pert_pessimistic": 32,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe4_5",
+                "module_id": "m4_3",
+                "title": "Out-of-Home Planung Berlin",
+                "description": "Reservierung von digitalen Werbetafeln am Hauptbahnhof und Alexanderplatz.",
+                "color": "#f2a097",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 12,
+                "pert_pessimistic": 20,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe4_6",
+                "module_id": "m4_4",
+                "title": "Influencer Outreach",
+                "description": "Kontaktieren von 15 Ziel-Influencern.\n\n- Verhandlung von Gagen\n- Erstellung von Briefings\n- Abnahme der Postings vor Veröffentlichung",
+                "color": "#d62d1a",
+                "completed": 0,
+                "pert_optimistic": 16,
+                "pert_most_likely": 30,
+                "pert_pessimistic": 50,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe4_7",
+                "module_id": "m4_4",
+                "title": "Pressemitteilung Versand",
+                "description": "Schreiben und distribuitieren der offiziellen Pressemitteilung an Fachmedien.",
+                "color": "#d62d1a",
+                "completed": 0,
+                "pert_optimistic": 4,
+                "pert_most_likely": 8,
+                "pert_pessimistic": 16,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ]
+    }
+}

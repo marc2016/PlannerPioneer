@@ -1,0 +1,185 @@
+{
+    "version": 1,
+    "plannerPioneerExport": true,
+    "data": {
+        "project": {
+            "id": "p2",
+            "title": "Mobile E-Commerce App",
+            "description": "Entwicklung einer nativen Shopping-Applikation für iOS und Android unter Verwendung von React Native.\n\n**Kernbereiche:**\n- Nahtlose Checkout-Erfahrung\n- Schnelle Produktsuche\n- Push-Benachrichtigungen für Angebote\n- Offline-Warenkorb Unterstützung",
+            "color": "#27ae60",
+            "completed": 0,
+            "start_date": "2026-05-01",
+            "end_date": "2026-08-31",
+            "created_at": 1709710000000,
+            "updated_at": 1709710000000
+        },
+        "factors": [
+            {
+                "id": "f2_1",
+                "project_id": "p2",
+                "label": "Plattform Multiplikator",
+                "value": 1.5,
+                "created_at": 1709710000000
+            },
+            {
+                "id": "f2_2",
+                "project_id": "p2",
+                "label": "Testing Overhead",
+                "value": 1.15,
+                "created_at": 1709710000000
+            }
+        ],
+        "modules": [
+            {
+                "id": "m2_1",
+                "project_id": "p2",
+                "title": "Onboarding & Authentifizierung",
+                "description": "Alles rund um den Einstieg des Nutzers in die App.\n\n**Inhalte:**\n- Willkommensbildschirme (Carousel)\n- Login / Registrierung\n- Social Logins (Apple, Google)\n- Session Handling",
+                "color": "#27ae60",
+                "completed": 0,
+                "t_shirt_size": "M",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m2_2",
+                "project_id": "p2",
+                "title": "Produktkatalog & Suche",
+                "description": "Das Herzstück der App. Hier finden User ihre Produkte.\n\n- Integration von Algolia für Echtzeit-Suche\n- Komplexes Kategoriensystem\n- Filter- und Sortierfunktionen",
+                "color": "#36d277",
+                "completed": 0,
+                "t_shirt_size": "L",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m2_3",
+                "project_id": "p2",
+                "title": "Einkaufswagen & Checkout",
+                "description": "Der wichtigste Bereich für Conversion.\n\n- Verwaltung von Warenkorb-Artikeln\n- Integration der Payment-Provider (Stripe, PayPal)\n- Eingabe von Lieferadressen",
+                "color": "#60db93",
+                "completed": 0,
+                "t_shirt_size": "XL",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "m2_4",
+                "project_id": "p2",
+                "title": "Benutzerprofil & Einstellungen",
+                "description": "Verwaltung der nutzerspezifischen Daten.\n\n- Bestellhistorie abrufen\n- Adressbuch verwalten\n- Push-Notification Präferenzen",
+                "color": "#1e8549",
+                "completed": 0,
+                "t_shirt_size": "S",
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ],
+        "features": [
+            {
+                "id": "fe2_1",
+                "module_id": "m2_1",
+                "title": "E-Mail Login",
+                "description": "Klassische Registrierung mit E-Mail Verifizierung.\n\n- JWT Token Generierung\n- Magic Links für Login\n- Passwort-Reset Prozess",
+                "color": "#27ae60",
+                "completed": 0,
+                "pert_optimistic": 12,
+                "pert_most_likely": 20,
+                "pert_pessimistic": 32,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe2_2",
+                "module_id": "m2_1",
+                "title": "Apple & Google Login SignIn",
+                "description": "Integration der nativen SDKs für nahtloses Onboarding.",
+                "color": "#27ae60",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 16,
+                "pert_pessimistic": 24,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe2_3",
+                "module_id": "m2_2",
+                "title": "Produktdetailseite (PDP)",
+                "description": "Ansicht für einzelne Produkte inkl. Bildergalerie.\n\n- Varianten-Auswahl (Größe, Farbe)\n- Anzeige von Bewertungen\n- 'In den Warenkorb' Logik",
+                "color": "#36d277",
+                "completed": 0,
+                "pert_optimistic": 24,
+                "pert_most_likely": 32,
+                "pert_pessimistic": 48,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe2_4",
+                "module_id": "m2_2",
+                "title": "Algolia Suchintegration",
+                "description": "Einrichtung des Such-Views mit Autocompletion.\n\n- Tippfehler-Toleranz\n- Synonym-Erkennung\n- Ranking Konfiguration",
+                "color": "#36d277",
+                "completed": 0,
+                "pert_optimistic": 16,
+                "pert_most_likely": 24,
+                "pert_pessimistic": 40,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe2_5",
+                "module_id": "m2_3",
+                "title": "Stripe Gateway",
+                "description": "Kreditkartenzahlung via Stripe Elements (Mobile).\n\n- Speichern von Zahlungsmethoden\n- 3D Secure Handling\n- Webhooks für Zahlungsbestätigungen",
+                "color": "#60db93",
+                "completed": 0,
+                "pert_optimistic": 24,
+                "pert_most_likely": 40,
+                "pert_pessimistic": 80,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe2_6",
+                "module_id": "m2_3",
+                "title": "Checkout Flow UI",
+                "description": "Die visuellen Schritte für den Kaufabschluss.\n\n**Schritte:**\n1. Warenkorb prüfen\n2. Adresse wählen\n3. Zahlungsart wählen\n4. Zusammenfassung & Kauf",
+                "color": "#60db93",
+                "completed": 0,
+                "pert_optimistic": 20,
+                "pert_most_likely": 30,
+                "pert_pessimistic": 48,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe2_7",
+                "module_id": "m2_4",
+                "title": "Bestellhistorie Anzeige",
+                "description": "Auflistung vergangener Käufe mit Rechnungs-Download.",
+                "color": "#1e8549",
+                "completed": 0,
+                "pert_optimistic": 8,
+                "pert_most_likely": 12,
+                "pert_pessimistic": 20,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            },
+            {
+                "id": "fe2_8",
+                "module_id": "m2_4",
+                "title": "Push-Token Registrierung",
+                "description": "Erfassen von Firebase Device Tokens für Marketing-Nachrichten.",
+                "color": "#1e8549",
+                "completed": 0,
+                "pert_optimistic": 6,
+                "pert_most_likely": 10,
+                "pert_pessimistic": 16,
+                "created_at": 1709710000000,
+                "updated_at": 1709710000000
+            }
+        ]
+    }
+}
