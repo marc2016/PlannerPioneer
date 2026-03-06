@@ -30,6 +30,7 @@ import {
     DiffSourceToggleWrapper
 } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
+import DeleteProjectDialog from './DeleteProjectDialog';
 
 const COLORS = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4', '#009688', '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', '#FFC107', '#FF9800', '#FF5722', '#795548', '#9E9E9E', '#607D8B'];
 
@@ -174,11 +175,10 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
         })
     ], []);
 
-    const handleDelete = async () => {
-        if (project) {
-            await deleteProject(project.id);
-            onClose();
-        }
+    const handleDelete = async (projectId: string, deleteChildren: boolean) => {
+        await deleteProject(projectId, deleteChildren);
+        setShowDeleteConfirm(false);
+        onClose();
     };
 
     return (
@@ -330,33 +330,27 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
 
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
                     {project && (
-                        !showDeleteConfirm ? (
-                            <>
-                                <Button color="inherit" onClick={handleExport} startIcon={<Download />}>
-                                    {t('common.export', 'Export')}
-                                </Button>
-                                <Button color="error" onClick={() => setShowDeleteConfirm(true)}>
-                                    {t('common.delete')}
-                                </Button>
-                            </>
-                        ) : (
-                            <Box sx={{ display: 'flex', gap: 1 }}>
-                                <Button color="inherit" onClick={() => setShowDeleteConfirm(false)}>
-                                    {t('common.cancel')}
-                                </Button>
-                                <Button color="error" variant="contained" onClick={handleDelete}>
-                                    {t('common.confirm_delete')}
-                                </Button>
-                            </Box>
-                        )
+                        <>
+                            <Button color="inherit" onClick={handleExport} startIcon={<Download />}>
+                                {t('common.export', 'Export')}
+                            </Button>
+                            <Button color="error" onClick={() => setShowDeleteConfirm(true)}>
+                                {t('common.delete')}
+                            </Button>
+                        </>
                     )}
-                    {!showDeleteConfirm && (
-                        <Button variant="contained" onClick={handleSave} disabled={!title.trim()}>
-                            {t('common.save')}
-                        </Button>
-                    )}
+                    <Button variant="contained" onClick={handleSave} disabled={!title.trim()}>
+                        {t('common.save')}
+                    </Button>
                 </Box>
             </Box>
+
+            <DeleteProjectDialog
+                open={showDeleteConfirm}
+                project={project || null}
+                onClose={() => setShowDeleteConfirm(false)}
+                onConfirm={handleDelete}
+            />
         </Drawer>
     );
 }

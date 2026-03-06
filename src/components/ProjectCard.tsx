@@ -14,7 +14,6 @@ import {
     CheckCircleOutline,
     Delete,
     Folder,
-    Close,
     Adjust,
     ViewList,
     Description
@@ -26,19 +25,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import DescriptionModal from "./DescriptionModal";
+import DeleteProjectDialog from "./DeleteProjectDialog";
 import { useSettingsStore } from "../store/useSettingsStore";
 
 interface ProjectCardProps {
     project: Project;
     onToggle: (id: string) => void;
-    onDelete: (id: string) => void;
+    onDelete: (id: string, deleteChildren?: boolean) => void;
     onClick?: (project: Project) => void;
 }
 
 export default function ProjectCard({ project, onToggle, onDelete, onClick }: ProjectCardProps) {
     const { updateProject } = useProjectStore();
     const { selectedProjectId, setSelectedProjectId } = useSettingsStore();
-    const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
     const { t } = useTranslation();
     const navigate = useNavigate();
@@ -202,103 +202,69 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
             <Divider />
 
             <CardActions sx={{ bgcolor: 'white', justifyContent: 'flex-end', zIndex: 2, p: 1 }} onClick={(e) => e.stopPropagation()}>
-                {!isDeleting ? (
-                    <>
-                        {/* View Modules Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                navigate(`/modules?projectId=${project.id}`);
-                            }}
-                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                            title={t('projects.view_modules')}
-                        >
-                            <ViewModuleIcon />
-                        </IconButton>
+                {/* View Modules Button */}
+                <IconButton
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/modules?projectId=${project.id}`);
+                    }}
+                    sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                    title={t('projects.view_modules')}
+                >
+                    <ViewModuleIcon />
+                </IconButton>
 
-                        {/* View Features Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                navigate(`/features?projectId=${project.id}`);
-                            }}
-                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                            title={t('projects.view_features')}
-                        >
-                            <ViewList />
-                        </IconButton>
+                {/* View Features Button */}
+                <IconButton
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(`/features?projectId=${project.id}`);
+                    }}
+                    sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                    title={t('projects.view_features')}
+                >
+                    <ViewList />
+                </IconButton>
 
-                        {/* Edit Description Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsDescriptionModalOpen(true);
-                            }}
-                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                            title={t('common.edit_description', 'Beschreibung bearbeiten')}
-                        >
-                            <Description />
-                        </IconButton>
+                {/* Edit Description Button */}
+                <IconButton
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setIsDescriptionModalOpen(true);
+                    }}
+                    sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                    title={t('common.edit_description', 'Beschreibung bearbeiten')}
+                >
+                    <Description />
+                </IconButton>
 
-                        {/* Toggle Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onToggle(project.id);
-                            }}
-                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                        >
-                            {project.completed ? <Adjust /> : <CheckCircleOutline />}
-                        </IconButton>
+                {/* Toggle Button */}
+                <IconButton
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        onToggle(project.id);
+                    }}
+                    sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                >
+                    {project.completed ? <Adjust /> : <CheckCircleOutline />}
+                </IconButton>
 
-                        {/* Delete Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsDeleting(true);
-                            }}
-                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                            aria-label={t('common.delete')}
-                        >
-                            <Delete />
-                        </IconButton>
-
-
-                    </>
-                ) : (
-                    <>
-                        {/* Cancel Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setIsDeleting(false);
-                            }}
-                            sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                            aria-label={t('common.cancel')}
-                        >
-                            <Close />
-                        </IconButton>
-
-                        {/* Confirm Button */}
-                        <IconButton
-                            size="small"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onDelete(project.id);
-                            }}
-                            color="error"
-                            aria-label={t('common.confirm_delete')}
-                        >
-                            <Delete />
-                        </IconButton>
-                    </>
-                )}
+                {/* Delete Button */}
+                <IconButton
+                    size="small"
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteDialogOpen(true);
+                    }}
+                    sx={{ color: 'rgba(0, 0, 0, 0.6)' }}
+                    aria-label={t('common.delete')}
+                >
+                    <Delete />
+                </IconButton>
             </CardActions>
 
             <DescriptionModal
@@ -307,6 +273,15 @@ export default function ProjectCard({ project, onToggle, onDelete, onClick }: Pr
                 title={project.title}
                 initialDescription={project.description || ""}
                 onSave={(desc) => updateProject(project.id, { description: desc })}
+            />
+
+            <DeleteProjectDialog
+                open={deleteDialogOpen}
+                project={project}
+                onClose={() => setDeleteDialogOpen(false)}
+                onConfirm={(id, deleteChildren) => {
+                    onDelete(id, deleteChildren);
+                }}
             />
         </Card>
     );
