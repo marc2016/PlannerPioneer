@@ -89,6 +89,7 @@ import { useTranslation } from "react-i18next";
 import { useProjectStore } from "../store/useProjectStore";
 import { useModuleStore } from "../store/useModuleStore";
 import { useFeatureStore } from "../store/useFeatureStore";
+import packageJson from "../../package.json";
 
 export default function RootLayout() {
     const [open, setOpen] = useState(false);
@@ -323,6 +324,11 @@ export default function RootLayout() {
                             </ListItemButton>
                         </ListItem>
                     ))}
+                    <ListItem disablePadding sx={{ display: "block", textAlign: "left", ml: 3, opacity: 0.5 }}>
+                        <Typography variant="caption" color="text.secondary" sx={{ opacity: open ? 1 : 0, transition: 'opacity 0.2s', whiteSpace: 'nowrap' }}>
+                            v{packageJson.version}
+                        </Typography>
+                    </ListItem>
                 </List>
                 {selectedProject && (
                     <>

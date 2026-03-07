@@ -20,6 +20,8 @@ const backgrounds = [
     { id: 'wood', src: wood, name: 'Wood' },
 ];
 
+import packageJson from '../../package.json';
+
 export default function Settings() {
     const { appBackground, setAppBackground } = useSettingsStore();
     const { t } = useTranslation();
@@ -73,6 +75,12 @@ export default function Settings() {
                         </Grid>
                     ))}
                 </Grid>
+
+                <Box sx={{ mt: 4, pt: 2, borderTop: '1px solid rgba(0,0,0,0.1)', textAlign: 'center' }}>
+                    <Typography variant="caption" color="text.secondary">
+                        Version {packageJson.version}
+                    </Typography>
+                </Box>
             </Paper>
         </Box>
     );
