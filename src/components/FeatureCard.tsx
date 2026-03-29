@@ -114,7 +114,7 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
 
                 <Box sx={{ flexGrow: 1, mb: 1 }} />
 
-                <Box sx={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', mb: 1, zIndex: 1 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start', width: '100%', mb: 1, zIndex: 1 }}>
                     {/* Duration Display */}
                     {feature.expected_duration !== undefined && (
                         <Chip
@@ -126,46 +126,45 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                         />
                     )}
 
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-end', flexGrow: 1 }}>
-                        {project && (
-                            <Chip
-                                icon={<AccountTree sx={{ fontSize: 16 }} />}
-                                label={project.title}
-                                size="small"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/modules?projectId=${project.id}`);
-                                }}
-                                sx={{
-                                    bgcolor: project.color || 'action.selected',
-                                    color: project.color ? '#fff' : 'text.primary',
-                                    '& .MuiChip-icon': {
-                                        color: 'inherit'
-                                    },
-                                    cursor: 'pointer'
-                                }}
-                            />
-                        )}
-                        {module && (
-                            <Chip
-                                icon={<ViewModule sx={{ fontSize: 16 }} />}
-                                label={module.title}
-                                size="small"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    navigate(`/features?moduleId=${module.id}`);
-                                }}
-                                sx={{
-                                    bgcolor: module.color || 'action.selected',
-                                    color: module.color ? '#fff' : 'text.primary',
-                                    '& .MuiChip-icon': {
-                                        color: 'inherit'
-                                    },
-                                    cursor: 'pointer'
-                                }}
-                            />
-                        )}
-                    </Box>
+                    {project && (
+                        <Chip
+                            icon={<AccountTree sx={{ fontSize: 16 }} />}
+                            label={project.title}
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/modules?projectId=${project.id}`);
+                            }}
+                            sx={{
+                                bgcolor: project.color || 'action.selected',
+                                color: project.color ? '#fff' : 'text.primary',
+                                '& .MuiChip-icon': {
+                                    color: 'inherit'
+                                },
+                                cursor: 'pointer'
+                            }}
+                        />
+                    )}
+                    
+                    {module && (
+                        <Chip
+                            icon={<ViewModule sx={{ fontSize: 16 }} />}
+                            label={module.title}
+                            size="small"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate(`/features?moduleId=${module.id}`);
+                            }}
+                            sx={{
+                                bgcolor: module.color || 'action.selected',
+                                color: module.color ? '#fff' : 'text.primary',
+                                '& .MuiChip-icon': {
+                                    color: 'inherit'
+                                },
+                                cursor: 'pointer'
+                            }}
+                        />
+                    )}
                 </Box>
             </CardActionArea>
 
