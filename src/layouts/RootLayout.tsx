@@ -460,7 +460,6 @@ export default function RootLayout() {
                     // Background moved to separate layer
                 }}
             >
-                <DrawerHeader />
                 <Container maxWidth="xl">
                     <Outlet />
                 </Container>

@@ -477,15 +477,20 @@ export default function MasterTable() {
 
                         return (
                             <>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, minWidth: 0 }}>
-                                    <Typography variant="h4" sx={{ fontWeight: 100, color: "text.secondary", whiteSpace: "nowrap" }}>
-                                        {selectedProject.title}
-                                    </Typography>
-                                    <IconButton size="small" onClick={() => setIsDrawerOpen(true)} sx={{ flexShrink: 0 }}>
-                                        <Edit fontSize="small" />
-                                    </IconButton>
-
-                                    <Divider orientation="vertical" flexItem sx={{ mx: 2, borderColor: 'text.disabled' }} />
+                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: 1, flex: 1, minWidth: 0 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                            <Typography variant="h4" sx={{ fontWeight: 100, color: "text.secondary", whiteSpace: "nowrap" }}>
+                                                {selectedProject.title}
+                                            </Typography>
+                                            <IconButton size="small" onClick={() => setIsDrawerOpen(true)} sx={{ flexShrink: 0 }}>
+                                                <Edit fontSize="small" />
+                                            </IconButton>
+                                        </Box>
+                                        <Box sx={{ flexShrink: 0 }}>
+                                            {renderProjectSelect()}
+                                        </Box>
+                                    </Box>
 
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'nowrap' }}>
                                         <Typography variant="body1" color="text.secondary" sx={{ whiteSpace: "nowrap" }}>
@@ -569,9 +574,6 @@ export default function MasterTable() {
                                             </>
                                         )}
                                     </Box>
-                                </Box>
-                                <Box sx={{ flexShrink: 0 }}>
-                                    {renderProjectSelect()}
                                 </Box>
                             </>
                         );
