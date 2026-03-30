@@ -6,7 +6,8 @@ import {
     Box,
     Divider,
     CardActionArea,
-    Chip
+    Chip,
+    Tooltip
 } from "@mui/material";
 import {
     CheckCircleOutline,
@@ -16,7 +17,8 @@ import {
     AccountTree,
     ViewModule,
     Adjust,
-    Description
+    Description,
+    TaskAlt
 } from "@mui/icons-material";
 import { Feature, useFeatureStore } from "../store/useFeatureStore";
 import { useModuleStore } from "../store/useModuleStore";
@@ -116,15 +118,31 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
 
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start', width: '100%', mb: 1, zIndex: 1 }}>
                     {/* Duration Display */}
-                    {feature.expected_duration !== undefined && (
-                        <Chip
-                            label={`${feature.expected_duration}h`}
-                            size="small"
-                            variant="outlined"
-                            color="primary"
-                            sx={{ fontWeight: 'bold' }}
-                        />
-                    )}
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        {feature.expected_duration !== undefined && (
+                            <Tooltip title={t('common.expected_duration', 'Erwartete Dauer')}>
+                                <Chip
+                                    label={`~ ${feature.expected_duration}h`}
+                                    size="small"
+                                    variant="outlined"
+                                    color="primary"
+                                    sx={{ fontWeight: 'bold' }}
+                                />
+                            </Tooltip>
+                        )}
+                        {feature.actualDuration !== undefined && feature.actualDuration > 0 && (
+                            <Tooltip title={t('common.actual_duration', 'Tatsächliche Dauer')}>
+                                <Chip
+                                    icon={<TaskAlt fontSize="small" />}
+                                    label={`${feature.actualDuration}h`}
+                                    size="small"
+                                    variant={feature.actualDuration > (feature.expected_duration || 0) ? "filled" : "outlined"}
+                                    color={feature.actualDuration > (feature.expected_duration || 0) ? "error" : "success"}
+                                    sx={{ fontWeight: 'bold' }}
+                                />
+                            </Tooltip>
+                        )}
+                    </Box>
 
                     {project && (
                         <Chip

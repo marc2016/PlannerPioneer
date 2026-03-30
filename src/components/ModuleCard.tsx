@@ -19,7 +19,8 @@ import {
     Adjust,
     AccessTime,
     Description,
-    Checkroom
+    Checkroom,
+    TaskAlt
 } from "@mui/icons-material";
 import { Module, useModuleStore } from "../store/useModuleStore";
 import { useProjectStore } from "../store/useProjectStore";
@@ -166,13 +167,27 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                                 sx={{ opacity: 0.8 }}
                             />
                             {totalDuration > 0 && (
-                                <Chip
-                                    icon={<AccessTime fontSize="small" />}
-                                    label={`${totalDuration.toFixed(1)}h`}
-                                    size="small"
-                                    variant="outlined"
-                                    sx={{ opacity: 0.8 }}
-                                />
+                                <Tooltip title={t('common.expected_duration', 'Erwartete Dauer')}>
+                                    <Chip
+                                        icon={<AccessTime fontSize="small" />}
+                                        label={`~ ${totalDuration.toFixed(1)}h`}
+                                        size="small"
+                                        variant="outlined"
+                                        sx={{ opacity: 0.8 }}
+                                    />
+                                </Tooltip>
+                            )}
+                            {module.actualDuration !== undefined && module.actualDuration > 0 && (
+                                <Tooltip title={t('common.actual_duration', 'Tatsächliche Dauer')}>
+                                    <Chip
+                                        icon={<TaskAlt fontSize="small" />}
+                                        label={`${module.actualDuration}h`}
+                                        size="small"
+                                        variant={module.actualDuration > totalDuration ? "filled" : "outlined"}
+                                        color={module.actualDuration > totalDuration ? "error" : "success"}
+                                        sx={{ opacity: 0.8 }}
+                                    />
+                                </Tooltip>
                             )}
                         </Box>
 
