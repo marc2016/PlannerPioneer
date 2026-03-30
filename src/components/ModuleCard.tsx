@@ -121,8 +121,8 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                 </Typography>
 
                 <Box sx={{ flexGrow: 1 }} />
-                <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end', mb: 1, zIndex: 1 }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start' }}>
+                <Box sx={{ display: 'flex', width: '100%', justifyContent: 'flex-end', mb: 1, zIndex: 1, flexDirection: 'column' }}>
+                    <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start', mb: 1 }}>
                         {project && (
                             <Chip
                                 icon={<AccountTree sx={{ fontSize: 16 }} />}
@@ -133,7 +133,6 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                                     navigate(`/modules?projectId=${project.id}`);
                                 }}
                                 sx={{
-                                    mb: 1,
                                     zIndex: 1,
                                     bgcolor: project.color || 'action.selected',
                                     color: project.color ? '#fff' : 'text.primary',
@@ -144,54 +143,58 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                                 }}
                             />
                         )}
-                        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                            {module.tShirtSize && (
-                                <Chip
-                                    icon={<Checkroom fontSize="small" />}
-                                    label={module.tShirtSize}
-                                    size="small"
-                                    color={
-                                        module.tShirtSize === 'S' ? 'success' :
-                                            module.tShirtSize === 'M' ? 'info' :
-                                                module.tShirtSize === 'L' ? 'warning' :
-                                                    module.tShirtSize === 'XL' ? 'error' : 'default'
-                                    }
-                                    sx={{ opacity: 0.9, fontWeight: 'bold' }}
-                                />
-                            )}
-                            <Chip
-                                icon={<ViewList fontSize="small" />}
-                                label={`${featureCount} ${t('modules.form.feature_count', "Items")}`}
-                                size="small"
-                                variant="outlined"
-                                sx={{ opacity: 0.8 }}
-                            />
-                            {totalDuration > 0 && (
-                                <Tooltip title={t('common.expected_duration', 'Erwartete Dauer')}>
-                                    <Chip
-                                        icon={<AccessTime fontSize="small" />}
-                                        label={`~ ${totalDuration.toFixed(1)}h`}
-                                        size="small"
-                                        variant="outlined"
-                                        sx={{ opacity: 0.8 }}
-                                    />
-                                </Tooltip>
-                            )}
-                            {module.actualDuration !== undefined && module.actualDuration > 0 && (
-                                <Tooltip title={t('common.actual_duration', 'Tatsächliche Dauer')}>
-                                    <Chip
-                                        icon={<TaskAlt fontSize="small" />}
-                                        label={`${module.actualDuration}h`}
-                                        size="small"
-                                        variant={module.actualDuration > totalDuration ? "filled" : "outlined"}
-                                        color={module.actualDuration > totalDuration ? "error" : "success"}
-                                        sx={{ opacity: 0.8 }}
-                                    />
-                                </Tooltip>
-                            )}
-                        </Box>
-
                     </Box>
+                    <Box sx={{ display: 'flex', gap: 1, mb: 1, flexWrap: 'wrap' }}>
+                        {module.tShirtSize && (
+                            <Chip
+                                icon={<Checkroom fontSize="small" />}
+                                label={module.tShirtSize}
+                                size="small"
+                                color={
+                                    module.tShirtSize === 'S' ? 'success' :
+                                        module.tShirtSize === 'M' ? 'info' :
+                                            module.tShirtSize === 'L' ? 'warning' :
+                                                module.tShirtSize === 'XL' ? 'error' : 'default'
+                                }
+                                sx={{ opacity: 0.9, fontWeight: 'bold' }}
+                            />
+                        )}
+                        <Chip
+                            icon={<ViewList fontSize="small" />}
+                            label={`${featureCount} ${t('modules.form.feature_count', "Items")}`}
+                            size="small"
+                            variant="outlined"
+                            sx={{ opacity: 0.8 }}
+                        />
+                    </Box>
+                    <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                        {totalDuration > 0 && (
+                            <Tooltip title={t('common.expected_duration', 'Erwartete Dauer')}>
+                                <Chip
+                                    icon={<AccessTime fontSize="small" />}
+                                    label={`~ ${totalDuration.toFixed(1)}h`}
+                                    size="small"
+                                    variant="outlined"
+                                    sx={{ opacity: 0.8 }}
+                                />
+                            </Tooltip>
+                        )}
+                        {module.actualDuration !== undefined && module.actualDuration > 0 && (
+                            <Tooltip title={t('common.actual_duration', 'Tatsächliche Dauer')}>
+                                <Chip
+                                    icon={<TaskAlt fontSize="small" />}
+                                    label={`${module.actualDuration}h`}
+                                    size="small"
+                                    variant={module.actualDuration > totalDuration ? "filled" : "outlined"}
+                                    color={module.actualDuration > totalDuration ? "error" : "success"}
+                                    sx={{ opacity: 0.8 }}
+                                />
+                            </Tooltip>
+                        )}
+                    </Box>
+
+
+
                 </Box>
             </CardActionArea>
 
