@@ -15,6 +15,7 @@ export interface Feature {
     expected_duration?: number;
     standard_deviation?: number;
     variance?: number;
+    actualDuration?: number;
     createdAt?: number;
 }
 
@@ -61,6 +62,7 @@ export const useFeatureStore = create<FeatureState>((set, get) => ({
                     expected_duration: expected,
                     standard_deviation: stdDev,
                     variance: variance,
+                    actualDuration: f.actual_duration,
                     createdAt: f.created_at
                 };
             })
@@ -78,6 +80,7 @@ export const useFeatureStore = create<FeatureState>((set, get) => ({
             pert_optimistic: featureData.pert_optimistic,
             pert_most_likely: featureData.pert_most_likely,
             pert_pessimistic: featureData.pert_pessimistic,
+            actual_duration: featureData.actualDuration,
             created_at: Date.now(),
             updated_at: Date.now()
         };
@@ -115,6 +118,7 @@ export const useFeatureStore = create<FeatureState>((set, get) => ({
                 pert_optimistic: featureData.pert_optimistic,
                 pert_most_likely: featureData.pert_most_likely,
                 pert_pessimistic: featureData.pert_pessimistic,
+                actual_duration: featureData.actualDuration,
                 updated_at: Date.now()
             })
             .where('id', '=', id)

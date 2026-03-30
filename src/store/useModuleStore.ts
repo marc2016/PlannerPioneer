@@ -12,6 +12,7 @@ export interface Module {
     createdAt?: number;
     updatedAt?: number;
     totalDuration?: number;
+    actualDuration?: number;
 }
 
 interface ModuleState {
@@ -57,6 +58,7 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
                     completed: Boolean(m.completed),
                     color: m.color,
                     tShirtSize: m.t_shirt_size as 'S' | 'M' | 'L' | 'XL' | undefined,
+                    actualDuration: m.actual_duration,
                     createdAt: m.created_at,
                     updatedAt: m.updated_at,
                     totalDuration: parseFloat(totalDuration.toFixed(1))
@@ -73,6 +75,7 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
             description: moduleData.description || '',
             color: moduleData.color || '#F44336', // Default red-ish
             t_shirt_size: moduleData.tShirtSize || undefined,
+            actual_duration: moduleData.actualDuration || undefined,
             completed: 0,
             created_at: Date.now(),
             updated_at: Date.now()
@@ -109,6 +112,7 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
                 description: moduleData.description,
                 color: moduleData.color,
                 t_shirt_size: moduleData.tShirtSize,
+                actual_duration: moduleData.actualDuration,
                 updated_at: Date.now()
             })
             .where('id', '=', id)

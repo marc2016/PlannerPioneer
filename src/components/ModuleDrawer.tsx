@@ -9,7 +9,8 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Slider
+    Slider,
+    Alert
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { useEffect, useState, useMemo } from "react";
@@ -53,6 +54,7 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
     const [color, setColor] = useState(COLORS[5]);
     const [projectId, setProjectId] = useState<string>("");
     const [tShirtSize, setTShirtSize] = useState<'S' | 'M' | 'L' | 'XL' | ''>("");
+    const [actualDuration, setActualDuration] = useState<string>("");
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     useEffect(() => {
@@ -62,6 +64,7 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
             setColor(module.color || COLORS[5]);
             setProjectId(module.project_id || "");
             setTShirtSize(module.tShirtSize || "");
+            setActualDuration(module.actualDuration?.toString() || "");
             setShowDeleteConfirm(false);
         } else {
             setTitle("");
@@ -89,6 +92,7 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
                 setProjectId("");
             }
             setTShirtSize("");
+            setActualDuration("");
             setShowDeleteConfirm(false);
         }
     }, [module, open, initialProjectId, projects]);
@@ -96,10 +100,20 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
     const handleSave = async () => {
         if (!title.trim()) return;
 
+        const pActualDuration = actualDuration ? parseFloat(actualDuration) : undefined;
+        const payload = {
+            title,
+            description,
+            color,
+            project_id: projectId || undefined,
+            tShirtSize: (tShirtSize as 'S' | 'M' | 'L' | 'XL') || undefined,
+            actualDuration: pActualDuration
+        };
+
         if (module) {
-            await updateModule(module.id, { title, description, color, project_id: projectId || undefined, tShirtSize: (tShirtSize as 'S' | 'M' | 'L' | 'XL') || undefined });
+            await updateModule(module.id, payload);
         } else {
-            await addModule({ title, description, color, project_id: projectId || undefined, tShirtSize: (tShirtSize as 'S' | 'M' | 'L' | 'XL') || undefined });
+            await addModule(payload);
         }
         onClose();
     };
@@ -218,6 +232,28 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
                             valueLabelDisplay="off"
                         />
                     </Box>
+                </Box>
+
+                {/* Actual Duration Selection */}
+                <Box sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                        {t('modules.form.actual_duration', "Actual Duration")}
+                    </Typography>
+
+                    <TextField
+                        label={t('modules.form.actual_duration', "Actual Duration (Hours)")}
+                        type="number"
+                        value={actualDuration}
+                        onChange={(e) => setActualDuration(e.target.value)}
+                        size="small"
+                        fullWidth
+                    />
+
+                    {actualDuration && parseFloat(actualDuration) > 0 && (
+                        <Alert severity="info" sx={{ mt: 2 }}>
+                            {t('modules.form.actual_duration_note', "Since a duration is entered here, the actual durations of the child items are ignored for reflection.")}
+                        </Alert>
+                    )}
                 </Box>
 
                 <Box>

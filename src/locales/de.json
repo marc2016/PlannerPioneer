@@ -103,7 +103,9 @@
             "size_s": "S (Klein)",
             "size_m": "M (Mittel)",
             "size_l": "L (Groß)",
-            "size_xl": "XL (Sehr groß)"
+            "size_xl": "XL (Sehr groß)",
+            "actual_duration": "Tatsächliche Dauer (Stunden)",
+            "actual_duration_note": "Da hier eine Dauer eingegeben wurde, werden die tatsächlichen Dauern der untergeordneten Items für die Reflexion ignoriert."
         }
     },
     "features": {
@@ -128,7 +130,9 @@
             "most_likely": "Wahrscheinlich",
             "pessimistic": "Pessimistisch",
             "expected_duration": "Erwartete Dauer",
-            "optional": "Optional"
+            "optional": "Optional",
+            "actual_duration": "Tatsächliche Dauer (Stunden)",
+            "actual_duration_ignored_note": "Die hier eingegebene Dauer wird für die Reflexion ignoriert, da am übergeordneten Modul eine tatsächliche Dauer hinterlegt ist."
         }
     },
     "table": {

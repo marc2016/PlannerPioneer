@@ -103,7 +103,9 @@
             "size_s": "S (Small)",
             "size_m": "M (Medium)",
             "size_l": "L (Large)",
-            "size_xl": "XL (Extra Large)"
+            "size_xl": "XL (Extra Large)",
+            "actual_duration": "Actual Duration (Hours)",
+            "actual_duration_note": "Since a duration is entered here, the actual durations of the child items are ignored for reflection."
         }
     },
     "features": {
@@ -128,7 +130,9 @@
             "most_likely": "Most Likely",
             "pessimistic": "Pessimistic",
             "expected_duration": "Expected Duration",
-            "optional": "Optional"
+            "optional": "Optional",
+            "actual_duration": "Actual Duration (Hours)",
+            "actual_duration_ignored_note": "The duration entered here is ignored for reflection because an actual duration is set on the parent module."
         }
     },
     "table": {

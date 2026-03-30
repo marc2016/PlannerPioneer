@@ -8,7 +8,8 @@ import {
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
+    Alert
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
 import { useEffect, useState, useMemo } from "react";
@@ -57,6 +58,8 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
     const [pertOptimistic, setPertOptimistic] = useState<string>("");
     const [pertMostLikely, setPertMostLikely] = useState<string>("");
     const [pertPessimistic, setPertPessimistic] = useState<string>("");
+    
+    const [actualDuration, setActualDuration] = useState<string>("");
 
     useEffect(() => {
         if (feature) {
@@ -67,6 +70,7 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
             setPertOptimistic(feature.pert_optimistic?.toString() || "");
             setPertMostLikely(feature.pert_most_likely?.toString() || "");
             setPertPessimistic(feature.pert_pessimistic?.toString() || "");
+            setActualDuration(feature.actualDuration?.toString() || "");
             setShowDeleteConfirm(false);
         } else {
             setTitle("");
@@ -83,6 +87,7 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
             setPertOptimistic("");
             setPertMostLikely("");
             setPertPessimistic("");
+            setActualDuration("");
             setShowDeleteConfirm(false);
         }
     }, [feature, open, initialModuleId]);
@@ -110,6 +115,7 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
         const pOptimistic = pertOptimistic ? parseFloat(pertOptimistic) : undefined;
         const pMostLikely = pertMostLikely ? parseFloat(pertMostLikely) : undefined;
         const pPessimistic = pertPessimistic ? parseFloat(pertPessimistic) : undefined;
+        const pActualDuration = actualDuration ? parseFloat(actualDuration) : undefined;
 
         const featureData = {
             title,
@@ -118,7 +124,8 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
             module_id: moduleId || undefined,
             pert_optimistic: pOptimistic,
             pert_most_likely: pMostLikely,
-            pert_pessimistic: pPessimistic
+            pert_pessimistic: pPessimistic,
+            actualDuration: pActualDuration
         };
 
         if (feature) {
@@ -253,6 +260,36 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
                             {t('features.form.expected_duration', "Expected Duration")}: {expectedDuration}h
                         </Typography>
                     )}
+                </Box>
+
+                {/* Actual Duration Section */}
+                <Box sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                    <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                        {t('features.form.actual_duration', "Actual Duration")}
+                    </Typography>
+
+                    <TextField
+                        label={t('features.form.actual_duration', "Actual Duration (Hours)")}
+                        type="number"
+                        value={actualDuration}
+                        onChange={(e) => setActualDuration(e.target.value)}
+                        size="small"
+                        fullWidth
+                    />
+
+                    {(() => {
+                        if (moduleId) {
+                            const selectedModule = modules.find(m => m.id === moduleId);
+                            if (selectedModule && selectedModule.actualDuration && selectedModule.actualDuration > 0) {
+                                return (
+                                    <Alert severity="warning" sx={{ mt: 2 }}>
+                                        {t('features.form.actual_duration_ignored_note', "The duration entered here is ignored for reflection because an actual duration is set on the parent module.")}
+                                    </Alert>
+                                );
+                            }
+                        }
+                        return null;
+                    })()}
                 </Box>
 
                 {/* Module Selection */}

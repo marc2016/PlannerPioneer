@@ -22,6 +22,7 @@ export interface ModulesTable {
     color: string;
     completed: number;
     t_shirt_size?: string;
+    actual_duration?: number;
     created_at: number;
     updated_at: number;
 }
@@ -36,6 +37,7 @@ export interface FeaturesTable {
     pert_optimistic?: number;
     pert_most_likely?: number;
     pert_pessimistic?: number;
+    actual_duration?: number;
     created_at: number;
     updated_at: number;
 }
@@ -139,6 +141,8 @@ export const initDb = async () => {
         await addColumnIfNotExists('projects', 'end_date', 'text');
 
         await addColumnIfNotExists('modules', 't_shirt_size', 'text');
+        await addColumnIfNotExists('modules', 'actual_duration', 'real');
+        await addColumnIfNotExists('features', 'actual_duration', 'real');
 
         console.log('Database initialized successfully');
     } catch (error) {
