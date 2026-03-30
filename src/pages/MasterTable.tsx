@@ -25,6 +25,7 @@ interface TableRow {
     optimistic: number | null;
     mostLikely: number | null;
     pessimistic: number | null;
+    actualDuration: number | null;
     expected: number | null;
     standardDeviation: number | null;
     variance: number | null;
@@ -96,6 +97,7 @@ export default function MasterTable() {
                 optimistic: feature.pert_optimistic ?? null,
                 mostLikely: feature.pert_most_likely ?? null,
                 pessimistic: feature.pert_pessimistic ?? null,
+                actualDuration: feature.actual_duration ?? null,
                 expected: feature.expected_duration ?? null,
                 standardDeviation: feature.standard_deviation ?? null,
                 variance: feature.variance ?? null,
@@ -115,12 +117,13 @@ export default function MasterTable() {
 
         if (column.id === 'featureTitle') {
             updateData.title = value;
-        } else if (['optimistic', 'mostLikely', 'pessimistic'].includes(column.id)) {
+        } else if (['optimistic', 'mostLikely', 'pessimistic', 'actualDuration'].includes(column.id)) {
             // Map column id to database field name
             const fieldMap: Record<string, string> = {
                 'optimistic': 'pert_optimistic',
                 'mostLikely': 'pert_most_likely',
-                'pessimistic': 'pert_pessimistic'
+                'pessimistic': 'pert_pessimistic',
+                'actualDuration': 'actual_duration'
             };
             // Ensure value is a number or null
             const numValue = value === '' ? null : Number(value);
@@ -272,6 +275,32 @@ export default function MasterTable() {
                 ),
                 Footer: ({ table }) => {
                     const total = table.getFilteredRowModel().rows.reduce((sum, row) => sum + (Number(row.original.pessimistic) || 0), 0);
+                    return <Box sx={{ fontWeight: 'bold' }}>{total.toFixed(1)}</Box>;
+                },
+            },
+            {
+                accessorKey: "actualDuration",
+                header: t("table.columns.actual_duration", "Ist-Zeit"),
+                enableEditing: true,
+                muiEditTextFieldProps: ({ cell }) => ({
+                    type: 'number',
+                    onBlur: (event) => {
+                        handleSaveCell(cell, event.target.value);
+                    },
+                }),
+                Cell: ({ cell }) => {
+                    const val = cell.getValue<number | string | null>();
+                    return (typeof val === 'number' || (typeof val === 'string' && val !== '')) ? Number(val).toFixed(1) : "-";
+                },
+                size: 100,
+                aggregationFn: "sum",
+                AggregatedCell: ({ cell }) => (
+                    <Box sx={{ fontWeight: 'bold' }}>
+                        {Number(cell.getValue())?.toFixed(1)}
+                    </Box>
+                ),
+                Footer: ({ table }) => {
+                    const total = table.getFilteredRowModel().rows.reduce((sum, row) => sum + (Number(row.original.actualDuration) || 0), 0);
                     return <Box sx={{ fontWeight: 'bold' }}>{total.toFixed(1)}</Box>;
                 },
             },
