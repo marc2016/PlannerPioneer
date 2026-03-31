@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import {
     Box,
     Typography,
@@ -19,6 +19,8 @@ import { useModuleStore } from '../store/useModuleStore';
 import { useFeatureStore } from '../store/useFeatureStore';
 import { useSettingsStore } from '../store/useSettingsStore';
 import { motion } from 'framer-motion';
+import ModuleDrawer from '../components/ModuleDrawer';
+import FeatureDrawer from '../components/FeatureDrawer';
 
 // Customized Treemap Content
 const CustomizedContent = (props: any) => {
@@ -90,7 +92,37 @@ export default function ProjectStructure() {
     const { features } = useFeatureStore();
     const { selectedProjectId, setSelectedProjectId } = useSettingsStore();
 
+    const [moduleDrawerOpen, setModuleDrawerOpen] = useState(false);
+    const [selectedModuleForDrawer, setSelectedModuleForDrawer] = useState<any>(null);
+
+    const [featureDrawerOpen, setFeatureDrawerOpen] = useState(false);
+    const [selectedFeatureForDrawer, setSelectedFeatureForDrawer] = useState<any>(null);
+
     const selectedProject = projects.find(p => p.id === selectedProjectId);
+
+    const handleChartClick = (data: any) => {
+        if (!data) return;
+        
+        // recharts passes the event differently depending on the chart type.
+        // It might be directly `data` (Treemap node or Pie slice),
+        // or inside `activePayload` (BarChart).
+        let target = data;
+        if (data && data.activePayload && data.activePayload.length > 0) {
+            target = data.activePayload[0].payload;
+        } else if (data && data.payload) {
+            target = data.payload;
+        }
+        
+        // For Treemap, custom content might put raw data inside root or depth. 
+        // We ensure rawFeature / rawModule are on target.
+        if (target?.isFeature && target?.rawFeature) {
+            setSelectedFeatureForDrawer(target.rawFeature);
+            setFeatureDrawerOpen(true);
+        } else if (target?.isModule && target?.rawModule) {
+            setSelectedModuleForDrawer(target.rawModule);
+            setModuleDrawerOpen(true);
+        }
+    };
 
     const data = useMemo(() => {
         if (!selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return [];
@@ -100,6 +132,8 @@ export default function ProjectStructure() {
         return projectModules.map(mod => {
             const moduleFeatures = features.filter(f => f.module_id === mod.id);
             const children = moduleFeatures.map(feat => ({
+                isFeature: true,
+                rawFeature: feat,
                 name: feat.title,
                 size: feat.expected_duration ? Math.max(feat.expected_duration, 0.1) : 0.1, // Treemap needs size > 0
                 featureColor: feat.color || theme.palette.primary.main,
@@ -111,6 +145,8 @@ export default function ProjectStructure() {
             const moduleDuration = children.reduce((sum, child) => sum + child.duration, 0);
 
             return {
+                isModule: true,
+                rawModule: mod,
                 name: mod.title,
                 featureColor: mod.color || theme.palette.secondary.main,
                 color: mod.color || theme.palette.secondary.main,
@@ -123,6 +159,8 @@ export default function ProjectStructure() {
 
     const modulePieData = useMemo(() => {
         return data.map(mod => ({
+            isModule: true,
+            rawModule: mod.rawModule,
             name: mod.name,
             value: mod.duration,
             color: mod.color
@@ -209,6 +247,8 @@ export default function ProjectStructure() {
                 const pes = f.pert_pessimistic || likely;
 
                 return {
+                    isFeature: true,
+                    rawFeature: f,
                     name: f.title,
                     Optimistisch: opt,
                     'Zusatz Wahrscheinlich': likely - opt > 0 ? (likely - opt) : 0,
@@ -244,6 +284,8 @@ export default function ProjectStructure() {
             }
 
             return {
+                isModule: true,
+                rawModule: mod,
                 name: mod.title,
                 Optimistisch: sumOpt,
                 'Zusatz Wahrscheinlich': sumLikely - sumOpt > 0 ? (sumLikely - sumOpt) : 0,
@@ -345,6 +387,8 @@ export default function ProjectStructure() {
                                             stroke="#fff"
                                             fill="#8884d8"
                                             content={<CustomizedContent />}
+                                            onClick={handleChartClick}
+                                            style={{ cursor: 'pointer' }}
                                         >
                                             <Tooltip
                                                 formatter={(_value: any, _name: any, props: any) => {
@@ -378,6 +422,8 @@ export default function ProjectStructure() {
                                                     outerRadius={100}
                                                     paddingAngle={5}
                                                     dataKey="value"
+                                                    onClick={handleChartClick}
+                                                    style={{ cursor: 'pointer' }}
                                                 >
                                                     {modulePieData.map((entry, index) => (
                                                         <Cell key={`cell-${index}`} fill={entry.color || theme.palette.primary.main} />
@@ -496,7 +542,7 @@ export default function ProjectStructure() {
                                 {moduleComparisonData.length > 0 ? (
                                     <Box sx={{ width: '100%', height: 300 }}>
                                         <ResponsiveContainer>
-                                            <BarChart data={moduleComparisonData} margin={{ top: 20, right: 10, left: 0, bottom: 20 }}>
+                                            <BarChart data={moduleComparisonData} margin={{ top: 20, right: 10, left: 0, bottom: 20 }} onClick={handleChartClick}>
                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                                 <XAxis 
                                                     dataKey="name" 
@@ -509,12 +555,12 @@ export default function ProjectStructure() {
                                                 <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px' }} />
                                                 
                                                 {/* Estimated Values Stacked */}
-                                                <Bar dataKey="Optimistisch" stackId="expected" fill={theme.palette.success.main} radius={[0, 0, 4, 4]} />
-                                                <Bar dataKey="Zusatz Wahrscheinlich" name="Wahrscheinlich" stackId="expected" fill={theme.palette.info.main} />
-                                                <Bar dataKey="Zusatz Pessimistisch" name="Pessimistisch" stackId="expected" fill={theme.palette.warning.main} radius={[4, 4, 0, 0]} />
+                                                <Bar dataKey="Optimistisch" stackId="expected" fill={theme.palette.success.main} radius={[0, 0, 4, 4]} onClick={handleChartClick} style={{ cursor: 'pointer' }} />
+                                                <Bar dataKey="Zusatz Wahrscheinlich" name="Wahrscheinlich" stackId="expected" fill={theme.palette.info.main} onClick={handleChartClick} style={{ cursor: 'pointer' }} />
+                                                <Bar dataKey="Zusatz Pessimistisch" name="Pessimistisch" stackId="expected" fill={theme.palette.warning.main} radius={[4, 4, 0, 0]} onClick={handleChartClick} style={{ cursor: 'pointer' }} />
                                                 
                                                 {/* Actual Value Non-Stacked */}
-                                                <Bar dataKey="Tatsächlich" fill={theme.palette.secondary.main} radius={4} />
+                                                <Bar dataKey="Tatsächlich" fill={theme.palette.secondary.main} radius={4} onClick={handleChartClick} style={{ cursor: 'pointer' }} />
                                             </BarChart>
                                         </ResponsiveContainer>
                                     </Box>
@@ -539,7 +585,7 @@ export default function ProjectStructure() {
                                 {featureComparisonData.length > 0 ? (
                                     <Box sx={{ width: '100%', height: 300 }}>
                                         <ResponsiveContainer>
-                                            <BarChart data={featureComparisonData} margin={{ top: 20, right: 10, left: 0, bottom: 20 }}>
+                                            <BarChart data={featureComparisonData} margin={{ top: 20, right: 10, left: 0, bottom: 20 }} onClick={handleChartClick}>
                                                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                                                 <XAxis 
                                                     dataKey="name" 
@@ -552,12 +598,12 @@ export default function ProjectStructure() {
                                                 <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px' }} />
                                                 
                                                 {/* Estimated Values Stacked */}
-                                                <Bar dataKey="Optimistisch" stackId="expected" fill={theme.palette.success.main} radius={[0, 0, 4, 4]} />
-                                                <Bar dataKey="Zusatz Wahrscheinlich" name="Wahrscheinlich" stackId="expected" fill={theme.palette.info.main} />
-                                                <Bar dataKey="Zusatz Pessimistisch" name="Pessimistisch" stackId="expected" fill={theme.palette.warning.main} radius={[4, 4, 0, 0]} />
+                                                <Bar dataKey="Optimistisch" stackId="expected" fill={theme.palette.success.main} radius={[0, 0, 4, 4]} onClick={handleChartClick} style={{ cursor: 'pointer' }} />
+                                                <Bar dataKey="Zusatz Wahrscheinlich" name="Wahrscheinlich" stackId="expected" fill={theme.palette.info.main} onClick={handleChartClick} style={{ cursor: 'pointer' }} />
+                                                <Bar dataKey="Zusatz Pessimistisch" name="Pessimistisch" stackId="expected" fill={theme.palette.warning.main} radius={[4, 4, 0, 0]} onClick={handleChartClick} style={{ cursor: 'pointer' }} />
                                                 
                                                 {/* Actual Value Non-Stacked */}
-                                                <Bar dataKey="Tatsächlich" fill={theme.palette.secondary.main} radius={4} />
+                                                <Bar dataKey="Tatsächlich" fill={theme.palette.secondary.main} radius={4} onClick={handleChartClick} style={{ cursor: 'pointer' }} />
                                             </BarChart>
                                         </ResponsiveContainer>
                                     </Box>
@@ -572,6 +618,24 @@ export default function ProjectStructure() {
                         </Card>
                     </Grid>
                 </Grid>
+            )}
+
+            {selectedModuleForDrawer && (
+                <ModuleDrawer
+                    open={moduleDrawerOpen}
+                    onClose={() => setModuleDrawerOpen(false)}
+                    module={selectedModuleForDrawer}
+                    initialProjectId={selectedProjectId}
+                />
+            )}
+
+            {selectedFeatureForDrawer && (
+                <FeatureDrawer
+                    open={featureDrawerOpen}
+                    onClose={() => setFeatureDrawerOpen(false)}
+                    feature={selectedFeatureForDrawer}
+                    initialModuleId={selectedFeatureForDrawer.module_id}
+                />
             )}
         </motion.div>
     );
