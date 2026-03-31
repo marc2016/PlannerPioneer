@@ -112,10 +112,10 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
     const handleSave = async () => {
         if (!title.trim()) return;
 
-        const pOptimistic = pertOptimistic ? parseFloat(pertOptimistic) : undefined;
-        const pMostLikely = pertMostLikely ? parseFloat(pertMostLikely) : undefined;
-        const pPessimistic = pertPessimistic ? parseFloat(pertPessimistic) : undefined;
-        const pActualDuration = actualDuration ? parseFloat(actualDuration) : undefined;
+        const pOptimistic = pertOptimistic ? parseFloat(pertOptimistic) : null;
+        const pMostLikely = pertMostLikely ? parseFloat(pertMostLikely) : null;
+        const pPessimistic = pertPessimistic ? parseFloat(pertPessimistic) : null;
+        const pActualDuration = actualDuration ? parseFloat(actualDuration) : null;
 
         const featureData = {
             title,

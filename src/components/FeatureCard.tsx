@@ -130,7 +130,7 @@ export default function FeatureCard({ feature, onToggle, onDelete, onClick }: Fe
                                 />
                             </Tooltip>
                         )}
-                        {feature.actualDuration !== undefined && feature.actualDuration > 0 && (
+                        {feature.actualDuration != null && feature.actualDuration > 0 && (
                             <Tooltip title={t('common.actual_duration', 'Tatsächliche Dauer')}>
                                 <Chip
                                     icon={<TaskAlt fontSize="small" />}

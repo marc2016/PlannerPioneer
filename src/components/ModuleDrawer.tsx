@@ -100,13 +100,13 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
     const handleSave = async () => {
         if (!title.trim()) return;
 
-        const pActualDuration = actualDuration ? parseFloat(actualDuration) : undefined;
+        const pActualDuration = actualDuration ? parseFloat(actualDuration) : null;
         const payload = {
             title,
             description,
             color,
             project_id: projectId || undefined,
-            tShirtSize: (tShirtSize as 'S' | 'M' | 'L' | 'XL') || undefined,
+            tShirtSize: (tShirtSize as 'S' | 'M' | 'L' | 'XL') || null,
             actualDuration: pActualDuration
         };
 

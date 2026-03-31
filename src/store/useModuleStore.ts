@@ -8,11 +8,11 @@ export interface Module {
     description?: string;
     completed: boolean;
     color?: string; // Hex color code
-    tShirtSize?: 'S' | 'M' | 'L' | 'XL';
+    tShirtSize?: 'S' | 'M' | 'L' | 'XL' | null;
     createdAt?: number;
     updatedAt?: number;
     totalDuration?: number;
-    actualDuration?: number;
+    actualDuration?: number | null;
 }
 
 interface ModuleState {
@@ -57,8 +57,8 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
                     description: m.description || undefined,
                     completed: Boolean(m.completed),
                     color: m.color,
-                    tShirtSize: m.t_shirt_size as 'S' | 'M' | 'L' | 'XL' | undefined,
-                    actualDuration: m.actual_duration,
+                    tShirtSize: (m.t_shirt_size as 'S' | 'M' | 'L' | 'XL' | null | undefined) ?? null,
+                    actualDuration: m.actual_duration ?? null,
                     createdAt: m.created_at,
                     updatedAt: m.updated_at,
                     totalDuration: parseFloat(totalDuration.toFixed(1))
@@ -111,8 +111,8 @@ export const useModuleStore = create<ModuleState>((set, get) => ({
                 title: moduleData.title,
                 description: moduleData.description,
                 color: moduleData.color,
-                t_shirt_size: moduleData.tShirtSize,
-                actual_duration: moduleData.actualDuration,
+                t_shirt_size: moduleData.tShirtSize !== undefined ? moduleData.tShirtSize : undefined,
+                actual_duration: moduleData.actualDuration !== undefined ? moduleData.actualDuration : undefined,
                 updated_at: Date.now()
             })
             .where('id', '=', id)

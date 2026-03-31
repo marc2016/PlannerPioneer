@@ -8,8 +8,8 @@ export interface ProjectsTable {
     description: string;
     color: string;
     completed: number;
-    start_date?: string;
-    end_date?: string;
+    start_date?: string | null;
+    end_date?: string | null;
     created_at: number;
     updated_at: number;
 }
@@ -21,8 +21,8 @@ export interface ModulesTable {
     description: string;
     color: string;
     completed: number;
-    t_shirt_size?: string;
-    actual_duration?: number;
+    t_shirt_size?: string | null;
+    actual_duration?: number | null;
     created_at: number;
     updated_at: number;
 }
@@ -34,10 +34,10 @@ export interface FeaturesTable {
     description: string;
     color: string;
     completed: number;
-    pert_optimistic?: number;
-    pert_most_likely?: number;
-    pert_pessimistic?: number;
-    actual_duration?: number;
+    pert_optimistic?: number | null;
+    pert_most_likely?: number | null;
+    pert_pessimistic?: number | null;
+    actual_duration?: number | null;
     created_at: number;
     updated_at: number;
 }

@@ -9,13 +9,13 @@ export interface Feature {
     description?: string;
     completed: boolean;
     color?: string; // Hex color code
-    pert_optimistic?: number;
-    pert_most_likely?: number;
-    pert_pessimistic?: number;
+    pert_optimistic?: number | null;
+    pert_most_likely?: number | null;
+    pert_pessimistic?: number | null;
     expected_duration?: number;
     standard_deviation?: number;
     variance?: number;
-    actualDuration?: number;
+    actualDuration?: number | null;
     createdAt?: number;
 }
 
@@ -41,11 +41,11 @@ export const useFeatureStore = create<FeatureState>((set, get) => ({
         set({
             features: features.map(f => {
                 const expected = f.pert_most_likely !== undefined && f.pert_most_likely !== null
-                    ? calculatePert(f.pert_optimistic, f.pert_most_likely, f.pert_pessimistic)
+                    ? calculatePert(f.pert_optimistic ?? undefined, f.pert_most_likely, f.pert_pessimistic ?? undefined)
                     : undefined;
 
                 const stdDev = f.pert_most_likely !== undefined && f.pert_most_likely !== null
-                    ? calculateStandardDeviation(f.pert_optimistic, f.pert_most_likely, f.pert_pessimistic)
+                    ? calculateStandardDeviation(f.pert_optimistic ?? undefined, f.pert_most_likely, f.pert_pessimistic ?? undefined)
                     : undefined;
                 const variance = calculateVariance(stdDev);
 
@@ -109,18 +109,21 @@ export const useFeatureStore = create<FeatureState>((set, get) => ({
     },
 
     updateFeature: async (id: string, featureData: Partial<Omit<Feature, 'id' | 'createdAt' | 'completed' | 'expected_duration'>>) => {
+        const updatePayload: any = {
+            title: featureData.title,
+            description: featureData.description,
+            color: featureData.color,
+            updated_at: Date.now()
+        };
+
+        if (featureData.module_id !== undefined) updatePayload.module_id = featureData.module_id;
+        if (featureData.pert_optimistic !== undefined) updatePayload.pert_optimistic = featureData.pert_optimistic;
+        if (featureData.pert_most_likely !== undefined) updatePayload.pert_most_likely = featureData.pert_most_likely;
+        if (featureData.pert_pessimistic !== undefined) updatePayload.pert_pessimistic = featureData.pert_pessimistic;
+        if (featureData.actualDuration !== undefined) updatePayload.actual_duration = featureData.actualDuration;
+
         await db.updateTable('features')
-            .set({
-                module_id: featureData.module_id || undefined,
-                title: featureData.title,
-                description: featureData.description,
-                color: featureData.color,
-                pert_optimistic: featureData.pert_optimistic,
-                pert_most_likely: featureData.pert_most_likely,
-                pert_pessimistic: featureData.pert_pessimistic,
-                actual_duration: featureData.actualDuration,
-                updated_at: Date.now()
-            })
+            .set(updatePayload)
             .where('id', '=', id)
             .execute();
 

@@ -179,15 +179,15 @@ export default function ModuleCard({ module, onToggle, onDelete, onClick }: Modu
                                 />
                             </Tooltip>
                         )}
-                        {module.actualDuration !== undefined && module.actualDuration > 0 && (
-                            <Tooltip title={t('common.actual_duration', 'Tatsächliche Dauer')}>
+                        {module.actualDuration != null && module.actualDuration > 0 && (
+                            <Tooltip title={t('common.actual_duration', 'Tatsächliche Dauer (überschreibt Kinder)')}>
                                 <Chip
                                     icon={<TaskAlt fontSize="small" />}
                                     label={`${module.actualDuration}h`}
                                     size="small"
-                                    variant={module.actualDuration > totalDuration ? "filled" : "outlined"}
-                                    color={module.actualDuration > totalDuration ? "error" : "success"}
-                                    sx={{ opacity: 0.8 }}
+                                    variant={module.actualDuration > (module.totalDuration || 0) ? "filled" : "outlined"}
+                                    color={module.actualDuration > (module.totalDuration || 0) ? "error" : "success"}
+                                    sx={{ fontWeight: 'bold' }}
                                 />
                             </Tooltip>
                         )}
