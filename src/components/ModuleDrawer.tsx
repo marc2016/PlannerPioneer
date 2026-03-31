@@ -97,8 +97,11 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
         }
     }, [module, open, initialProjectId, projects]);
 
-    const handleSave = async () => {
-        if (!title.trim()) return;
+    const handleCloseAndSave = async () => {
+        if (!title.trim()) {
+            onClose();
+            return;
+        }
 
         const pActualDuration = actualDuration ? parseFloat(actualDuration) : null;
         const payload = {
@@ -148,14 +151,14 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
         <Drawer
             anchor="right"
             open={open}
-            onClose={onClose}
+            onClose={handleCloseAndSave}
             PaperProps={{ sx: { width: '50vw', minWidth: 400, p: 3, pt: 8 } }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
                     {module ? t('modules.edit_module', "Edit Module") : t('modules.new_module', "New Module")}
                 </Typography>
-                <IconButton onClick={onClose}>
+                <IconButton onClick={handleCloseAndSave}>
                     <Close />
                 </IconButton>
             </Box>
@@ -302,8 +305,8 @@ export default function ModuleDrawer({ open, onClose, module, initialProjectId }
                         )
                     )}
                     {!showDeleteConfirm && (
-                        <Button variant="contained" onClick={handleSave} disabled={!title.trim()}>
-                            {t('common.save')}
+                        <Button variant="contained" onClick={handleCloseAndSave} disabled={!title.trim()}>
+                            {t('common.ok', 'OK')}
                         </Button>
                     )}
                 </Box>

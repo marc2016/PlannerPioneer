@@ -122,8 +122,11 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
         }
     };
 
-    const handleSave = async () => {
-        if (!title.trim()) return;
+    const handleCloseAndSave = async () => {
+        if (!title.trim()) {
+            onClose();
+            return;
+        }
 
         const projectId = project?.id || crypto.randomUUID();
 
@@ -185,14 +188,14 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
         <Drawer
             anchor="right"
             open={open}
-            onClose={onClose}
+            onClose={handleCloseAndSave}
             PaperProps={{ sx: { width: '50vw', minWidth: 600, p: 3, pt: 8 } }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
                     {project ? t('projects.edit_project') : t('projects.new_project')}
                 </Typography>
-                <IconButton onClick={onClose}>
+                <IconButton onClick={handleCloseAndSave}>
                     <Close />
                 </IconButton>
             </Box>
@@ -339,8 +342,8 @@ export default function ProjectDrawer({ open, onClose, project }: ProjectDrawerP
                             </Button>
                         </>
                     )}
-                    <Button variant="contained" onClick={handleSave} disabled={!title.trim()}>
-                        {t('common.save')}
+                    <Button variant="contained" onClick={handleCloseAndSave} disabled={!title.trim()}>
+                        {t('common.ok', 'OK')}
                     </Button>
                 </Box>
             </Box>

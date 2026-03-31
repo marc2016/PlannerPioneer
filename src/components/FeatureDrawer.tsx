@@ -109,8 +109,11 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
         return m.project_id === filterProjectId;
     });
 
-    const handleSave = async () => {
-        if (!title.trim()) return;
+    const handleCloseAndSave = async () => {
+        if (!title.trim()) {
+            onClose();
+            return;
+        }
 
         const pOptimistic = pertOptimistic ? parseFloat(pertOptimistic) : null;
         const pMostLikely = pertMostLikely ? parseFloat(pertMostLikely) : null;
@@ -188,14 +191,14 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
         <Drawer
             anchor="right"
             open={open}
-            onClose={onClose}
+            onClose={handleCloseAndSave}
             PaperProps={{ sx: { width: '50vw', minWidth: 600, p: 3, pt: 8 } }}
         >
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h6">
                     {feature ? t('features.edit_feature', "Edit Feature") : t('features.new_feature', "New Feature")}
                 </Typography>
-                <IconButton onClick={onClose}>
+                <IconButton onClick={handleCloseAndSave}>
                     <Close />
                 </IconButton>
             </Box>
@@ -394,8 +397,8 @@ export default function FeatureDrawer({ open, onClose, feature, initialModuleId,
                         )
                     )}
                     {!showDeleteConfirm && (
-                        <Button variant="contained" onClick={handleSave} disabled={!title.trim()}>
-                            {t('common.save')}
+                        <Button variant="contained" onClick={handleCloseAndSave} disabled={!title.trim()}>
+                            {t('common.ok', 'OK')}
                         </Button>
                     )}
                 </Box>
