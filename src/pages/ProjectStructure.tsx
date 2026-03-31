@@ -130,6 +130,14 @@ export default function ProjectStructure() {
     }, [data]);
 
     const totalDuration = selectedProject?.totalDuration || 0;
+    
+    const projectFeaturesCount = useMemo(() => {
+        if (!selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return 0;
+        const projectModules = modules.filter(m => m.project_id === selectedProjectId);
+        return projectModules.reduce((acc, mod) => {
+            return acc + features.filter(f => f.module_id === mod.id).length;
+        }, 0);
+    }, [selectedProjectId, modules, features]);
 
     const riskData = useMemo(() => {
         if (!selectedProject || !selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return [];
@@ -186,6 +194,87 @@ export default function ProjectStructure() {
             { name: 'XL', value: counts['XL'], fill: theme.palette.error.light }
         ];
     }, [selectedProjectId, modules, selectedProject, theme]);
+
+    const featureComparisonData = useMemo(() => {
+        if (!selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return [];
+        
+        const projectModules = modules.filter(m => m.project_id === selectedProjectId);
+        const projectFeatures = projectModules.flatMap(mod => features.filter(f => f.module_id === mod.id));
+        
+        return projectFeatures
+            .filter(f => f.pert_optimistic || f.actualDuration) // Only show features with estimates or actual times
+            .map(f => {
+                const opt = f.pert_optimistic || 0;
+                const likely = f.pert_most_likely || opt;
+                const pes = f.pert_pessimistic || likely;
+
+                return {
+                    name: f.title,
+                    Optimistisch: opt,
+                    'Zusatz Wahrscheinlich': likely - opt > 0 ? (likely - opt) : 0,
+                    'Zusatz Pessimistisch': pes - likely > 0 ? (pes - likely) : 0,
+                    'Tatsächlich': f.actualDuration || 0,
+                    // Store absolute values for the tooltip
+                    absOpt: opt,
+                    absLikely: likely,
+                    absPes: pes
+                };
+            })
+            // Sort by absolute likely duration descending for better visual
+            .sort((a, b) => b.absLikely - a.absLikely);
+    }, [selectedProjectId, modules, features]);
+
+    const moduleComparisonData = useMemo(() => {
+        if (!selectedProjectId || selectedProjectId === 'all' || selectedProjectId === 'unassigned') return [];
+
+        const projectModules = modules.filter(m => m.project_id === selectedProjectId);
+
+        return projectModules.map(mod => {
+            const moduleFeatures = features.filter(f => f.module_id === mod.id);
+            
+            // Sum up values from features
+            const sumOpt = moduleFeatures.reduce((sum, f) => sum + (f.pert_optimistic || 0), 0);
+            const sumLikely = moduleFeatures.reduce((sum, f) => sum + (f.pert_most_likely || (f.pert_optimistic || 0)), 0);
+            const sumPes = moduleFeatures.reduce((sum, f) => sum + (f.pert_pessimistic || (f.pert_most_likely || (f.pert_optimistic || 0))), 0);
+            
+            // Actual duration logic: check module directly, otherwise sum features
+            let actual = mod.actualDuration;
+            if (!actual || actual <= 0) {
+                actual = moduleFeatures.reduce((sum, f) => sum + (f.actualDuration || 0), 0);
+            }
+
+            return {
+                name: mod.title,
+                Optimistisch: sumOpt,
+                'Zusatz Wahrscheinlich': sumLikely - sumOpt > 0 ? (sumLikely - sumOpt) : 0,
+                'Zusatz Pessimistisch': sumPes - sumLikely > 0 ? (sumPes - sumLikely) : 0,
+                'Tatsächlich': actual,
+                // Store absolute values for the tooltip
+                absOpt: sumOpt,
+                absLikely: sumLikely,
+                absPes: sumPes
+            };
+        })
+        .filter(d => d.absOpt > 0 || d['Tatsächlich'] > 0)
+        .sort((a, b) => b.absLikely - a.absLikely);
+    }, [selectedProjectId, modules, features]);
+
+    // Custom tool tip for the feature comparison to show absolute values instead of just the segments
+    const CustomComparisonTooltip = ({ active, payload, label }: any) => {
+        if (active && payload && payload.length) {
+            const data = payload[0].payload;
+            return (
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.9)', padding: '10px', border: '1px solid #ccc', borderRadius: '4px' }}>
+                    <p style={{ margin: '0 0 5px 0', fontWeight: 'bold' }}>{label}</p>
+                    <p style={{ margin: 0, color: theme.palette.success.main }}>Optimistisch: {data.absOpt.toFixed(1)} h</p>
+                    <p style={{ margin: 0, color: theme.palette.info.main }}>Wahrscheinlich: {data.absLikely.toFixed(1)} h</p>
+                    <p style={{ margin: 0, color: theme.palette.warning.main }}>Pessimistisch: {data.absPes.toFixed(1)} h</p>
+                    <p style={{ margin: '5px 0 0 0', color: theme.palette.secondary.main, fontWeight: 'bold' }}>Tatsächlich: {data['Tatsächlich'].toFixed(1)} h</p>
+                </div>
+            );
+        }
+        return null;
+    };
 
     return (
         <motion.div
@@ -384,12 +473,101 @@ export default function ProjectStructure() {
                                         {t('projects.time_period', 'Zeitraum')}: {selectedProject.startDate ? new Date(selectedProject.startDate).toLocaleDateString() : '...'} - {selectedProject.endDate ? new Date(selectedProject.endDate).toLocaleDateString() : '...'}
                                     </Typography>
                                 )}
-                                <Typography variant="body1" sx={{ mt: 1, mb: 1 }}>
+                                <Typography variant="body1" sx={{ mt: 1, mb: 0.5 }}>
                                     {t('structure.total_modules', 'Anzahl Module')}: <strong>{data.length}</strong>
+                                </Typography>
+                                <Typography variant="body1" sx={{ mb: 1 }}>
+                                    {t('structure.total_features', 'Anzahl Features')}: <strong>{projectFeaturesCount}</strong>
                                 </Typography>
                                 <Typography variant="body1" sx={{ mb: 3 }}>
                                     {t('projects.total_duration', 'Gesamtdauer')}: <strong>{totalDuration.toFixed(1)} h</strong>
                                 </Typography>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* Module Estimate vs Actual Chart */}
+                    <Grid size={{ xs: 12, lg: 8 }}>
+                        <Card elevation={3} sx={{ borderRadius: 3, height: '100%' }}>
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
+                                    {t('structure.module_comparison', 'Modul Schätzungen vs. Tatsächlich')}
+                                </Typography>
+                                {moduleComparisonData.length > 0 ? (
+                                    <Box sx={{ width: '100%', height: 300 }}>
+                                        <ResponsiveContainer>
+                                            <BarChart data={moduleComparisonData} margin={{ top: 20, right: 10, left: 0, bottom: 20 }}>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                                <XAxis 
+                                                    dataKey="name" 
+                                                    axisLine={false} 
+                                                    tickLine={false} 
+                                                    tick={{ fontSize: 11 }} 
+                                                />
+                                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} width={40} />
+                                                <Tooltip content={<CustomComparisonTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+                                                <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px' }} />
+                                                
+                                                {/* Estimated Values Stacked */}
+                                                <Bar dataKey="Optimistisch" stackId="expected" fill={theme.palette.success.main} radius={[0, 0, 4, 4]} />
+                                                <Bar dataKey="Zusatz Wahrscheinlich" name="Wahrscheinlich" stackId="expected" fill={theme.palette.info.main} />
+                                                <Bar dataKey="Zusatz Pessimistisch" name="Pessimistisch" stackId="expected" fill={theme.palette.warning.main} radius={[4, 4, 0, 0]} />
+                                                
+                                                {/* Actual Value Non-Stacked */}
+                                                <Bar dataKey="Tatsächlich" fill={theme.palette.secondary.main} radius={4} />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </Box>
+                                ) : (
+                                    <Box sx={{ display: 'flex', height: 300, alignItems: 'center', justifyContent: 'center' }}>
+                                        <Typography color="text.secondary">
+                                            {t('structure.no_durations', 'Keine Dauerschätzungen vorhanden')}
+                                        </Typography>
+                                    </Box>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+
+                    {/* Feature Estimate vs Actual Chart */}
+                    <Grid size={{ xs: 12, lg: 12 }}>
+                        <Card elevation={3} sx={{ borderRadius: 3, height: '100%' }}>
+                            <CardContent>
+                                <Typography variant="h6" gutterBottom fontWeight="bold" sx={{ mb: 2 }}>
+                                    {t('structure.feature_comparison', 'Feature Schätzungen vs. Tatsächlich')}
+                                </Typography>
+                                {featureComparisonData.length > 0 ? (
+                                    <Box sx={{ width: '100%', height: 300 }}>
+                                        <ResponsiveContainer>
+                                            <BarChart data={featureComparisonData} margin={{ top: 20, right: 10, left: 0, bottom: 20 }}>
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                                <XAxis 
+                                                    dataKey="name" 
+                                                    axisLine={false} 
+                                                    tickLine={false} 
+                                                    tick={{ fontSize: 11 }}
+                                                />
+                                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11 }} width={40} />
+                                                <Tooltip content={<CustomComparisonTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+                                                <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px' }} />
+                                                
+                                                {/* Estimated Values Stacked */}
+                                                <Bar dataKey="Optimistisch" stackId="expected" fill={theme.palette.success.main} radius={[0, 0, 4, 4]} />
+                                                <Bar dataKey="Zusatz Wahrscheinlich" name="Wahrscheinlich" stackId="expected" fill={theme.palette.info.main} />
+                                                <Bar dataKey="Zusatz Pessimistisch" name="Pessimistisch" stackId="expected" fill={theme.palette.warning.main} radius={[4, 4, 0, 0]} />
+                                                
+                                                {/* Actual Value Non-Stacked */}
+                                                <Bar dataKey="Tatsächlich" fill={theme.palette.secondary.main} radius={4} />
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </Box>
+                                ) : (
+                                    <Box sx={{ display: 'flex', height: 300, alignItems: 'center', justifyContent: 'center' }}>
+                                        <Typography color="text.secondary">
+                                            {t('structure.no_durations', 'Keine Dauerschätzungen vorhanden')}
+                                        </Typography>
+                                    </Box>
+                                )}
                             </CardContent>
                         </Card>
                     </Grid>
